@@ -321,6 +321,40 @@
         70% { transform: scale(.94) rotate(2deg); }
         100% { transform: scale(1) rotate(0deg); }
     }
+    /* Idea 1: beat-reactive stud pulse (driven by Web Audio analyser via --beat) */
+    .lego-disco-studs { --beat: 0; transition: transform .05s linear; transform: translateX(-50%) scale(calc(1 + var(--beat) * .55)); }
+    /* Idea 5: now playing ticker (shows on hover while playing) */
+    .disco-ticker {
+        position: absolute; bottom: 100%; left: 50%;
+        transform: translateX(-50%) translateY(4px);
+        margin-bottom: 10px;
+        background: #fff; color: #000;
+        border: 2px solid #1a1c1c; border-radius: 6px;
+        padding: 4px 10px; font-size: 10px; font-weight: 700; white-space: nowrap;
+        opacity: 0; pointer-events: none;
+        transition: opacity .2s ease, transform .2s ease;
+        box-shadow: 2px 2px 0 rgba(0,0,0,.3);
+        z-index: 30;
+    }
+    .lego-music-btn.is-playing:hover .disco-ticker { opacity: 1; transform: translateX(-50%) translateY(0); }
+    /* Idea 4: floating music notes */
+    .disco-note { position: fixed; font-size: 15px; font-weight: 700; pointer-events: none; z-index: 9998; animation: discoNoteFloat 1.8s ease-out forwards; }
+    @keyframes discoNoteFloat {
+        0%   { transform: translate(0,0) rotate(0deg); opacity: 1; }
+        100% { transform: translate(var(--nx,20px), -70px) rotate(var(--nr,20deg)); opacity: 0; }
+    }
+    /* Idea 7: secret "disco" keyword flash */
+    #discoFlashOverlay { position: fixed; inset: 0; z-index: 99999; pointer-events: none; opacity: 0; }
+    #discoFlashOverlay.flash { animation: discoFlashSeq 1.6s ease-out; }
+    @keyframes discoFlashSeq {
+        0%   { opacity: 0;   background: #dc2626; }
+        16%  { opacity: .55; background: #dc2626; }
+        32%  { opacity: .55; background: #eab308; }
+        48%  { opacity: .55; background: #22c55e; }
+        64%  { opacity: .55; background: #3b82f6; }
+        80%  { opacity: .3;  background: #fff; }
+        100% { opacity: 0; }
+    }
 
     /* Disco spotlight pool, cast into the yellow hero box, moving only within it */
     #discoSpotlightLayer {
@@ -412,6 +446,7 @@
   </style>
 </head>
 <body class="min-h-screen">
+<div id="discoFlashOverlay"></div>
 <div id="particleLayer"></div>
 <div id="bgBaseplateGrid"></div>
 <div id="bgBrickWall"></div>
@@ -434,6 +469,7 @@
 <a href="dashboard.html" class="lego-border-sm bg-white px-4 py-2 font-anton uppercase text-sm hover:bg-gray-50 transition-colors">Workspace</a>
 <button id="bgMusicToggle" onclick="toggleBgMusic()" aria-label="Toggle background music" class="lego-music-btn">
 <span class="lego-disco-studs"><span></span><span></span><span></span><span></span></span>
+<span class="disco-ticker">🎵 NOW PLAYING: OUR WORKSPACE THEME</span>
 <span id="bgMusicIcon" class="lego-music-icon">🔇</span>
 <span id="bgMusicBars" class="lego-music-bars"><span></span><span></span><span></span><span></span></span>
 </button>
@@ -1174,10 +1210,58 @@
         }, { once: true });
     }
 
+    /* Idea 1: Web Audio analyser drives --beat on the studs */
+    var audioCtx, analyser, freqData;
+    function setupAnalyser() {
+        if (audioCtx) return;
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            var source = audioCtx.createMediaElementSource(audio);
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 64;
+            freqData = new Uint8Array(analyser.frequencyBinCount);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+        } catch (e) { /* unsupported or already wired */ }
+    }
+    function beatLoop() {
+        if (!audio.paused && analyser) {
+            analyser.getByteFrequencyData(freqData);
+            var sum = 0;
+            for (var i = 0; i < freqData.length; i++) sum += freqData[i];
+            var avg = sum / freqData.length / 255;
+            document.querySelectorAll('.lego-disco-studs').forEach(function (el) {
+                el.style.setProperty('--beat', avg.toFixed(3));
+            });
+        }
+        requestAnimationFrame(beatLoop);
+    }
+    beatLoop();
+
+    /* Idea 4: floating notes while playing */
+    var noteTimer = null;
+    function spawnNote() {
+        if (!btn) return;
+        var rect = btn.getBoundingClientRect();
+        var note = document.createElement('span');
+        note.className = 'disco-note';
+        note.textContent = Math.random() < 0.5 ? '♪' : '♫';
+        note.style.left = (rect.left + rect.width / 2) + 'px';
+        note.style.top = rect.top + 'px';
+        note.style.setProperty('--nx', (Math.random() * 40 - 20).toFixed(0) + 'px');
+        note.style.setProperty('--nr', (Math.random() * 40 - 20).toFixed(0) + 'deg');
+        note.style.color = ['#dc2626', '#eab308', '#22c55e', '#3b82f6'][Math.floor(Math.random() * 4)];
+        document.body.appendChild(note);
+        setTimeout(function () { note.remove(); }, 1900);
+    }
+    function startNotes() { if (!noteTimer) noteTimer = setInterval(spawnNote, 700); }
+    function stopNotes() { clearInterval(noteTimer); noteTimer = null; }
+
     function updateIcon() {
         icon.textContent = audio.paused ? '🔇' : '🔊';
         if (btn) btn.classList.toggle('is-playing', !audio.paused);
         if (spotlightLayer) spotlightLayer.classList.toggle('active', !audio.paused);
+        if (audio.paused) { stopNotes(); } else { startNotes(); }
     }
 
     function tryResume() {
@@ -1190,6 +1274,8 @@
     tryResume();
 
     window.toggleBgMusic = function () {
+        setupAnalyser();
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
         if (typeof playClickSound === 'function') playClickSound();
         if (btn) {
             btn.classList.remove('snap-pop');
@@ -1214,6 +1300,27 @@
     window.addEventListener('pagehide', function () {
         localStorage.setItem(KEY_TIME, audio.currentTime.toFixed(2));
         localStorage.setItem(KEY_PLAYING, audio.paused ? 'false' : 'true');
+    });
+})();
+
+/* Idea 7: secret keyword "disco" — full-page colour flash */
+(function setupDiscoEasterEgg() {
+    var KEYWORD = 'disco';
+    var buffer = '';
+    document.addEventListener('keydown', function (ev) {
+        var tag = (document.activeElement && document.activeElement.tagName || '').toLowerCase();
+        if (tag === 'input' || tag === 'textarea') return;
+        if (ev.key.length !== 1) return;
+        buffer = (buffer + ev.key.toLowerCase()).slice(-KEYWORD.length);
+        if (buffer === KEYWORD) {
+            buffer = '';
+            var overlay = document.getElementById('discoFlashOverlay');
+            if (overlay) {
+                overlay.classList.remove('flash');
+                void overlay.offsetWidth;
+                overlay.classList.add('flash');
+            }
+        }
     });
 })();
 </script>

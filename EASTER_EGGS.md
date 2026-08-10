@@ -1,6 +1,6 @@
 # Hidden Features & Easter Eggs — Full Site Reference
 
-Internal reference covering `landing.html`, `login.html`, `register.html`, and `library.html`. Not linked anywhere on the site — keep it that way so they stay secret.
+Internal reference covering `landing.html`, `login.html`, `register.html`, `dashboard.html`, and `library.html`. Not linked anywhere on the site — keep it that way so they stay secret.
 
 ## Quick Reference — All Secret Keywords/Codes
 
@@ -13,6 +13,7 @@ Type these anywhere on the page (not while focused in a text input):
 | `chaos` | register.html | LEGO playing cards rain down |
 | `arkham` | register.html | Purple "Arkham Mode" screen filter |
 | `brick` | library.html | Every jobsheet card explodes apart, then reassembles shuffled |
+| `disco` | landing.html, dashboard.html, library.html | Full-page colour flash strobe |
 | ↑↑↓↓←→←→BA (Konami code) | login.html, register.html | Auto-fills Bruce Wayne + instant success |
 
 Other non-keyword triggers: click the header logo 5× fast (landing.html, Brick Rain), click any empty area repeatedly (landing.html, Brick Graffiti), open the same page in 2 tabs (landing.html, Cross-Tab Ghost).
@@ -66,7 +67,18 @@ Other non-keyword triggers: click the header logo 5× fast (landing.html, Brick 
 - Replaces the old "Detailed Feedback" (💬 commentator) achievement — removed per request.
 - Check logic: `ACHIEVEMENT_DEFS` entry `id: 'egg_hunter'` in dashboard.html.
 
-localStorage keys: `graffiti-bricks-v1`, `egg-found-vault`, `egg-found-brickrain`, `egg-found-graffiti`, `egg-found-ghost`.
+## Disco Music Player
+- Yellow-brick toggle button (`#bgMusicToggle`) plays `audio/theme.mp3` on a loop, synced across landing/dashboard/library via `localStorage` (`bg-music-playing`, `bg-music-time`, `bg-music-volume`).
+- **Beat-reactive studs**: while playing, a Web Audio `AnalyserNode` reads live frequency data and pulses the button's studs (`--beat` CSS variable) in real time — actually reacts to the track's volume/bass, not a fixed animation.
+- **Vinyl record**: small spinning record appears beside the button while playing.
+- **DJ cameo**: 🕺 emoji bobs above the button while playing.
+- **Now Playing ticker**: hover the button while it's playing to see a "NOW PLAYING" tooltip.
+- **Progress ring**: thin ring badge in the button's corner tracks the current loop position.
+- **Volume brick tower**: press-and-hold the button and drag up/down to scrub volume; a small brick-tower gauge appears. A plain click (no drag) still toggles play/pause.
+- **Floating notes**: ♪/♫ symbols float up and fade out from the button while playing.
+- Code: `setupBgMusic()` + `setupDiscoEasterEgg()`, near the end of each page's `<body>`.
+
+localStorage keys: `graffiti-bricks-v1`, `egg-found-vault`, `egg-found-brickrain`, `egg-found-graffiti`, `egg-found-ghost`, `bg-music-playing`, `bg-music-time`, `bg-music-volume`.
 
 ---
 
@@ -187,9 +199,19 @@ localStorage keys added: `batman-interruptions-reg`.
 
 ---
 
+# dashboard.html
+
+## Disco Music Player
+- Same player as landing.html (see full write-up in the landing.html section above) — button docked below the "Jobsheets" quick-dock button. Type `disco` anywhere on the page for the full-screen flash.
+
+---
+
 # library.html
 
 Redesigned to match dashboard.html's visual language (Anton font, lego-border/has-studs brick styling, blue-gradient body). Jobsheet cards render live from the same `uploaded-jobsheets-v3` localStorage data dashboard.html uses.
+
+## Disco Music Player
+- Same player as landing.html (see full write-up in the landing.html section above) — button docked next to "Workspace" in the header. Also drives **moving spotlight pools** (`#discoSpotlightLayer`) confined to the yellow hero box while playing. Type `disco` anywhere on the page for the full-screen flash.
 
 ## Card Explode & Reassemble
 - **Trigger**: type `brick` anywhere on the page.
