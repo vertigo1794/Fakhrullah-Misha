@@ -246,6 +246,118 @@
       box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
     }
 
+    /* LEGO brick-styled music toggle, docked next to Workspace in the header */
+    .lego-music-btn {
+        position: relative;
+        background: #dc2626;
+        border: 3px solid #1a1c1c;
+        box-shadow: 3px 3px 0px 0px #1a1c1c;
+        padding: 8px 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .lego-music-btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0px 0px #1a1c1c; }
+    .lego-music-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px 0px #1a1c1c; }
+    .lego-music-btn.is-playing { animation: legoDiscoGlow 2.4s ease-in-out infinite; }
+    @keyframes legoDiscoGlow {
+        0%, 100% { box-shadow: 3px 3px 0px 0px #1a1c1c, 0 0 9px 2px rgba(220,38,38,.32); }
+        33%      { box-shadow: 3px 3px 0px 0px #1a1c1c, 0 0 9px 2px rgba(234,179,8,.32); }
+        66%      { box-shadow: 3px 3px 0px 0px #1a1c1c, 0 0 9px 2px rgba(59,130,246,.32); }
+    }
+    .lego-disco-studs {
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 7px;
+        pointer-events: none;
+    }
+    .lego-disco-studs span {
+        position: relative;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        border: 1.5px solid #1a1c1c;
+        background-color: #7f1d1d;
+        overflow: hidden;
+    }
+    .lego-disco-studs span::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 32% 26%, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 46%);
+    }
+    .lego-music-btn.is-playing .lego-disco-studs span { animation: legoDiscoStud 1.6s ease-in-out infinite; }
+    .lego-disco-studs span:nth-child(1) { animation-delay: 0s; }
+    .lego-disco-studs span:nth-child(2) { animation-delay: .2s; }
+    .lego-disco-studs span:nth-child(3) { animation-delay: .4s; }
+    .lego-disco-studs span:nth-child(4) { animation-delay: .6s; }
+    @keyframes legoDiscoStud {
+        0%, 100% { background-color: #dc2626; box-shadow: 0 0 4px 1px rgba(220,38,38,.6); }
+        25%      { background-color: #eab308; box-shadow: 0 0 4px 1px rgba(234,179,8,.6); }
+        50%      { background-color: #22c55e; box-shadow: 0 0 4px 1px rgba(34,197,94,.6); }
+        75%      { background-color: #3b82f6; box-shadow: 0 0 4px 1px rgba(59,130,246,.6); }
+    }
+    .lego-music-icon { font-size: 15px; line-height: 1; }
+    .lego-music-bars { display: flex; align-items: flex-end; gap: 2px; height: 13px; }
+    .lego-music-bars span { width: 3px; background: #fff; border-radius: 1px; height: 4px; transition: height .15s ease; }
+    .lego-music-btn.is-playing .lego-music-bars span { animation: legoEqBounce .9s ease-in-out infinite; }
+    .lego-music-bars span:nth-child(1) { animation-delay: 0s; }
+    .lego-music-bars span:nth-child(2) { animation-delay: .15s; }
+    .lego-music-bars span:nth-child(3) { animation-delay: .3s; }
+    .lego-music-bars span:nth-child(4) { animation-delay: .45s; }
+    @keyframes legoEqBounce {
+        0%, 100% { height: 4px; }
+        50% { height: 13px; }
+    }
+    .lego-music-btn.snap-pop { animation: legoSnapPop .4s ease; }
+    @keyframes legoSnapPop {
+        0% { transform: scale(1); }
+        40% { transform: scale(1.16) rotate(-4deg); }
+        70% { transform: scale(.94) rotate(2deg); }
+        100% { transform: scale(1) rotate(0deg); }
+    }
+
+    /* Disco spotlight pool, cast into the yellow hero box, moving only within it */
+    #discoSpotlightLayer {
+        z-index: 5;
+        opacity: 0;
+        transition: opacity .5s ease;
+        overflow: hidden;
+    }
+    #discoSpotlightLayer.active { opacity: 1; }
+    .disco-beam {
+        position: absolute;
+        width: 55%;
+        height: 55%;
+        border-radius: 50%;
+        filter: blur(22px);
+    }
+    .disco-beam-a { background: radial-gradient(circle, rgba(220,20,20,.75) 0%, rgba(220,20,20,0) 68%); animation: discoDriftA 9s ease-in-out infinite; }
+    .disco-beam-b { background: radial-gradient(circle, rgba(20,90,220,.7) 0%, rgba(20,90,220,0) 68%); animation: discoDriftB 11s ease-in-out infinite; }
+    .disco-beam-c { background: radial-gradient(circle, rgba(20,180,90,.7) 0%, rgba(20,180,90,0) 68%); animation: discoDriftC 7.5s ease-in-out infinite; }
+    @keyframes discoDriftA {
+        0%, 100% { top: -10%; left: -8%; }
+        25%      { top: 30%;  left: 45%; }
+        50%      { top: 55%;  left: 5%; }
+        75%      { top: 5%;   left: 55%; }
+    }
+    @keyframes discoDriftB {
+        0%, 100% { top: 40%;  left: 55%; }
+        30%      { top: -5%; left: 20%; }
+        60%      { top: 50%;  left: -10%; }
+        85%      { top: 20%;  left: 60%; }
+    }
+    @keyframes discoDriftC {
+        0%, 100% { top: 20%; left: 30%; }
+        35%      { top: 55%; left: 50%; }
+        70%      { top: 0%;  left: 0%; }
+    }
+
     /* Hero background: falling + shattering brick model */
     #fallingBrickModel { animation: none; }
     #fallingBrickModel.brick-fall-anim {
@@ -320,6 +432,11 @@
 </div>
 <div class="flex items-center gap-3 w-full sm:w-auto">
 <a href="dashboard.html" class="lego-border-sm bg-white px-4 py-2 font-anton uppercase text-sm hover:bg-gray-50 transition-colors">Workspace</a>
+<button id="bgMusicToggle" onclick="toggleBgMusic()" aria-label="Toggle background music" class="lego-music-btn">
+<span class="lego-disco-studs"><span></span><span></span><span></span><span></span></span>
+<span id="bgMusicIcon" class="lego-music-icon">🔇</span>
+<span id="bgMusicBars" class="lego-music-bars"><span></span><span></span><span></span><span></span></span>
+</button>
 <a href="login.html" class="lego-border-sm bg-white px-4 py-2 font-anton uppercase text-sm hover:bg-gray-50 transition-colors">Sign In</a>
 </div>
 </header>
@@ -334,6 +451,11 @@
 </div>
 </div>
 <div id="brickShatterLayer" class="absolute inset-0"></div>
+</div>
+<div id="discoSpotlightLayer" class="absolute inset-0 pointer-events-none">
+<span class="disco-beam disco-beam-a"></span>
+<span class="disco-beam disco-beam-b"></span>
+<span class="disco-beam disco-beam-c"></span>
 </div>
 <div class="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-40 h-40 sm:w-56 sm:h-56 pointer-events-none z-10">
 <model-viewer id="heroAvatarMisha" src="models/lego_island_sky_lane.glb" alt="Misha" auto-rotate rotation-per-second="20deg" disable-zoom autoplay field-of-view="16deg" shadow-intensity="0" exposure="1" style="width:100%;height:100%;background:transparent;"></model-viewer>
@@ -1034,9 +1156,6 @@
             setInterval(runCycle, CYCLE);
         })();
     </script>
-<button id="bgMusicToggle" onclick="toggleBgMusic()" aria-label="Toggle background music" class="fixed bottom-4 left-4 z-[9999] w-12 h-12 rounded-full bg-lego-yellow border-4 border-black flex items-center justify-center hover:scale-105 transition-transform" style="box-shadow:3px 3px 0 rgba(0,0,0,.4);">
-<span id="bgMusicIcon" style="font-size:20px;">🔇</span>
-</button>
 <audio id="bgMusicPlayer" src="audio/theme.mp3" loop preload="none"></audio>
 <script>
 (function setupBgMusic() {
@@ -1044,6 +1163,8 @@
     var KEY_TIME = 'bg-music-time';
     var audio = document.getElementById('bgMusicPlayer');
     var icon = document.getElementById('bgMusicIcon');
+    var btn = document.getElementById('bgMusicToggle');
+    var spotlightLayer = document.getElementById('discoSpotlightLayer');
     if (!audio) return;
 
     var savedTime = parseFloat(localStorage.getItem(KEY_TIME) || '0');
@@ -1055,6 +1176,8 @@
 
     function updateIcon() {
         icon.textContent = audio.paused ? '🔇' : '🔊';
+        if (btn) btn.classList.toggle('is-playing', !audio.paused);
+        if (spotlightLayer) spotlightLayer.classList.toggle('active', !audio.paused);
     }
 
     function tryResume() {
@@ -1067,6 +1190,12 @@
     tryResume();
 
     window.toggleBgMusic = function () {
+        if (typeof playClickSound === 'function') playClickSound();
+        if (btn) {
+            btn.classList.remove('snap-pop');
+            void btn.offsetWidth;
+            btn.classList.add('snap-pop');
+        }
         if (audio.paused) {
             audio.play().then(function () {
                 localStorage.setItem(KEY_PLAYING, 'true');

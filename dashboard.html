@@ -569,6 +569,115 @@
             box-shadow: 3px 3px 0 rgba(0,0,0,.4); transition: transform .15s ease, box-shadow .15s ease;
         }
         .hero-dock-btn:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 rgba(0,0,0,.4); }
+
+        /* LEGO brick-styled music toggle, docked below the Jobsheets dock button.
+           Parent wrapper reserves 56px via padding-bottom so the dock still wraps
+           cleanly at any width; margin-top here cancels that padding back out so
+           the button sits a normal 16px under Jobsheets instead of 56px+16px down. */
+        .lego-music-btn {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: -40px;
+            background: #dc2626;
+            border: 3px solid #1a1c1c;
+            box-shadow: 4px 4px 0px 0px #1a1c1c;
+            padding: 7px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: transform .12s ease, box-shadow .12s ease;
+            overflow: visible;
+        }
+        .lego-music-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px 0px #1a1c1c; }
+        .lego-music-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px 0px #1a1c1c; }
+        .lego-music-btn.is-playing { animation: legoDiscoGlow 2.4s ease-in-out infinite; }
+        @keyframes legoDiscoGlow {
+            0%, 100% { box-shadow: 4px 4px 0px 0px #1a1c1c, 0 0 9px 2px rgba(220,38,38,.32); }
+            33%      { box-shadow: 4px 4px 0px 0px #1a1c1c, 0 0 9px 2px rgba(234,179,8,.32); }
+            66%      { box-shadow: 4px 4px 0px 0px #1a1c1c, 0 0 9px 2px rgba(59,130,246,.32); }
+        }
+        .lego-disco-studs {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 7px;
+            pointer-events: none;
+        }
+        .lego-disco-studs span {
+            position: relative;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            border: 1.5px solid #1a1c1c;
+            background-color: #7f1d1d;
+            overflow: hidden;
+        }
+        .lego-disco-studs span::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 32% 26%, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 46%);
+        }
+        .lego-music-btn.is-playing .lego-disco-studs span { animation: legoDiscoStud 1.6s ease-in-out infinite; }
+        .lego-disco-studs span:nth-child(1) { animation-delay: 0s; }
+        .lego-disco-studs span:nth-child(2) { animation-delay: .2s; }
+        .lego-disco-studs span:nth-child(3) { animation-delay: .4s; }
+        .lego-disco-studs span:nth-child(4) { animation-delay: .6s; }
+        @keyframes legoDiscoStud {
+            0%, 100% { background-color: #dc2626; box-shadow: 0 0 4px 1px rgba(220,38,38,.6); }
+            25%      { background-color: #eab308; box-shadow: 0 0 4px 1px rgba(234,179,8,.6); }
+            50%      { background-color: #22c55e; box-shadow: 0 0 4px 1px rgba(34,197,94,.6); }
+            75%      { background-color: #3b82f6; box-shadow: 0 0 4px 1px rgba(59,130,246,.6); }
+        }
+        .lego-music-icon { font-size: 15px; line-height: 1; }
+        .lego-music-bars { display: flex; align-items: flex-end; gap: 2px; height: 13px; }
+        .lego-music-bars span { width: 3px; background: #fff; border-radius: 1px; height: 4px; transition: height .15s ease; }
+        .lego-music-btn.is-playing .lego-music-bars span { animation: legoEqBounce .9s ease-in-out infinite; }
+        .lego-music-bars span:nth-child(1) { animation-delay: 0s; }
+        .lego-music-bars span:nth-child(2) { animation-delay: .15s; }
+        .lego-music-bars span:nth-child(3) { animation-delay: .3s; }
+        .lego-music-bars span:nth-child(4) { animation-delay: .45s; }
+        @keyframes legoEqBounce {
+            0%, 100% { height: 4px; }
+            50% { height: 13px; }
+        }
+        .lego-music-btn.snap-pop { animation: legoSnapPop .4s ease; }
+        @keyframes legoSnapPop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.16) rotate(-4deg); }
+            70% { transform: scale(.94) rotate(2deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        /* Moving disco spotlight beams, only while playing */
+        .lego-disco-spot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 70px;
+            margin-left: -2.5px;
+            transform-origin: top center;
+            opacity: 0;
+            pointer-events: none;
+            filter: blur(1.5px);
+            mix-blend-mode: screen;
+            z-index: -1;
+        }
+        .lego-music-btn.is-playing .lego-disco-spot { opacity: .55; }
+        .lego-disco-spot-a { background: linear-gradient(to bottom, rgba(220,38,38,.6), rgba(220,38,38,0) 85%); animation: legoDiscoSweep 3.2s linear infinite; }
+        .lego-disco-spot-b { background: linear-gradient(to bottom, rgba(59,130,246,.55), rgba(59,130,246,0) 85%); animation: legoDiscoSweep 2.5s linear infinite reverse; }
+        .lego-disco-spot-c { background: linear-gradient(to bottom, rgba(234,179,8,.55), rgba(234,179,8,0) 85%); animation: legoDiscoSweep 3.8s linear infinite; }
+        @keyframes legoDiscoSweep {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8 flex justify-center items-start">
@@ -640,9 +749,18 @@ EXPLORE JOBSHEETS
 </a>
 <div id="heroQuickDock">
 <button type="button" class="hero-dock-btn" onclick="window.location.href='library.html'"><span>⬆️</span> Upload</button>
+<div class="relative" style="padding-bottom:56px;">
 <button type="button" class="hero-dock-btn" onclick="document.getElementById('jobsheetList').scrollIntoView({behavior:'smooth',block:'center'})"><span>📋</span> Jobsheets</button>
+<button id="bgMusicToggle" onclick="toggleBgMusic()" aria-label="Toggle background music" class="lego-music-btn">
+<span class="lego-disco-studs"><span></span><span></span><span></span><span></span></span>
+<span id="bgMusicIcon" class="lego-music-icon">🔇</span>
+<span id="bgMusicBars" class="lego-music-bars"><span></span><span></span><span></span><span></span></span>
+<span class="lego-disco-spot lego-disco-spot-a"></span>
+<span class="lego-disco-spot lego-disco-spot-b"></span>
+<span class="lego-disco-spot lego-disco-spot-c"></span>
+</button>
+</div>
 <button type="button" class="hero-dock-btn" onclick="document.getElementById('achievementCard').scrollIntoView({behavior:'smooth',block:'center'})"><span>🏆</span> Achievements</button>
-<button type="button" class="hero-dock-btn" onclick="document.getElementById('raceTrack').scrollIntoView({behavior:'smooth',block:'center'})"><span>🏁</span> Race</button>
 </div>
 </div>
 <!-- Hero 3D Logo -->
@@ -1837,9 +1955,6 @@ EXPLORE JOBSHEETS
             setInterval(update, 4000);
         })();
     </script>
-<button id="bgMusicToggle" onclick="toggleBgMusic()" aria-label="Toggle background music" class="fixed bottom-4 left-4 z-[9999] w-12 h-12 rounded-full bg-lego-yellow border-4 border-black flex items-center justify-center hover:scale-105 transition-transform" style="box-shadow:3px 3px 0 rgba(0,0,0,.4);">
-<span id="bgMusicIcon" style="font-size:20px;">🔇</span>
-</button>
 <audio id="bgMusicPlayer" src="audio/theme.mp3" loop preload="none"></audio>
 <script>
 (function setupBgMusic() {
@@ -1847,6 +1962,7 @@ EXPLORE JOBSHEETS
     var KEY_TIME = 'bg-music-time';
     var audio = document.getElementById('bgMusicPlayer');
     var icon = document.getElementById('bgMusicIcon');
+    var btn = document.getElementById('bgMusicToggle');
     if (!audio) return;
 
     var savedTime = parseFloat(localStorage.getItem(KEY_TIME) || '0');
@@ -1858,6 +1974,7 @@ EXPLORE JOBSHEETS
 
     function updateIcon() {
         icon.textContent = audio.paused ? '🔇' : '🔊';
+        if (btn) btn.classList.toggle('is-playing', !audio.paused);
     }
 
     function tryResume() {
@@ -1870,6 +1987,12 @@ EXPLORE JOBSHEETS
     tryResume();
 
     window.toggleBgMusic = function () {
+        if (typeof playClickSound === 'function') playClickSound();
+        if (btn) {
+            btn.classList.remove('snap-pop');
+            void btn.offsetWidth;
+            btn.classList.add('snap-pop');
+        }
         if (audio.paused) {
             audio.play().then(function () {
                 localStorage.setItem(KEY_PLAYING, 'true');
