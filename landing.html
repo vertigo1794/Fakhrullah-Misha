@@ -1723,4 +1723,58 @@
             });
         })();
     </script>
+<button id="bgMusicToggle" onclick="toggleBgMusic()" aria-label="Toggle background music" class="fixed bottom-4 left-4 z-[9999] w-12 h-12 rounded-full bg-lego-yellow border-4 border-black flex items-center justify-center hover:scale-105 transition-transform" style="box-shadow:3px 3px 0 rgba(0,0,0,.4);">
+<span id="bgMusicIcon" style="font-size:20px;">🔇</span>
+</button>
+<audio id="bgMusicPlayer" src="audio/theme.mp3" loop preload="none"></audio>
+<script>
+(function setupBgMusic() {
+    var KEY_PLAYING = 'bg-music-playing';
+    var KEY_TIME = 'bg-music-time';
+    var audio = document.getElementById('bgMusicPlayer');
+    var icon = document.getElementById('bgMusicIcon');
+    if (!audio) return;
+
+    var savedTime = parseFloat(localStorage.getItem(KEY_TIME) || '0');
+    if (savedTime > 0) {
+        audio.addEventListener('loadedmetadata', function () {
+            try { audio.currentTime = savedTime; } catch (e) {}
+        }, { once: true });
+    }
+
+    function updateIcon() {
+        icon.textContent = audio.paused ? '🔇' : '🔊';
+    }
+
+    function tryResume() {
+        if (localStorage.getItem(KEY_PLAYING) === 'true') {
+            audio.play().then(updateIcon).catch(function () { updateIcon(); });
+        } else {
+            updateIcon();
+        }
+    }
+    tryResume();
+
+    window.toggleBgMusic = function () {
+        if (audio.paused) {
+            audio.play().then(function () {
+                localStorage.setItem(KEY_PLAYING, 'true');
+                updateIcon();
+            }).catch(function () { updateIcon(); });
+        } else {
+            audio.pause();
+            localStorage.setItem(KEY_PLAYING, 'false');
+            updateIcon();
+        }
+    };
+
+    audio.addEventListener('timeupdate', function () {
+        localStorage.setItem(KEY_TIME, audio.currentTime.toFixed(2));
+    });
+    window.addEventListener('pagehide', function () {
+        localStorage.setItem(KEY_TIME, audio.currentTime.toFixed(2));
+        localStorage.setItem(KEY_PLAYING, audio.paused ? 'false' : 'true');
+    });
+})();
+</script>
 </body></html>
