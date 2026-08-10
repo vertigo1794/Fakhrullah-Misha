@@ -1,0 +1,17 @@
+.DS_Store
+
+# Unused 3D models (not referenced by any live page) — kept locally, excluded from repo
+models/batwing.glb
+models/the_tumbler.glb
+models/lego_alpha_team_flex.glb
+models/lego_batman_two-face.glb
+models/lego_island_brickster_henchman1.glb
+models/lego_minifigure_animated.glb
+models/lego_racers_speed_racer.glb
+models/lego_racers_taejo_togokhan.glb
+models/lego_rock_raiders_axle.glb
+models/lego_studios_spider-_man.glb
+models/lego_western_banker_goldpenny.glb
+models/lego_western_big_chief_rattle_snake.glb
+models/lego_western_black_bart.glb
+models/lego_western_sui.glb

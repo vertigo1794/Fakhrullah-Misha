@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lego Instructor Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js" type="module"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'lego-yellow': '#F8CD00',
+            'lego-black': '#000000',
+            'lego-red': '#E3000F',
+          },
+          fontFamily: {
+            'sans': ['Arial', 'Helvetica', 'sans-serif'],
+          },
+          boxShadow: {
+            'solid': '6px 6px 0px 0px rgba(0,0,0,1)',
+            'solid-sm': '3px 3px 0px 0px rgba(0,0,0,1)',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-utilities">
+    /* Custom utility for the jagged border effect on the form */
+    .brutalist-border {
+      border: 3px solid black;
+    }
+
+    /* Input styling to match the reference */
+    .brutalist-input {
+      border: 2px solid black;
+      border-radius: 4px;
+    }
+    .brutalist-input:focus {
+      outline: none;
+      box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+    }
+
+    /* Grappling hook cursor on interactive elements */
+    a, button, #jokerMain {
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><path d="M14 2 L14 14 M14 2 L9 7 M14 2 L19 7" stroke="%23000" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="17" r="5" fill="%23F8CD00" stroke="%23000" stroke-width="2"/></svg>') 14 2, pointer;
+    }
+
+    /* Sliding nav underline */
+    #mainNav { position: relative; }
+    .nav-link-reg { position: relative; }
+    #navIndicatorReg {
+      position: absolute;
+      bottom: -4px;
+      height: 2px;
+      background: #000;
+      margin-left: 0 !important;
+      transition: left .3s cubic-bezier(.34,1.56,.64,1), width .3s cubic-bezier(.34,1.56,.64,1);
+    }
+
+    /* Joker main floating character */
+    #jokerMain {
+      position: absolute;
+      z-index: 25;
+      animation: jokerFloat 4s ease-in-out infinite;
+      pointer-events: auto;
+    }
+    #jokerMain model-viewer { pointer-events: none; width: 100%; height: 100%; background: transparent; }
+    @keyframes jokerFloat {
+      0%, 100% { transform: translateY(0px) rotate(3deg); }
+      50% { transform: translateY(-20px) rotate(-3deg); }
+    }
+    #jokerMain.reacting { animation: jokerReact .6s ease-in-out; }
+    @keyframes jokerReact {
+      0% { transform: translateY(0px) rotate(3deg) scale(1); }
+      30% { transform: translateY(-36px) rotate(16deg) scale(1.1); }
+      60% { transform: translateY(-8px) rotate(-12deg) scale(1.04); }
+      100% { transform: translateY(0px) rotate(3deg) scale(1); }
+    }
+    #jokerShadow {
+      position: absolute;
+      z-index: 19;
+      top: 522px;
+      left: 500px;
+      width: 80px;
+      height: 18px;
+      background: radial-gradient(ellipse, rgba(0,0,0,.4) 0%, transparent 72%);
+      transform: translateX(-50%);
+      animation: jokerShadowPulse 4s ease-in-out infinite;
+    }
+    @keyframes jokerShadowPulse {
+      0%, 100% { transform: translateX(-50%) scale(1); opacity: .75; }
+      50% { transform: translateX(-50%) scale(.5); opacity: .3; }
+    }
+    #jokerSpeechBubble {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px) scale(.85);
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity .25s ease, transform .25s ease;
+      pointer-events: none;
+      z-index: 50;
+    }
+    #jokerSpeechBubble.show { opacity: 1; transform: translateX(-50%) translateY(-6px) scale(1); }
+    #jokerSpeechBubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 7px solid transparent;
+      border-top-color: #000;
+    }
+
+    /* Batman cameo (swapped role) */
+    #batmanCameo {
+      position: absolute;
+      z-index: 15;
+      top: 20px;
+      left: -140px;
+      width: 130px;
+      height: 130px;
+      opacity: 0;
+      transition: left .9s cubic-bezier(.34,1.2,.4,1), opacity .5s ease;
+      pointer-events: none;
+    }
+    #batmanCameo.peek-in { left: 20px; opacity: 1; }
+    #batmanCameo model-viewer { width: 100%; height: 100%; background: transparent; }
+
+    /* Idea 1: Joker card-flip entrance (replaces plain unfold) */
+    #registerCard {
+      transform-origin: center center;
+      animation: cardFlipInReg .8s cubic-bezier(.2,.8,.3,1.1) both;
+    }
+    @keyframes cardFlipInReg {
+      0% { transform: translateX(500px) rotate(540deg) scale(.25); opacity: 0; }
+      70% { transform: translateX(-14px) rotate(-8deg) scale(1.04); opacity: 1; }
+      100% { transform: translateX(0) rotate(0deg) scale(1); opacity: 1; }
+    }
+    #registerCard.shake { animation: cardShakeReg .45s ease; }
+    @keyframes cardShakeReg {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-10px) rotate(-1deg); }
+      40% { transform: translateX(9px) rotate(1deg); }
+      60% { transform: translateX(-7px) rotate(-.5deg); }
+      80% { transform: translateX(6px) rotate(.5deg); }
+    }
+    #registerCard.flash-red { box-shadow: 0 0 0 4px #dc2626, 6px 6px 0px 0px rgba(0,0,0,1); }
+    #registerCard.flash-green { box-shadow: 0 0 0 4px #16a34a, 6px 6px 0px 0px rgba(0,0,0,1); }
+
+    /* Bat-signal spotlight follows cursor */
+    #batSignalGlowReg {
+      position: absolute;
+      z-index: 6;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,.32) 0%, rgba(255,255,255,.08) 45%, transparent 72%);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .3s ease;
+    }
+    #topYellowReg:hover #batSignalGlowReg { opacity: 1; }
+
+    /* Night rain */
+    #rainLayerReg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 8; }
+    .rain-drop-reg {
+      position: absolute;
+      top: -20px;
+      width: 2px;
+      height: 16px;
+      background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.55));
+      animation: rainFallReg linear infinite;
+    }
+    @keyframes rainFallReg { to { transform: translateY(700px); } }
+
+    /* Batcave secret terminal */
+    #batcaveTerminalReg {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,.92);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s ease;
+    }
+    #batcaveTerminalReg.show { opacity: 1; pointer-events: auto; }
+    #batcaveTerminalRegBox {
+      width: 90%; max-width: 640px;
+      background: #010c05;
+      border: 3px solid #16a34a;
+      border-radius: 6px;
+      padding: 24px 28px;
+      font-family: 'Courier New', monospace;
+      color: #22c55e;
+      box-shadow: 0 0 30px rgba(34,197,94,.5);
+      position: relative;
+      overflow: hidden;
+    }
+    #batcaveTerminalRegBox::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,.15) 0px, rgba(0,0,0,.15) 1px, transparent 1px, transparent 3px);
+      pointer-events: none;
+    }
+    #batcaveTerminalRegBox .line { opacity: 0; animation: terminalLineInReg .4s ease forwards; margin-bottom: 8px; font-size: 14px; }
+    @keyframes terminalLineInReg { to { opacity: 1; } }
+    #batcaveTerminalRegBox button {
+      margin-top: 12px; background: transparent; border: 2px solid #22c55e; color: #22c55e;
+      padding: 6px 16px; font-family: 'Courier New', monospace; cursor: pointer; text-transform: uppercase;
+    }
+    #batcaveTerminalRegBox button:hover { background: #22c55e; color: #010c05; }
+
+    /* Idea 2: Chaos Meter password bar */
+    #chaosMeterWrap { margin-top: 6px; }
+    #chaosMeterTrack {
+      height: 10px;
+      border: 2px solid #000;
+      border-radius: 999px;
+      background: #eee;
+      overflow: hidden;
+    }
+    #chaosMeterFill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #7c3aed, #16a34a);
+      transition: width .25s ease;
+    }
+    #chaosMeterLabel {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: #555;
+      margin-top: 3px;
+    }
+
+    /* Idea 4: Wanted poster live preview */
+    #wantedPoster {
+      position: absolute;
+      z-index: 45;
+      top: -34px;
+      right: 6px;
+      width: 118px;
+      background: #f3e6c8;
+      border: 3px solid #000;
+      padding: 6px;
+      text-align: center;
+      transform: rotate(4deg);
+      opacity: 0;
+      transition: opacity .25s ease, transform .25s ease;
+      pointer-events: none;
+      box-shadow: 3px 3px 0 rgba(0,0,0,.7);
+    }
+    #wantedPoster.show { opacity: 1; transform: rotate(3deg); }
+    #wantedPoster .wp-title {
+      font-family: Arial Black, Arial, sans-serif;
+      font-weight: 900;
+      font-size: 15px;
+      letter-spacing: .08em;
+      border-bottom: 2px solid #000;
+      padding-bottom: 3px;
+      margin-bottom: 4px;
+    }
+    #wantedPoster .wp-name {
+      font-family: Arial Black, Arial, sans-serif;
+      font-weight: 900;
+      font-size: 13px;
+      text-transform: uppercase;
+      word-break: break-word;
+      min-height: 16px;
+    }
+    #wantedPoster .wp-reward { font-size: 9px; margin-top: 4px; color: #444; }
+
+    /* Idea 5: Villain alias generator link */
+    #villainGenLink {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #7c3aed;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* Idea 7: Joker success flourish (distinct from normal reaction) */
+    #jokerMain.flourish { animation: jokerFlourish 1s ease-in-out; }
+    @keyframes jokerFlourish {
+      0% { transform: translateY(0) rotate(0deg) scale(1); }
+      25% { transform: translateY(-30px) rotate(180deg) scale(1.15); }
+      50% { transform: translateY(-45px) rotate(360deg) scale(1.2); }
+      75% { transform: translateY(-15px) rotate(540deg) scale(1.1); }
+      100% { transform: translateY(0) rotate(720deg) scale(1); }
+    }
+
+    /* Idea 8: Batman interruption counter */
+    #batInterruptCounter {
+      position: absolute;
+      z-index: 12;
+      bottom: 6px;
+      left: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(0,0,0,.35);
+      letter-spacing: .03em;
+      pointer-events: none;
+    }
+
+    /* Idea 3: Card rain secret ("chaos" / "joker") */
+    .card-rain-piece {
+      position: fixed;
+      top: -60px;
+      width: 34px;
+      height: 48px;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 4px;
+      z-index: 9999;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      animation: cardRainFall linear forwards;
+    }
+    @keyframes cardRainFall {
+      to { transform: translateY(110vh) rotate(360deg); }
+    }
+
+    /* Idea 9: Arkham mode secret */
+    #arkhamOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      background: radial-gradient(circle at 50% 40%, rgba(107,33,168,.35), rgba(0,0,0,.75));
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .6s ease;
+    }
+    #arkhamOverlay.show { opacity: 1; }
+    #arkhamOverlay .arkham-text {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: Arial Black, Arial, sans-serif;
+      font-size: 42px;
+      letter-spacing: .1em;
+      color: #a855f7;
+      text-shadow: 0 0 20px rgba(168,85,247,.9);
+    }
+  </style>
+</head>
+<body class="bg-gray-400 min-h-screen flex items-center justify-center p-8 font-sans">
+<!-- BEGIN: Main Container -->
+<!-- This container holds the entire portal UI, simulating the browser window in the mockup -->
+<div id="mainContainerReg" class="relative w-full max-w-[1200px] bg-lego-yellow rounded-xl overflow-hidden shadow-[12px_12px_0px_0px_rgba(0,0,0,0.8)] border-[3px] border-black flex flex-col" style="min-height: 620px;">
+<!-- Top Half (Yellow Background) -->
+<div id="topYellowReg" class="bg-lego-yellow h-[560px] relative px-12 py-8 flex flex-col justify-start z-10">
+<div id="rainLayerReg"></div>
+<div id="batSignalGlowReg"></div>
+<div id="batmanCameo">
+<model-viewer src="models/lego_batman.glb" alt="LEGO Batman cameo" auto-rotate rotation-per-second="25deg" disable-zoom field-of-view="10deg" shadow-intensity="1" exposure="1"></model-viewer>
+</div>
+<div id="batInterruptCounter"></div>
+<!-- BEGIN: Header -->
+<header class="flex justify-between items-start w-full">
+<!-- Logo -->
+<div class="w-24 h-24 transform -rotate-2 drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+<model-viewer src="models/lego_logo_3d.glb" alt="LEGO Logo 3D model" camera-controls disable-zoom field-of-view="8deg" shadow-intensity="1" exposure="1" style="width:100%;height:100%;background:transparent;"></model-viewer>
+</div>
+<!-- Navigation -->
+<nav id="mainNav" class="flex items-center space-x-6 text-black font-semibold text-sm mt-2">
+<a id="navHomeReg" class="nav-link-reg pb-0.5" href="landing.html">Home</a>
+<a class="nav-link-reg pb-0.5 transition-all" href="library.html">Student Works</a>
+<a class="nav-link-reg pb-0.5 transition-all" href="dashboard.html">Grading</a>
+<a onclick="openRegHelp(event)" class="nav-link-reg pb-0.5 transition-all cursor-pointer" href="#">Help</a>
+<div id="navIndicatorReg"></div>
+<a onclick="goToSignIn(event)" class="flex items-center gap-1 hover:opacity-80 transition-opacity cursor-pointer" href="login.html">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.25 9V5.25A2.25 2.25 0 0110.5 3h6a2.25 2.25 0 012.25 2.25v13.5A2.25 2.25 0 0116.5 21h-6a2.25 2.25 0 01-2.25-2.25V15m-3 0l-3-3m0 0l3-3m-3 3H15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+          Sign In
+        </a>
+</nav>
+</header>
+<!-- END: Header -->
+<!-- BEGIN: Hero Content -->
+<div class="max-w-xl mt-4 relative z-20">
+<h1 class="text-[64px] leading-[0.9] font-black tracking-tighter text-lego-black uppercase">
+            Instructor<br/>Portal.
+          </h1>
+<p id="heroTypewriterReg" class="mt-6 text-xl text-black font-medium max-w-md leading-snug"></p>
+</div>
+<!-- END: Hero Content -->
+</div>
+<!-- Bottom Half (Black Background) -->
+<div class="bg-lego-black flex-1 relative px-12 py-5 flex flex-col items-center justify-end z-0">
+<!-- Footer Text -->
+<p class="text-white/80 text-sm font-medium mb-4">
+        Designed for instructors to evaluate student repositories with a single glance.
+      </p>
+</div>
+<!-- Joker floating main character -->
+<div id="jokerShadow"></div>
+<div id="jokerMain" class="absolute z-20 top-[300px] left-[380px] w-60 h-60" onclick="reactJoker()">
+<div id="jokerSpeechBubble">Why so serious?</div>
+<model-viewer src="models/joker_lego.glb" alt="LEGO Joker" auto-rotate rotation-per-second="18deg" disable-zoom field-of-view="10deg" shadow-intensity="1" exposure="1"></model-viewer>
+</div>
+<!-- Registration Form Card -->
+<div id="registerCard" class="absolute right-12 top-24 bg-white rounded-lg brutalist-border shadow-solid p-6 w-full max-w-lg z-40">
+<h2 class="text-2xl font-black uppercase mb-3 text-black tracking-tight">Register</h2>
+<form class="space-y-2.5">
+<div class="relative">
+<input id="regName" oninput="updateWantedPoster(this.value)" class="w-full px-4 py-2 brutalist-input text-sm font-medium placeholder-gray-500 bg-white" placeholder="Full Name" type="text"/>
+<span id="villainGenLink" onclick="generateVillainName()">Feeling chaotic? Generate villain name</span>
+<div id="wantedPoster">
+<div class="wp-title">WANTED</div>
+<div id="wpNameText" class="wp-name">?</div>
+<div class="wp-reward">DEAD OR ALIVE · REWARD: 1 BRICK</div>
+</div>
+</div>
+<div>
+<input id="regFaculty" onfocus="jokerFacultyQuip()" class="w-full px-4 py-2 brutalist-input text-sm font-medium placeholder-gray-500 bg-white" placeholder="Faculty/Department" type="text"/>
+</div>
+<div>
+<input id="regEmail" class="w-full px-4 py-2 brutalist-input text-sm font-medium placeholder-gray-500 bg-white" placeholder="Official Staff Email" type="email"/>
+</div>
+<div>
+<input id="regPassword" oninput="updateChaosMeter(this.value)" class="w-full px-4 py-2 brutalist-input text-sm font-medium placeholder-gray-500 bg-white" placeholder="Create Password" type="password"/>
+<div id="chaosMeterWrap">
+<div id="chaosMeterTrack"><div id="chaosMeterFill"></div></div>
+<div id="chaosMeterLabel">Chaos Level: —</div>
+</div>
+</div>
+<button onclick="registerInstructor()" class="w-full mt-3 bg-lego-yellow text-black font-bold uppercase py-2.5 px-4 rounded-md brutalist-border shadow-solid-sm hover:translate-y-[1px] hover:translate-x-[1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-y-[3px] active:translate-x-[3px] active:shadow-none" type="button">
+                Create Instructor Account
+              </button>
+</form>
+</div>
+</div>
+<!-- END: Main Container -->
+
+<!-- Help modal -->
+<div id="regHelpModal" onclick="closeRegHelp()" class="hidden fixed inset-0 bg-black/70 z-[200] flex items-center justify-center p-4">
+<div onclick="event.stopPropagation()" class="bg-white rounded-lg brutalist-border shadow-solid max-w-md w-full p-8 relative">
+<button onclick="closeRegHelp()" class="absolute top-4 right-4 h-9 w-9 bg-black text-white flex items-center justify-center rounded-sm" aria-label="Close">✕</button>
+<h2 class="text-2xl font-black uppercase mb-4">Help</h2>
+<ul class="text-sm font-medium space-y-2 list-disc pl-5">
+<li>Fill in all fields to create an instructor account — this is a class prototype, no real account needed.</li>
+<li>Already registered? Use the Login page instead.</li>
+<li>After registering you'll be sent to the Login page to sign in.</li>
+</ul>
+</div>
+</div>
+
+<!-- Batcave secret terminal easter egg (type "batcave") -->
+<div id="batcaveTerminalReg">
+<div id="batcaveTerminalRegBox">
+<div class="line" style="animation-delay:.1s">&gt; ACCESSING BATCOMPUTER MAINFRAME...</div>
+<div class="line" style="animation-delay:.5s">&gt; IDENTITY CONFIRMED: INSTRUCTOR</div>
+<div class="line" style="animation-delay:.9s">&gt; NEW RECRUIT PENDING APPROVAL</div>
+<div class="line" style="animation-delay:1.3s">&gt; ALFRED SAYS: WELCOME ABOARD.</div>
+<button onclick="closeBatcaveReg()">Close Terminal</button>
+</div>
+</div>
+
+<!-- Arkham mode secret (type "arkham") -->
+<div id="arkhamOverlay"><div class="arkham-text">ARKHAM MODE</div></div>
+
+<script>
+    function goToSignIn(ev) {
+        if (ev) ev.preventDefault();
+        navigateWithDelayReg('login.html');
+    }
+    function navigateWithDelayReg(href) {
+        setTimeout(function () { window.location.href = href; }, 150);
+    }
+
+    /* Sliding nav underline */
+    (function setupNavIndicatorReg() {
+        var nav = document.getElementById('mainNav');
+        var indicator = document.getElementById('navIndicatorReg');
+        if (!nav || !indicator) return;
+        var links = nav.querySelectorAll('.nav-link-reg');
+        function moveTo(link) {
+            indicator.style.left = link.offsetLeft + 'px';
+            indicator.style.width = link.offsetWidth + 'px';
+            links.forEach(function (a) { a.removeAttribute('data-active'); });
+            link.setAttribute('data-active', '1');
+        }
+        links.forEach(function (a) {
+            a.addEventListener('click', function (ev) {
+                moveTo(a);
+                if (!a.hasAttribute('onclick') && a.getAttribute('href') && a.getAttribute('href') !== '#') {
+                    ev.preventDefault();
+                    navigateWithDelayReg(a.getAttribute('href'));
+                }
+            });
+        });
+        moveTo(links[0]);
+        window.addEventListener('resize', function () { moveTo(nav.querySelector('.nav-link-reg[data-active="1"]') || links[0]); });
+    })();
+
+    /* Help modal */
+    function openRegHelp(ev) {
+        if (ev) ev.preventDefault();
+        document.getElementById('regHelpModal').classList.remove('hidden');
+    }
+    function closeRegHelp() {
+        document.getElementById('regHelpModal').classList.add('hidden');
+    }
+
+    /* Joker interactive reaction (main character) */
+    var jokerReactions = ['Why so serious?', "Let's put a smile on that jobsheet!", "I'm an agent of chaos.", 'Ta-da!', 'Wanna know how I got these grades?'];
+    function reactJoker() {
+        var el = document.getElementById('jokerMain');
+        var bubble = document.getElementById('jokerSpeechBubble');
+        if (!el || !bubble) return;
+        el.classList.remove('reacting');
+        void el.offsetWidth;
+        el.classList.add('reacting');
+        bubble.textContent = jokerReactions[Math.floor(Math.random() * jokerReactions.length)];
+        bubble.classList.add('show');
+        try {
+            var ctx = new (window.AudioContext || window.webkitAudioContext)();
+            var osc = ctx.createOscillator(), gain = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(300, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(700, ctx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.12, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.start(); osc.stop(ctx.currentTime + 0.22);
+        } catch (e) {}
+        setTimeout(function () { bubble.classList.remove('show'); }, 2200);
+    }
+
+    /* Idea 8: Batman interruption counter */
+    function bumpBatInterruptCounter() {
+        var el = document.getElementById('batInterruptCounter');
+        if (!el) return;
+        var n = Number(localStorage.getItem('batman-interruptions-reg') || 0) + 1;
+        localStorage.setItem('batman-interruptions-reg', String(n));
+        el.textContent = 'Batman interruptions: ' + n;
+    }
+    (function initBatCounterDisplay() {
+        var el = document.getElementById('batInterruptCounter');
+        if (!el) return;
+        var n = Number(localStorage.getItem('batman-interruptions-reg') || 0);
+        el.textContent = 'Batman interruptions: ' + n;
+    })();
+
+    /* Batman cameo, then Joker reacts and shoos him off (swapped roles from login.html) */
+    function batmanCameoReg() {
+        var bat = document.getElementById('batmanCameo');
+        if (!bat) return;
+        bat.classList.add('peek-in');
+        bumpBatInterruptCounter();
+        setTimeout(function () {
+            var el = document.getElementById('jokerMain');
+            var bubble = document.getElementById('jokerSpeechBubble');
+            if (el && bubble) {
+                el.classList.remove('reacting');
+                void el.offsetWidth;
+                el.classList.add('reacting');
+                bubble.textContent = 'Not now, Bat-Brain!';
+                bubble.classList.add('show');
+                setTimeout(function () { bubble.classList.remove('show'); }, 1800);
+            }
+            bat.classList.remove('peek-in');
+        }, 2200);
+    }
+    setTimeout(batmanCameoReg, 4000);
+    setInterval(batmanCameoReg, 28000);
+
+    /* Bat-signal spotlight follows cursor */
+    (function setupBatSignalReg() {
+        var panel = document.getElementById('topYellowReg');
+        var glow = document.getElementById('batSignalGlowReg');
+        if (!panel || !glow) return;
+        panel.addEventListener('mousemove', function (ev) {
+            var r = panel.getBoundingClientRect();
+            glow.style.left = (ev.clientX - r.left) + 'px';
+            glow.style.top = (ev.clientY - r.top) + 'px';
+        });
+    })();
+
+    /* Register submit: shake/red on invalid, green/confetti + redirect on valid */
+    function playSnapSoundReg() {
+        try {
+            var ctx = new (window.AudioContext || window.webkitAudioContext)();
+            var osc = ctx.createOscillator(), gain = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(520, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.08);
+            gain.gain.setValueAtTime(0.12, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.09);
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.start(); osc.stop(ctx.currentTime + 0.1);
+        } catch (e) {}
+    }
+    function launchRegConfetti() {
+        var colors = ['#dc2626', '#F8CD00', '#16a34a', '#2563eb'];
+        for (var i = 0; i < 26; i++) {
+            var piece = document.createElement('div');
+            piece.style.cssText = 'position:fixed;top:40%;left:' + (45 + Math.random() * 10) + '%;width:8px;height:8px;background:' + colors[Math.floor(Math.random() * colors.length)] + ';border:1px solid #000;z-index:500;pointer-events:none;';
+            document.body.appendChild(piece);
+            var dx = (Math.random() * 300 - 150), dy = (Math.random() * -200 - 60), rot = Math.random() * 360;
+            piece.animate([
+                { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+                { transform: 'translate(' + dx + 'px,' + dy + 'px) rotate(' + rot + 'deg)', opacity: 1, offset: .7 },
+                { transform: 'translate(' + dx + 'px,' + (dy + 260) + 'px) rotate(' + (rot + 90) + 'deg)', opacity: 0 }
+            ], { duration: 1100 + Math.random() * 400, easing: 'cubic-bezier(.2,.6,.4,1)' });
+            setTimeout(function (p) { return function () { p.remove(); }; }(piece), 1600);
+        }
+    }
+    var REGISTERED_INSTRUCTORS_KEY = 'registered-instructors-v1';
+    function registerInstructor() {
+        var card = document.getElementById('registerCard');
+        var name = document.getElementById('regName').value.trim();
+        var faculty = document.getElementById('regFaculty').value.trim();
+        var email = document.getElementById('regEmail').value.trim();
+        var password = document.getElementById('regPassword').value.trim();
+        if (!name || !faculty || !email || !password) {
+            card.classList.remove('shake', 'flash-red');
+            void card.offsetWidth;
+            card.classList.add('shake', 'flash-red');
+            setTimeout(function () { card.classList.remove('flash-red'); }, 500);
+            return;
+        }
+        var accounts = JSON.parse(localStorage.getItem(REGISTERED_INSTRUCTORS_KEY) || '[]');
+        var emailLower = email.toLowerCase();
+        var existingIdx = accounts.findIndex(function (a) { return a.email === emailLower; });
+        var record = { email: emailLower, password: password, name: name, faculty: faculty };
+        if (existingIdx >= 0) accounts[existingIdx] = record; else accounts.push(record);
+        localStorage.setItem(REGISTERED_INSTRUCTORS_KEY, JSON.stringify(accounts));
+        card.classList.add('flash-green');
+        playSnapSoundReg();
+        launchRegConfetti();
+        var joker = document.getElementById('jokerMain');
+        var bubble = document.getElementById('jokerSpeechBubble');
+        if (joker && bubble) {
+            joker.classList.remove('reacting');
+            joker.classList.add('flourish');
+            bubble.textContent = 'Welcome to the family!';
+            bubble.classList.add('show');
+        }
+        setTimeout(function () {
+            window.location.href = 'login.html';
+        }, 650);
+    }
+
+    /* Idea 2: Chaos Meter password bar */
+    function updateChaosMeter(value) {
+        var fill = document.getElementById('chaosMeterFill');
+        var label = document.getElementById('chaosMeterLabel');
+        if (!fill || !label) return;
+        var score = 0;
+        if (value.length >= 6) score++;
+        if (value.length >= 10) score++;
+        if (/[A-Z]/.test(value)) score++;
+        if (/[0-9]/.test(value)) score++;
+        if (/[^A-Za-z0-9]/.test(value)) score++;
+        var pct = (score / 5) * 100;
+        fill.style.width = pct + '%';
+        var labels = ['—', 'Low', 'Rising', 'Unstable', 'Chaotic', 'MAXIMUM'];
+        label.textContent = 'Chaos Level: ' + labels[score];
+    }
+
+    /* Idea 4: Wanted poster live preview */
+    function updateWantedPoster(value) {
+        var poster = document.getElementById('wantedPoster');
+        var nameText = document.getElementById('wpNameText');
+        if (!poster || !nameText) return;
+        if (!value.trim()) { poster.classList.remove('show'); return; }
+        nameText.textContent = value;
+        poster.classList.add('show');
+    }
+
+    /* Idea 5: Villain alias generator */
+    var villainNames = ['Jack O\' Chaos', 'The Grinning Ghost', 'Domino Malice', 'Professor Puzzle', 'The Jester King', 'Miss Mayhem', 'Count Confetti', 'The Wildcard'];
+    function generateVillainName() {
+        var field = document.getElementById('regName');
+        var pick = villainNames[Math.floor(Math.random() * villainNames.length)];
+        field.value = pick;
+        updateWantedPoster(pick);
+        if (typeof playSnapSoundReg === 'function') playSnapSoundReg();
+    }
+
+    /* Idea 6: Joker sarcastic comment when Faculty field gains focus (once per page load) */
+    var facultyQuipShown = false;
+    var facultyQuips = ["Faculty of Chaos, perhaps?", 'Ooh, fancy title.', "Let's see if it survives contact with reality.", 'Bureaucracy. My favorite.'];
+    function jokerFacultyQuip() {
+        if (facultyQuipShown) return;
+        facultyQuipShown = true;
+        var el = document.getElementById('jokerMain');
+        var bubble = document.getElementById('jokerSpeechBubble');
+        if (!el || !bubble) return;
+        el.classList.remove('reacting');
+        void el.offsetWidth;
+        el.classList.add('reacting');
+        bubble.textContent = facultyQuips[Math.floor(Math.random() * facultyQuips.length)];
+        bubble.classList.add('show');
+        setTimeout(function () { bubble.classList.remove('show'); }, 2200);
+    }
+
+    /* Idea 3: Card rain secret ("chaos" or "joker") */
+    function spawnCardRain() {
+        var suits = ['♠', '♥', '♦', '♣'];
+        for (var i = 0; i < 50; i++) {
+            (function (i) {
+                setTimeout(function () {
+                    var card = document.createElement('div');
+                    card.className = 'card-rain-piece';
+                    card.textContent = suits[Math.floor(Math.random() * suits.length)];
+                    card.style.color = (card.textContent === '♥' || card.textContent === '♦') ? '#dc2626' : '#000';
+                    card.style.left = Math.random() * 100 + 'vw';
+                    card.style.animationDuration = (1.6 + Math.random() * 1.2) + 's';
+                    document.body.appendChild(card);
+                    setTimeout(function () { card.remove(); }, 3200);
+                }, i * 25);
+            })(i);
+        }
+    }
+    (function setupCardRainEasterEgg() {
+        var KEYWORD = 'chaos';
+        var buffer = '';
+        document.addEventListener('keydown', function (ev) {
+            var tag = (document.activeElement && document.activeElement.tagName || '').toLowerCase();
+            if (tag === 'input' || tag === 'textarea') return;
+            if (ev.key.length !== 1) return;
+            buffer = (buffer + ev.key.toLowerCase()).slice(-KEYWORD.length);
+            if (buffer === KEYWORD) {
+                buffer = '';
+                spawnCardRain();
+            }
+        });
+    })();
+
+    /* Idea 9: Arkham mode secret ("arkham") */
+    (function setupArkhamEasterEgg() {
+        var KEYWORD = 'arkham';
+        var buffer = '';
+        document.addEventListener('keydown', function (ev) {
+            var tag = (document.activeElement && document.activeElement.tagName || '').toLowerCase();
+            if (tag === 'input' || tag === 'textarea') return;
+            if (ev.key.length !== 1) return;
+            buffer = (buffer + ev.key.toLowerCase()).slice(-KEYWORD.length);
+            if (buffer === KEYWORD) {
+                buffer = '';
+                var overlay = document.getElementById('arkhamOverlay');
+                if (!overlay) return;
+                overlay.classList.add('show');
+                setTimeout(function () { overlay.classList.remove('show'); }, 3000);
+            }
+        });
+    })();
+
+    /* Batcave secret terminal (type "batcave") */
+    (function setupBatcaveEasterEggReg() {
+        var KEYWORD = 'batcave';
+        var buffer = '';
+        document.addEventListener('keydown', function (ev) {
+            var tag = (document.activeElement && document.activeElement.tagName || '').toLowerCase();
+            if (tag === 'input' || tag === 'textarea') return;
+            if (ev.key.length !== 1) return;
+            buffer = (buffer + ev.key.toLowerCase()).slice(-KEYWORD.length);
+            if (buffer === KEYWORD) {
+                buffer = '';
+                document.getElementById('batcaveTerminalReg').classList.add('show');
+            }
+        });
+    })();
+    function closeBatcaveReg() {
+        document.getElementById('batcaveTerminalReg').classList.remove('show');
+    }
+
+    /* Skybox time-of-day tint (recolors the yellow container background only) */
+    var CURRENT_HOUR_REG = new Date().getHours();
+    (function setupSkyboxReg() {
+        var panel = document.getElementById('mainContainerReg');
+        if (!panel) return;
+        var shade = null;
+        if (CURRENT_HOUR_REG >= 5 && CURRENT_HOUR_REG < 8) shade = '#FFDC4D';
+        else if (CURRENT_HOUR_REG >= 8 && CURRENT_HOUR_REG < 17) shade = null;
+        else if (CURRENT_HOUR_REG >= 17 && CURRENT_HOUR_REG < 20) shade = '#F5B800';
+        else shade = '#C79A00';
+        if (shade) panel.style.backgroundColor = shade;
+    })();
+
+    /* Night rain */
+    (function setupNightRainReg() {
+        var isNight = CURRENT_HOUR_REG >= 20 || CURRENT_HOUR_REG < 5;
+        if (!isNight) return;
+        var layer = document.getElementById('rainLayerReg');
+        if (!layer) return;
+        for (var i = 0; i < 40; i++) {
+            var drop = document.createElement('div');
+            drop.className = 'rain-drop-reg';
+            drop.style.left = Math.random() * 100 + '%';
+            drop.style.animationDuration = (0.6 + Math.random() * 0.5) + 's';
+            drop.style.animationDelay = (Math.random() * 2) + 's';
+            drop.style.opacity = String(0.3 + Math.random() * 0.4);
+            layer.appendChild(drop);
+        }
+    })();
+
+    /* Typewriter subtitle on first load */
+    (function setupTypewriterReg() {
+        var el = document.getElementById('heroTypewriterReg');
+        if (!el) return;
+        var fullText = 'Access student jobsheets, track progress, and review submissions instantly.';
+        var i = 0;
+        function tick() {
+            el.textContent = fullText.slice(0, i);
+            i++;
+            if (i <= fullText.length) setTimeout(tick, 18);
+        }
+        tick();
+    })();
+
+    /* Konami code -> Bruce Wayne autofill + instant register success */
+    (function setupKonamiReg() {
+        var sequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        var pos = 0;
+        document.addEventListener('keydown', function (ev) {
+            var expected = sequence[pos];
+            var got = ev.key.length === 1 ? ev.key.toLowerCase() : ev.key;
+            if (got === expected) {
+                pos++;
+                if (pos === sequence.length) {
+                    pos = 0;
+                    document.getElementById('regName').value = 'Bruce Wayne';
+                    document.getElementById('regFaculty').value = 'Applied Sciences';
+                    document.getElementById('regEmail').value = 'bruce.wayne@wayneenterprises.com';
+                    document.getElementById('regPassword').value = 'ImBatman1!';
+                    registerInstructor();
+                }
+            } else {
+                pos = (got === sequence[0]) ? 1 : 0;
+            }
+        });
+    })();
+</script>
+</body></html>

@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OUR WORKSPACE</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js" type="module"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Montserrat:wght@700;800;900&amp;family=Space+Grotesk:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#807660",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#e8e8e8",
+                        "tertiary-fixed": "#e2e2e2",
+                        "on-primary-fixed": "#241a00",
+                        "on-tertiary-container": "#535455",
+                        "background": "#f9f9f9",
+                        "on-surface-variant": "#4e4632",
+                        "on-background": "#1a1c1c",
+                        "secondary": "#5e5e5e",
+                        "on-secondary-fixed-variant": "#474747",
+                        "surface-dim": "#dadada",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eeeeee",
+                        "surface-bright": "#f9f9f9",
+                        "surface-container-highest": "#e2e2e2",
+                        "inverse-primary": "#f0c100",
+                        "primary-fixed-dim": "#f0c100",
+                        "on-secondary-fixed": "#1b1b1b",
+                        "on-surface": "#1a1c1c",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "primary-fixed": "#ffe089",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#e2e2e2",
+                        "on-primary-container": "#675100",
+                        "secondary-container": "#e2e2e2",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "primary-container": "#f3c300",
+                        "surface": "#f9f9f9",
+                        "surface-container-low": "#f4f3f3",
+                        "inverse-surface": "#2f3131",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#e2e2e2",
+                        "on-primary-fixed-variant": "#574400",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#646464",
+                        "secondary-fixed-dim": "#c6c6c6",
+                        "tertiary-container": "#c8c9c9",
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "surface-tint": "#745b00",
+                        "outline-variant": "#d1c5ab",
+                        "inverse-on-surface": "#f1f1f1",
+                        "tertiary": "#5d5f5f",
+                        "primary": "#745b00",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin": "32px",
+                        "unit": "8px",
+                        "gutter": "24px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "body-md": [
+                            "Inter"
+                        ],
+                        "display-lg": [
+                            "Montserrat"
+                        ],
+                        "label-bold": [
+                            "Space Grotesk"
+                        ],
+                        "headline-xl-mobile": [
+                            "Montserrat"
+                        ],
+                        "headline-xl": [
+                            "Montserrat"
+                        ],
+                        "body-lg": [
+                            "Inter"
+                        ],
+                        "headline-md": [
+                            "Montserrat"
+                        ]
+                    },
+                    "fontSize": {
+                        "body-md": [
+                            "16px",
+                            {
+                                "lineHeight": "1.5",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "display-lg": [
+                            "84px",
+                            {
+                                "lineHeight": "1.0",
+                                "letterSpacing": "-0.04em",
+                                "fontWeight": "900"
+                            }
+                        ],
+                        "label-bold": [
+                            "14px",
+                            {
+                                "lineHeight": "1.0",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "headline-xl-mobile": [
+                            "32px",
+                            {
+                                "lineHeight": "1.1",
+                                "fontWeight": "800"
+                            }
+                        ],
+                        "headline-xl": [
+                            "48px",
+                            {
+                                "lineHeight": "1.1",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "800"
+                            }
+                        ],
+                        "body-lg": [
+                            "18px",
+                            {
+                                "lineHeight": "1.6",
+                                "fontWeight": "500"
+                            }
+                        ],
+                        "headline-md": [
+                            "24px",
+                            {
+                                "lineHeight": "1.2",
+                                "fontWeight": "700"
+                            }
+                        ]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .brutalist-button {
+            border: 4px solid #1a1c1c;
+            box-shadow: 4px 4px 0px 0px #1a1c1c;
+            transition: all 0.1s ease-in-out;
+        }
+        .brutalist-button:hover {
+            box-shadow: 8px 8px 0px 0px #1a1c1c;
+            transform: translate(-4px, -4px);
+        }
+        .brutalist-button:active {
+            box-shadow: 0px 0px 0px 0px #1a1c1c;
+            transform: translate(4px, 4px);
+        }
+        .brutalist-card {
+            border: 8px solid #1a1c1c;
+            box-shadow: 12px 12px 0px 0px #1a1c1c;
+            transition: transform 0.2s ease-in-out;
+        }
+        .brutalist-card:hover {
+            transform: translateY(-8px);
+        }
+
+        /* Trailer Carousel — background is the current trailer's own thumbnail, blurred
+           (crossfades to the new thumbnail whenever the active slide changes) */
+        .trailer-glow {
+            position: absolute;
+            inset: -10%;
+            background-size: cover;
+            background-position: center;
+            filter: blur(22px) brightness(0.85) saturate(1.15);
+            transform: scale(1.15);
+            transition: opacity 0.35s ease;
+            opacity: 0.85;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .trailer-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(26,28,28,0.25) 0%, rgba(26,28,28,0.45) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .trailer-stage {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 320px;
+            width: 100%;
+            max-width: 820px;
+        }
+        .trailer-center-card {
+            position: relative;
+            z-index: 3;
+            width: 560px;
+            max-width: 62vw;
+            aspect-ratio: 16 / 9;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+        }
+        .trailer-poster {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        .trailer-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .trailer-play-btn {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .trailer-play-btn span {
+            font-size: 44px;
+            color: #fff;
+            background: rgba(0,0,0,0.55);
+            border-radius: 50%;
+            padding: 14px;
+            border: 3px solid #fff;
+        }
+        #trailerIframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .trailer-side-card {
+            position: relative;
+            width: 210px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 4px solid #1a1c1c;
+            cursor: pointer;
+            filter: blur(1px) brightness(0.5);
+            transform: scale(0.8);
+            transition: transform 0.4s ease, filter 0.4s ease;
+            opacity: 0.75;
+        }
+        .trailer-side-left { margin-right: -68px; z-index: 1; }
+        .trailer-side-right { margin-left: -68px; z-index: 1; }
+        .trailer-side-card:hover { filter: blur(0px) brightness(0.75); transform: scale(0.86); }
+        .trailer-nav-btn {
+            width: 54px;
+            height: 54px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .trailer-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #5d5f5f;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+            border: none;
+            padding: 0;
+        }
+        .trailer-dot.active {
+            background: #f0c100;
+            transform: scale(1.3);
+        }
+        @media (max-width: 820px) {
+            .trailer-side-card { display: none; }
+            .trailer-center-card { width: 90vw; max-width: 90vw; }
+        }
+        .nav-link { position: relative; }
+        #navStud {
+            position: absolute;
+            bottom: -2px;
+            height: 6px;
+            width: 6px;
+            background: #E3000B;
+            border: 1.5px solid #000;
+            border-radius: 50%;
+            box-shadow: 0 2px 0 rgba(0,0,0,0.25);
+            transition: left .32s cubic-bezier(.34,1.56,.64,1), width .32s cubic-bezier(.34,1.56,.64,1), background .2s ease;
+            pointer-events: none;
+        }
+        .nav-link.active-lego { color: #1a1c1c !important; }
+        body.stud-cursor, body.stud-cursor * {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" fill="%23eab308" stroke="%23000" stroke-width="2"/></svg>') 14 14, auto;
+        }
+        #particleLayer { position: fixed; inset: 0; pointer-events: none; z-index: 9998; overflow: hidden; }
+        .mouse-brick {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border: 1.5px solid #000;
+            border-radius: 2px;
+            animation: mouseBrickFade .6s ease forwards;
+        }
+        @keyframes mouseBrickFade {
+            0% { opacity: .9; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-18px) scale(.5); }
+        }
+        /* Scroll-assemble reveal */
+        .reveal-brick {
+            opacity: 0;
+            transform: translateY(70px) rotate(-2deg) scale(.94);
+            transition: opacity .7s ease, transform .7s cubic-bezier(.34,1.56,.64,1);
+        }
+        .reveal-brick.in-view {
+            opacity: 1;
+            transform: none;
+        }
+        /* Baseplate scroll progress bar */
+        #buildProgressTrack {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            z-index: 60;
+            background: repeating-linear-gradient(90deg, #3a3a3a 0 10px, #2a2a2a 10px 20px);
+        }
+        #buildProgressFill {
+            height: 100%;
+            width: 0%;
+            background-color: #f0c100;
+            background-image: radial-gradient(circle, #000 0, #000 1.5px, transparent 1.5px);
+            background-size: 12px 100%;
+            background-position: center;
+            box-shadow: 0 0 6px rgba(240,193,0,.6);
+        }
+        /* Hero build counter */
+        #heroCounter {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #heroCounterNum {
+            font-variant-numeric: tabular-nums;
+        }
+        /* Minifigure color customizer */
+        .mini-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid #000;
+            cursor: pointer;
+            transition: transform .15s ease;
+            box-shadow: 2px 2px 0 rgba(0,0,0,.4);
+        }
+        .mini-swatch:hover { transform: translateY(-3px) scale(1.08); }
+        .mini-swatch.active { outline: 3px solid #fff; outline-offset: 2px; }
+        .mini-swatch-reset {
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1c1c;
+        }
+        /* Click-to-place brick graffiti */
+        body { position: relative; }
+        #graffitiLayer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 35;
+        }
+        #graffitiResetBtn {
+            position: fixed;
+            bottom: 18px;
+            left: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1a1c1c;
+            color: #fff;
+            border: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: .35;
+            transition: opacity .2s ease, transform .2s ease;
+            z-index: 40;
+            box-shadow: 2px 2px 0 rgba(0,0,0,.5);
+        }
+        #graffitiResetBtn:hover { opacity: 1; transform: scale(1.08); }
+        .graffiti-brick {
+            position: absolute;
+            width: 26px;
+            height: 15px;
+            border: 1.5px solid #000;
+            border-radius: 2px;
+            pointer-events: none;
+            box-shadow: 1px 1px 0 rgba(0,0,0,.4);
+            animation: graffitiPop .3s cubic-bezier(.34,1.56,.64,1);
+        }
+        .graffiti-brick::before, .graffiti-brick::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            width: 7px;
+            height: 5px;
+            border: 1.5px solid #000;
+            border-radius: 1px;
+            background: inherit;
+        }
+        .graffiti-brick::before { left: 3px; }
+        .graffiti-brick::after { right: 3px; }
+        @keyframes graffitiPop {
+            0% { transform: scale(0) rotate(var(--rot)); opacity: 0; }
+            100% { transform: scale(1) rotate(var(--rot)); opacity: 1; }
+        }
+        /* Cross-tab live builder ghost */
+        #ghostLayer { position: fixed; inset: 0; pointer-events: none; z-index: 9997; }
+        .builder-ghost {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            background: rgba(255,255,255,.15);
+            transform: translate(-50%, -50%);
+            transition: left .08s linear, top .08s linear;
+            box-shadow: 0 0 10px rgba(0,0,0,.4);
+        }
+        .builder-ghost::after {
+            content: 'BUILDER';
+            position: absolute;
+            top: 26px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            font-family: 'Anton', sans-serif;
+            letter-spacing: .05em;
+            color: #fff;
+            background: rgba(0,0,0,.65);
+            padding: 1px 5px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+        /* Wall-crumble scroll transition */
+        .wall-tile {
+            position: absolute;
+            border: 1px solid #000;
+            transition: transform .8s cubic-bezier(.5,0,.75,0), opacity .8s ease;
+        }
+        .wall-tile.crumbled {
+            transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+            opacity: 0;
+        }
+        /* Secret vault easter egg */
+        .vault-wall {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background-color: #b91c1c;
+            background-image:
+                linear-gradient(#0006 2px, transparent 2px),
+                linear-gradient(90deg, #0006 2px, transparent 2px);
+            background-size: 60px 30px;
+            transition: transform .7s cubic-bezier(.7,0,.3,1);
+        }
+        .vault-wall-left { left: 0; transform: translateX(0); }
+        .vault-wall-right { right: 0; transform: translateX(0); }
+        #secretVault.opening .vault-wall-left { transform: translateX(-100%); }
+        #secretVault.opening .vault-wall-right { transform: translateX(100%); }
+        #vaultContent { opacity: 0; transition: opacity .4s ease .3s; }
+        #secretVault.opening #vaultContent { opacity: 1; }
+        /* Instruction-manual "Assembly Instructions" cards */
+        .manual-page {
+            background: #fff;
+            border: 3px solid #1a1c1c;
+            border-radius: 6px;
+            padding: 32px 24px 24px;
+            position: relative;
+            box-shadow: 6px 6px 0 rgba(0,0,0,.85);
+        }
+        .manual-step-num {
+            position: absolute;
+            top: -22px;
+            left: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #E3000B;
+            color: #fff;
+            border: 3px solid #1a1c1c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Anton', sans-serif;
+            font-size: 18px;
+        }
+        /* Brick rain easter egg */
+        .rain-brick {
+            position: fixed;
+            top: -40px;
+            width: 22px;
+            height: 14px;
+            border: 2px solid #000;
+            border-radius: 2px;
+            z-index: 9999;
+            pointer-events: none;
+            animation: rainFall linear forwards;
+        }
+        @keyframes rainFall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+        #brickRainToast {
+            position: fixed;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: #f0c100;
+            border: 3px solid #000;
+            box-shadow: 6px 6px 0 rgba(0,0,0,.85);
+            padding: 12px 24px;
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity .3s ease, transform .3s ease;
+            pointer-events: none;
+        }
+        #brickRainToast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-fixed">
+<div id="particleLayer"></div>
+<div id="graffitiLayer"></div>
+<button id="graffitiResetBtn" type="button" title="Clear placed bricks" aria-label="Clear placed bricks">
+<span class="material-symbols-outlined" style="font-size:20px;">delete_sweep</span>
+</button>
+<div id="buildProgressTrack"><div id="buildProgressFill"></div></div>
+<div id="brickRainToast">Brick Rain Unlocked!</div>
+<!-- TopNavBar -->
+<nav class="bg-primary dark:bg-primary w-full border-b-4 border-on-background shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin py-unit max-w-container-max mx-auto h-20">
+<a id="logoBrand" class="font-headline-md text-headline-md font-black uppercase tracking-tighter text-on-primary-fixed hover:translate-y-0.5 hover:translate-x-0.5 hover:shadow-none transition-all" href="#">
+                OUR WORKSPACE
+            </a>
+<div id="navLinks" class="hidden md:flex gap-8 items-center h-full relative">
+<a class="nav-link font-label-bold text-label-bold text-on-primary-fixed pb-1 transition-all" href="#">Home</a>
+<a class="nav-link font-label-bold text-label-bold text-on-primary-fixed/80 pb-1 transition-all" href="#trailerSection">Trailer</a>
+<a class="nav-link font-label-bold text-label-bold text-on-primary-fixed/80 pb-1 transition-all" href="#meet-the-builders">About</a>
+<a class="nav-link font-label-bold text-label-bold text-on-primary-fixed/80 pb-1 transition-all" href="dashboard.html">Workspace</a>
+<a class="nav-link font-label-bold text-label-bold text-on-primary-fixed/80 pb-1 transition-all" href="library.html">Library</a>
+<a onclick="openHelp(event)" class="nav-link font-label-bold text-label-bold text-on-primary-fixed/80 pb-1 transition-all cursor-pointer" href="#">Help</a>
+<div id="navStud"></div>
+</div>
+<a class="hidden md:flex bg-primary-container text-on-primary-fixed font-label-bold text-label-bold brutalist-button px-6 py-3 uppercase items-center gap-2 bg-inverse-primary text-on-background" href="login.html">
+<span>Sign In</span>
+<span class="material-symbols-outlined text-lg">login</span>
+</a>
+<button class="md:hidden text-on-primary-fixed">
+<span class="material-symbols-outlined text-3xl">menu</span>
+</button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col">
+<!-- Hero Section -->
+<section id="heroSection" class="bg-primary-container relative overflow-hidden flex-grow flex items-center py-24 md:py-32 px-margin border-b-8 border-on-background">
+<div class="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-2 gap-gutter items-center relative z-10 w-full">
+<div id="heroTextBlock" class="flex flex-col items-start gap-8 z-20">
+<div class="bg-on-background text-surface-container-lowest px-4 py-2 border-2 border-on-background w-max brutalist-button mb-4 shadow-[4px_4px_0px_0px_#ffffff]">
+<span class="font-label-bold text-label-bold uppercase tracking-widest text-primary-fixed">Version 2.0 Live</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-background uppercase max-w-2xl leading-none">
+                        BUILD YOUR FUTURE.<br/>BRICK BY BRICK.
+                    </h1>
+<p class="font-body-lg text-body-lg text-on-background/90 max-w-xl bg-surface-container-lowest/20 p-4 border-l-8 border-on-background backdrop-blur-sm">
+                        A professional workspace for students and instructors to collaborate, submit jobsheets, and track progress with premium LEGO precision.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-6 mt-4 w-full sm:w-auto">
+<a href="dashboard.html" class="bg-inverse-primary text-on-background font-label-bold text-label-bold uppercase brutalist-button px-8 py-5 flex items-center justify-center gap-3 text-lg w-full sm:w-auto bg-white">
+<span>Get Started Now</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+<div id="heroCounter" class="bg-on-background text-surface-container-lowest px-4 py-2 border-2 border-on-background w-max brutalist-button mt-2">
+<span class="material-symbols-outlined text-primary text-lg">construction</span>
+<span class="font-label-bold text-label-bold uppercase tracking-widest text-primary-fixed"><span id="heroCounterNum">0</span> Jobsheets Built So Far</span>
+</div>
+<div class="flex flex-col gap-2 mt-2">
+<span class="font-label-bold text-label-bold text-on-background/70 uppercase tracking-widest text-xs">Customize The Minifigure</span>
+<div id="miniSwatches" class="flex gap-3"></div>
+</div>
+</div>
+<div class="relative h-[540px] md:h-[600px] w-full flex items-center justify-center z-10 mt-12 lg:mt-0">
+<div class="absolute left-1/2 -translate-x-1/2 pointer-events-none" style="top:-190px;width:300px;height:300px;max-width:70%;z-index:5;">
+<model-viewer src="models/lego_logo_3d.glb" alt="LEGO Logo 3D model" auto-rotate rotation-per-second="25deg" disable-zoom field-of-view="8deg" shadow-intensity="1" exposure="1" style="width:100%;height:100%;background:transparent;"></model-viewer>
+</div>
+<model-viewer id="heroViewer" src="models/unity_-_lego_minifigure.glb" alt="LEGO Minifigure 3D model" auto-rotate rotation-per-second="30deg" camera-controls disable-zoom autoplay field-of-view="12deg" shadow-intensity="1" exposure="1" style="width:520px;height:520px;background:transparent;" class="drop-shadow-[16px_16px_0px_rgba(0,0,0,1)]"></model-viewer>
+</div>
+</div>
+<!-- Decorative Grid Pattern -->
+<div id="heroGridPattern" class="absolute inset-0 z-0 opacity-10 pointer-events-none" style="background-size: 64px 64px; background-image: linear-gradient(to right, #1a1c1c 2px, transparent 2px), linear-gradient(to bottom, #1a1c1c 2px, transparent 2px);"></div>
+</section>
+
+<!-- Trailer Carousel Section -->
+<section id="trailerSection" class="reveal-brick relative py-24 px-margin overflow-hidden bg-on-background border-b-8 border-on-background z-20">
+<div id="trailerGlow" class="trailer-glow"></div>
+<div class="trailer-overlay"></div>
+<div class="relative max-w-container-max mx-auto z-10">
+<div class="flex items-center gap-4 mb-14">
+<div class="h-4 w-4 bg-primary-container border-2 border-surface-container-lowest"></div>
+<h2 class="font-headline-xl text-headline-xl text-surface-container-lowest uppercase tracking-tight">Watch The Trailers</h2>
+</div>
+
+<div class="flex items-center justify-center gap-4 md:gap-8">
+<button onclick="shiftTrailer(-1)" aria-label="Previous trailer" class="trailer-nav-btn brutalist-button bg-primary-container text-on-background flex-shrink-0">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+
+<div class="trailer-stage">
+<img id="trailerPrev" class="trailer-side-card trailer-side-left" alt="" onclick="shiftTrailer(-1)"/>
+<div id="trailerCenter" class="trailer-center-card brutalist-card">
+<div id="trailerPosterWrap" class="trailer-poster" onclick="playCurrentTrailer()">
+<img id="trailerPosterImg" alt="" />
+<div class="trailer-play-btn"><span class="material-symbols-outlined">play_arrow</span></div>
+</div>
+<iframe id="trailerIframe" class="hidden" src="" title="LEGO Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+<img id="trailerNext" class="trailer-side-card trailer-side-right" alt="" onclick="shiftTrailer(1)"/>
+</div>
+
+<button onclick="shiftTrailer(1)" aria-label="Next trailer" class="trailer-nav-btn brutalist-button bg-primary-container text-on-background flex-shrink-0">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+
+<div id="trailerDots" class="flex justify-center gap-3 mt-10"></div>
+</div>
+</section>
+
+<!-- Island Scene Section -->
+<section class="reveal-brick bg-background py-24 px-margin relative border-b-8 border-on-background z-20">
+<div class="max-w-container-max mx-auto">
+<div class="flex items-center justify-between gap-4 mb-12 flex-wrap">
+<div class="flex items-center gap-4">
+<div class="h-4 w-4 bg-primary-container border-2 border-on-background"></div>
+<h2 class="font-headline-xl text-headline-xl text-on-background uppercase tracking-tight">Explore The Island</h2>
+</div>
+<div class="flex gap-4">
+<button onclick="scrollIslandCarousel(-1)" aria-label="Scroll left" class="h-14 w-14 bg-on-background text-surface-container-lowest flex items-center justify-center brutalist-button">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button onclick="scrollIslandCarousel(1)" aria-label="Scroll right" class="h-14 w-14 bg-on-background text-surface-container-lowest flex items-center justify-center brutalist-button">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-background/80 mb-8 max-w-2xl">
+                    Drag the arrows to browse every build in the set. Pick a character and drop it straight into Misha or Fakhrullah's card below.
+                </p>
+<div id="islandCarousel" class="flex gap-8 overflow-x-auto pb-4" style="scroll-snap-type:x mandatory; scrollbar-width:none;">
+
+
+
+<!-- Character: Sky Lane Island -->
+<div class="brutalist-card bg-primary-container flex-none w-[280px] flex flex-col overflow-hidden" style="scroll-snap-align:start;">
+<div class="h-[240px] w-full relative flex items-center justify-center border-b-4 border-on-background">
+<model-viewer src="models/lego_island_sky_lane.glb" alt="Sky Lane Island" auto-rotate rotation-per-second="20deg" autoplay camera-controls disable-zoom field-of-view="16deg" shadow-intensity="1" exposure="1" style="width:200px;height:200px;background:transparent;"></model-viewer>
+</div>
+<div class="p-5">
+<h3 class="font-headline-md text-headline-md text-on-background uppercase leading-none mb-3">Sky Lane Island</h3>
+<div class="flex flex-col gap-2">
+<button onclick="assignBuilder('models/lego_island_sky_lane.glb','builder-misha-viewer')" class="w-full py-2 bg-on-background text-surface-container-lowest font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Misha</button>
+<button onclick="assignBuilder('models/lego_island_sky_lane.glb','builder-fakhrullah-viewer')" class="w-full py-2 bg-white text-on-background font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Fakhrullah</button>
+</div>
+</div>
+</div>
+
+
+
+<!-- Character: Crook Escapee -->
+<div class="brutalist-card bg-primary-container flex-none w-[280px] flex flex-col overflow-hidden" style="scroll-snap-align:start;">
+<div class="h-[240px] w-full relative flex items-center justify-center border-b-4 border-on-background">
+<model-viewer src="models/lego_city_crook_escapee.glb" alt="Crook Escapee" auto-rotate rotation-per-second="20deg" autoplay camera-controls disable-zoom shadow-intensity="1" exposure="1" style="width:200px;height:200px;background:transparent;"></model-viewer>
+</div>
+<div class="p-5">
+<h3 class="font-headline-md text-headline-md text-on-background uppercase leading-none mb-3">Crook Escapee</h3>
+<div class="flex flex-col gap-2">
+<button onclick="assignBuilder('models/lego_city_crook_escapee.glb','builder-misha-viewer')" class="w-full py-2 bg-on-background text-surface-container-lowest font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Misha</button>
+<button onclick="assignBuilder('models/lego_city_crook_escapee.glb','builder-fakhrullah-viewer')" class="w-full py-2 bg-white text-on-background font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Fakhrullah</button>
+</div>
+</div>
+</div>
+
+
+
+
+
+<!-- Character: Dr. Beverly Crusher -->
+<div class="brutalist-card bg-primary-container flex-none w-[280px] flex flex-col overflow-hidden" style="scroll-snap-align:start;">
+<div class="h-[240px] w-full relative flex items-center justify-center border-b-4 border-on-background">
+<model-viewer src="models/lego_star_trek_dr._beverly_crusher.glb" alt="Dr. Beverly Crusher" auto-rotate rotation-per-second="20deg" autoplay camera-controls disable-zoom shadow-intensity="1" exposure="1" style="width:200px;height:200px;background:transparent;"></model-viewer>
+</div>
+<div class="p-5">
+<h3 class="font-headline-md text-headline-md text-on-background uppercase leading-none mb-3">Dr. Beverly Crusher</h3>
+<div class="flex flex-col gap-2">
+<button onclick="assignBuilder('models/lego_star_trek_dr._beverly_crusher.glb','builder-misha-viewer')" class="w-full py-2 bg-on-background text-surface-container-lowest font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Misha</button>
+<button onclick="assignBuilder('models/lego_star_trek_dr._beverly_crusher.glb','builder-fakhrullah-viewer')" class="w-full py-2 bg-white text-on-background font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Fakhrullah</button>
+</div>
+</div>
+</div>
+
+<!-- Character: Radia -->
+<div class="brutalist-card bg-primary-container flex-none w-[280px] flex flex-col overflow-hidden" style="scroll-snap-align:start;">
+<div class="h-[240px] w-full relative flex items-center justify-center border-b-4 border-on-background">
+<model-viewer src="models/lego_alpha_team_radia.glb" alt="Radia" auto-rotate rotation-per-second="20deg" autoplay camera-controls disable-zoom shadow-intensity="1" exposure="1" style="width:200px;height:200px;background:transparent;"></model-viewer>
+</div>
+<div class="p-5">
+<h3 class="font-headline-md text-headline-md text-on-background uppercase leading-none mb-3">Radia</h3>
+<div class="flex flex-col gap-2">
+<button onclick="assignBuilder('models/lego_alpha_team_radia.glb','builder-misha-viewer')" class="w-full py-2 bg-on-background text-surface-container-lowest font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Misha</button>
+<button onclick="assignBuilder('models/lego_alpha_team_radia.glb','builder-fakhrullah-viewer')" class="w-full py-2 bg-white text-on-background font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Fakhrullah</button>
+</div>
+</div>
+</div>
+
+
+<!-- Character: Pepper Roni -->
+<div class="brutalist-card bg-primary-container flex-none w-[280px] flex flex-col overflow-hidden" style="scroll-snap-align:start;">
+<div class="h-[240px] w-full relative flex items-center justify-center border-b-4 border-on-background">
+<model-viewer src="models/lego_island_pepper_roni.glb" alt="Pepper Roni" auto-rotate rotation-per-second="20deg" autoplay camera-controls disable-zoom shadow-intensity="1" exposure="1" style="width:200px;height:200px;background:transparent;"></model-viewer>
+</div>
+<div class="p-5">
+<h3 class="font-headline-md text-headline-md text-on-background uppercase leading-none mb-3">Pepper Roni</h3>
+<div class="flex flex-col gap-2">
+<button onclick="assignBuilder('models/lego_island_pepper_roni.glb','builder-misha-viewer')" class="w-full py-2 bg-on-background text-surface-container-lowest font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Misha</button>
+<button onclick="assignBuilder('models/lego_island_pepper_roni.glb','builder-fakhrullah-viewer')" class="w-full py-2 bg-white text-on-background font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Fakhrullah</button>
+</div>
+</div>
+</div>
+
+<!-- Character: Racer X -->
+<div class="brutalist-card bg-primary-container flex-none w-[280px] flex flex-col overflow-hidden" style="scroll-snap-align:start;">
+<div class="h-[240px] w-full relative flex items-center justify-center border-b-4 border-on-background">
+<model-viewer src="models/lego_racers_racer_x.glb" alt="Racer X" auto-rotate rotation-per-second="20deg" autoplay camera-controls disable-zoom shadow-intensity="1" exposure="1" style="width:200px;height:200px;background:transparent;"></model-viewer>
+</div>
+<div class="p-5">
+<h3 class="font-headline-md text-headline-md text-on-background uppercase leading-none mb-3">Racer X</h3>
+<div class="flex flex-col gap-2">
+<button onclick="assignBuilder('models/lego_racers_racer_x.glb','builder-misha-viewer')" class="w-full py-2 bg-on-background text-surface-container-lowest font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Misha</button>
+<button onclick="assignBuilder('models/lego_racers_racer_x.glb','builder-fakhrullah-viewer')" class="w-full py-2 bg-white text-on-background font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Fakhrullah</button>
+</div>
+</div>
+</div>
+
+<!-- Character: Commander Riker -->
+<div class="brutalist-card bg-primary-container flex-none w-[280px] flex flex-col overflow-hidden" style="scroll-snap-align:start;">
+<div class="h-[240px] w-full relative flex items-center justify-center border-b-4 border-on-background">
+<model-viewer src="models/lego_star_trek_commander_william_riker.glb" alt="Commander Riker" auto-rotate rotation-per-second="20deg" autoplay camera-controls disable-zoom shadow-intensity="1" exposure="1" style="width:200px;height:200px;background:transparent;"></model-viewer>
+</div>
+<div class="p-5">
+<h3 class="font-headline-md text-headline-md text-on-background uppercase leading-none mb-3">Commander Riker</h3>
+<div class="flex flex-col gap-2">
+<button onclick="assignBuilder('models/lego_star_trek_commander_william_riker.glb','builder-misha-viewer')" class="w-full py-2 bg-on-background text-surface-container-lowest font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Misha</button>
+<button onclick="assignBuilder('models/lego_star_trek_commander_william_riker.glb','builder-fakhrullah-viewer')" class="w-full py-2 bg-white text-on-background font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Fakhrullah</button>
+</div>
+</div>
+</div>
+
+
+
+
+
+<!-- Character: Cam Attaway -->
+<div class="brutalist-card bg-primary-container flex-none w-[280px] flex flex-col overflow-hidden" style="scroll-snap-align:start;">
+<div class="h-[240px] w-full relative flex items-center justify-center border-b-4 border-on-background">
+<model-viewer src="models/lego_alpha_team_cam_attaway.glb" alt="Cam Attaway" auto-rotate rotation-per-second="20deg" autoplay camera-controls disable-zoom shadow-intensity="1" exposure="1" style="width:200px;height:200px;background:transparent;"></model-viewer>
+</div>
+<div class="p-5">
+<h3 class="font-headline-md text-headline-md text-on-background uppercase leading-none mb-3">Cam Attaway</h3>
+<div class="flex flex-col gap-2">
+<button onclick="assignBuilder('models/lego_alpha_team_cam_attaway.glb','builder-misha-viewer')" class="w-full py-2 bg-on-background text-surface-container-lowest font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Misha</button>
+<button onclick="assignBuilder('models/lego_alpha_team_cam_attaway.glb','builder-fakhrullah-viewer')" class="w-full py-2 bg-white text-on-background font-label-bold text-label-bold uppercase brutalist-button text-xs">Set as Fakhrullah</button>
+</div>
+</div>
+</div>
+
+
+</div>
+</div>
+</section>
+<script>
+        function scrollIslandCarousel(direction) {
+            var track = document.getElementById('islandCarousel');
+            track.scrollBy({ left: direction * 300, behavior: 'smooth' });
+        }
+        function assignBuilder(glbSrc, viewerId) {
+            var viewer = document.getElementById(viewerId);
+            if (viewer) viewer.setAttribute('src', glbSrc);
+            localStorage.setItem(viewerId, glbSrc);
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            ['builder-misha-viewer', 'builder-fakhrullah-viewer'].forEach(function (viewerId) {
+                var saved = localStorage.getItem(viewerId);
+                var viewer = document.getElementById(viewerId);
+                if (saved && viewer) viewer.setAttribute('src', saved);
+            });
+        });
+    </script>
+<!-- Meet The Builders Section -->
+<section id="meet-the-builders" class="reveal-brick bg-background py-24 px-margin relative border-b-8 border-on-background z-20">
+<div class="max-w-container-max mx-auto">
+<div class="flex items-center gap-4 mb-12">
+<div class="h-4 w-4 bg-primary-container border-2 border-on-background"></div>
+<h2 class="font-headline-xl text-headline-xl text-on-background uppercase tracking-tight">Meet The Builders</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Misha -->
+<div onclick="openBuilderModal('misha')" class="brutalist-card bg-surface-container-lowest flex flex-col overflow-hidden cursor-pointer hover:-translate-y-2 transition-transform">
+<div class="h-[340px] w-full bg-primary-container relative flex items-center justify-center border-b-8 border-on-background">
+<model-viewer id="builder-misha-viewer" src="models/lego_island_sky_lane.glb" alt="Misha LEGO model" auto-rotate rotation-per-second="20deg" camera-controls disable-zoom autoplay field-of-view="16deg" shadow-intensity="1" exposure="1" style="width:260px;height:260px;background:transparent;" class="relative z-10 pointer-events-none"></model-viewer>
+</div>
+<div class="p-8">
+<h3 class="font-headline-md text-headline-md text-on-background uppercase">Misha</h3>
+<p class="font-label-bold text-label-bold text-on-surface-variant uppercase tracking-widest mt-2">Lead Designer</p>
+</div>
+</div>
+<!-- Fakhrullah -->
+<div onclick="openBuilderModal('fakhrullah')" class="brutalist-card bg-surface-container-lowest flex flex-col overflow-hidden cursor-pointer hover:-translate-y-2 transition-transform">
+<div class="h-[340px] w-full bg-primary-container relative flex items-center justify-center border-b-8 border-on-background">
+<model-viewer id="builder-fakhrullah-viewer" src="models/lego_racers_2_rocket_racer.glb" alt="Fakhrullah LEGO model" auto-rotate rotation-per-second="20deg" camera-controls disable-zoom autoplay shadow-intensity="1" exposure="1" style="width:260px;height:260px;background:transparent;" class="relative z-10 pointer-events-none"></model-viewer>
+</div>
+<div class="p-8">
+<h3 class="font-headline-md text-headline-md text-on-background uppercase">Fakhrullah</h3>
+<p class="font-label-bold text-label-bold text-on-surface-variant uppercase tracking-widest mt-2">Project Manager</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Builder Detail Modal -->
+<div id="builderModal" onclick="closeBuilderModal()" class="hidden fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 md:p-8">
+<div onclick="event.stopPropagation()" class="brutalist-card bg-surface-container-lowest w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 relative overflow-hidden max-h-[90vh] overflow-y-auto">
+<button onclick="closeBuilderModal()" aria-label="Close" class="absolute top-4 right-4 z-20 h-12 w-12 bg-on-background text-surface-container-lowest flex items-center justify-center brutalist-button">
+<span class="material-symbols-outlined">close</span>
+</button>
+<div class="h-[340px] md:h-auto w-full bg-primary-container relative flex items-center justify-center border-b-8 md:border-b-0 md:border-r-8 border-on-background">
+<div class="absolute inset-0 z-0 opacity-10 pointer-events-none" style="background-size: 64px 64px; background-image: linear-gradient(to right, #1a1c1c 2px, transparent 2px), linear-gradient(to bottom, #1a1c1c 2px, transparent 2px);"></div>
+<model-viewer id="modalViewer" src="" alt="Builder full body model" auto-rotate rotation-per-second="20deg" camera-controls autoplay shadow-intensity="1" exposure="1" style="width:100%;height:100%;min-height:340px;background:transparent;" class="relative z-10"></model-viewer>
+</div>
+<div class="p-8 md:p-12 flex flex-col justify-center">
+<h2 id="modalName" class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-on-background uppercase leading-none"></h2>
+<p id="modalTitle" class="font-label-bold text-label-bold text-primary uppercase tracking-widest mt-3"></p>
+<p id="modalAbout" class="font-body-md text-body-md text-on-surface-variant mt-6 leading-relaxed"></p>
+</div>
+</div>
+</div>
+<script>
+        var builderBios = {
+            misha: {
+                name: 'Misha',
+                title: 'Lead Designer',
+                about: 'Misha shapes the look of every jobsheet — layout, color, type, brick by brick. Five years into LEGO set design, still redoing a corner radius three times before it feels right. Off the clock: rebuilding the same castle set for the tenth time, always changing the roof.'
+            },
+            fakhrullah: {
+                name: 'Fakhrullah',
+                title: 'Project Manager',
+                about: 'Fakhrullah keeps every sprint on schedule and every submission graded on time. Turns scattered bricks and half-finished ideas into a shipped build. Runs on spreadsheets, sticky notes, and an unreasonable love for rocket-shaped LEGO sets.'
+            }
+        };
+        function openBuilderModal(key) {
+            var bio = builderBios[key];
+            var sourceViewer = document.getElementById('builder-' + key + '-viewer');
+            document.getElementById('modalViewer').setAttribute('src', sourceViewer.getAttribute('src'));
+            document.getElementById('modalName').textContent = bio.name;
+            document.getElementById('modalTitle').textContent = bio.title;
+            document.getElementById('modalAbout').textContent = bio.about;
+            document.getElementById('builderModal').classList.remove('hidden');
+        }
+        function closeBuilderModal() {
+            document.getElementById('builderModal').classList.add('hidden');
+        }
+    </script>
+<!-- Wall-crumble scroll transition strip -->
+<div id="wallCrumble" class="relative bg-on-background border-b-8 border-on-background overflow-hidden" style="height:160px;">
+<div class="absolute inset-0 flex items-center justify-center z-0">
+<p class="font-headline-md text-headline-md uppercase text-primary tracking-widest">Keep Building ↓</p>
+</div>
+<div id="wallCrumbleTiles" class="absolute inset-0 z-10"></div>
+</div>
+<!-- Assembly Instructions Section (instruction-manual style How It Works) -->
+<section class="reveal-brick bg-primary-container py-24 px-margin relative border-b-8 border-on-background z-20 overflow-hidden">
+<div class="absolute inset-0 z-0 opacity-10 pointer-events-none" style="background-size: 64px 64px; background-image: linear-gradient(to right, #1a1c1c 2px, transparent 2px), linear-gradient(to bottom, #1a1c1c 2px, transparent 2px);"></div>
+<div class="max-w-container-max mx-auto relative z-10">
+<div class="flex items-center gap-4 mb-16">
+<div class="h-4 w-4 bg-on-background"></div>
+<h2 class="font-headline-xl text-headline-xl text-on-background uppercase tracking-tight">Assembly Instructions</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="manual-page">
+<div class="manual-step-num">01</div>
+<h3 class="font-headline-md text-headline-md text-on-background uppercase mb-3">Upload Your Piece</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Head to the Library, pick your builder name, attach your jobsheet file, and snap it into place.</p>
+</div>
+<div class="manual-page">
+<div class="manual-step-num">02</div>
+<h3 class="font-headline-md text-headline-md text-on-background uppercase mb-3">Track The Build</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Watch your progress bar fill on the Workspace dashboard as every submission adds to the tower.</p>
+</div>
+<div class="manual-page">
+<div class="manual-step-num">03</div>
+<h3 class="font-headline-md text-headline-md text-on-background uppercase mb-3">Get Certified</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Complete every jobsheet and unlock your finished-build certificate — proof the set is complete.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Feature Cards Section -->
+<section class="reveal-brick bg-on-background py-32 px-margin relative border-b-8 border-on-background z-20">
+<div class="max-w-container-max mx-auto">
+<div class="flex items-center gap-4 mb-16">
+<div class="h-4 w-4 bg-primary-container border-2 border-surface-container-lowest"></div>
+<h2 class="font-headline-xl text-headline-xl text-surface-container-lowest uppercase tracking-tight">Core Modules</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest text-on-background brutalist-card p-8 flex flex-col gap-6 relative group overflow-hidden">
+<div class="absolute top-0 right-0 bg-primary-container text-on-background font-label-bold text-label-bold px-4 py-2 border-b-4 border-l-4 border-on-background">
+                            01
+                        </div>
+<div class="h-16 w-16 bg-on-background flex items-center justify-center text-surface-container-lowest brutalist-button mt-4">
+<span class="material-symbols-outlined text-4xl">school</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="font-headline-md text-headline-md uppercase border-b-4 border-on-background pb-4 w-full">STUDENT HUB</h3>
+<p class="font-body-md text-body-md text-on-surface-variant pt-2">
+                                Submit work and explore the jobsheet library. Access resources, track your individual build progress, and snap together your academic portfolio.
+                            </p>
+</div>
+<div class="mt-auto pt-8">
+<a href="library.html" class="bg-primary-container text-on-background font-label-bold text-label-bold uppercase brutalist-button w-full py-4 flex justify-between items-center px-4">
+<span>Access Hub</span>
+<span class="material-symbols-outlined">east</span>
+</a>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest text-on-background brutalist-card p-8 flex flex-col gap-6 relative group overflow-hidden">
+<div class="absolute top-0 right-0 bg-primary-container text-on-background font-label-bold text-label-bold px-4 py-2 border-b-4 border-l-4 border-on-background">
+                            02
+                        </div>
+<div class="h-16 w-16 bg-on-background flex items-center justify-center text-surface-container-lowest brutalist-button mt-4">
+<span class="material-symbols-outlined text-4xl">admin_panel_settings</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="font-headline-md text-headline-md uppercase border-b-4 border-on-background pb-4 w-full">INSTRUCTOR PORTAL</h3>
+<p class="font-body-md text-body-md text-on-surface-variant pt-2">
+                                Securely grade submissions and manage repository flow. Distribute new jobsheets, monitor class analytics, and maintain the structural integrity of the course.
+                            </p>
+</div>
+<div class="mt-auto pt-8">
+<a href="login.html" class="bg-primary-container text-on-background font-label-bold text-label-bold uppercase brutalist-button w-full py-4 flex justify-between items-center px-4">
+<span>Manage Flow</span>
+<span class="material-symbols-outlined">east</span>
+</a>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest text-on-background brutalist-card p-8 flex flex-col gap-6 relative group overflow-hidden">
+<div class="absolute top-0 right-0 bg-primary-container text-on-background font-label-bold text-label-bold px-4 py-2 border-b-4 border-l-4 border-on-background">
+                            03
+                        </div>
+<div class="h-16 w-16 bg-on-background flex items-center justify-center text-surface-container-lowest brutalist-button mt-4">
+<span class="material-symbols-outlined text-4xl">architecture</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="font-headline-md text-headline-md uppercase border-b-4 border-on-background pb-4 w-full">THE WORKSPACE</h3>
+<p class="font-body-md text-body-md text-on-surface-variant pt-2">
+                                Collaborative tools and team-wide progress tracking. Connect blocks of knowledge, share assets, and build complex projects together in real-time.
+                            </p>
+</div>
+<div class="mt-auto pt-8">
+<a href="dashboard.html" class="bg-primary-container text-on-background font-label-bold text-label-bold uppercase brutalist-button w-full py-4 flex justify-between items-center px-4">
+<span>Enter Workspace</span>
+<span class="material-symbols-outlined">east</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Call to Action -->
+<div class="mt-32 flex justify-center w-full">
+<a href="dashboard.html" class="bg-primary-container text-on-background font-display-lg text-headline-xl-mobile md:text-headline-xl uppercase brutalist-button px-12 py-8 flex items-center justify-center gap-6 max-w-4xl w-full hover:bg-white transition-colors duration-300">
+<span>JOIN THE REPOSITORY</span>
+<span class="material-symbols-outlined text-5xl md:text-6xl" style="font-variation-settings: 'FILL' 1;">add_box</span>
+</a>
+</div>
+</div>
+<!-- Diagonal Stripes Background for CTA area -->
+<div class="absolute bottom-0 left-0 w-full h-64 z-[-1] opacity-5 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #ffffff, #ffffff 10px, transparent 10px, transparent 20px);"></div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-on-background dark:bg-on-background w-full border-t-8 border-primary relative z-30">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-margin py-12 max-w-container-max mx-auto gap-gutter">
+<div class="font-headline-md text-headline-md text-primary font-black uppercase tracking-tighter">
+                OUR WORKSPACE
+            </div>
+<div class="flex flex-wrap justify-center gap-8">
+<a onclick="openPrivacy(event)" class="font-label-bold text-label-bold text-surface-variant hover:text-primary transition-colors cursor-pointer" href="#">Privacy Policy</a>
+<a onclick="openTerms(event)" class="font-label-bold text-label-bold text-surface-variant hover:text-primary transition-colors cursor-pointer" href="#">Terms of Service</a>
+<a onclick="openContact(event)" class="font-label-bold text-label-bold text-surface-variant hover:text-primary transition-colors cursor-pointer" href="#">Contact Us</a>
+</div>
+<div class="font-body-md text-body-md text-surface dark:text-surface text-center md:text-right text-sm opacity-70">
+                © 2024 OUR WORKSPACE. BRICK BY BRICK.
+            </div>
+</div>
+</footer>
+
+<!-- Help modal -->
+<div id="helpModal" onclick="closeHelp()" class="hidden fixed inset-0 bg-black/70 z-[200] flex items-center justify-center p-4">
+<div onclick="event.stopPropagation()" class="brutalist-card bg-surface-container-lowest max-w-lg w-full p-8 relative max-h-[85vh] overflow-y-auto">
+<button onclick="closeHelp()" class="absolute top-4 right-4 h-10 w-10 bg-on-background text-surface-container-lowest flex items-center justify-center brutalist-button" aria-label="Close">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h2 class="font-headline-md text-headline-md text-on-background uppercase mb-6">Help &amp; Guide</h2>
+
+<div class="mb-6">
+<h3 class="font-label-bold text-label-bold uppercase tracking-widest text-primary mb-2">For Students</h3>
+<ul class="font-body-md text-body-md text-on-surface-variant space-y-1 list-disc pl-5">
+<li>Go to the <strong>Library</strong> to upload your jobsheets.</li>
+<li>Track your progress and level on the <strong>Workspace</strong> dashboard.</li>
+<li>Once an instructor reviews your work, you'll see your mark and comment on the jobsheet card.</li>
+</ul>
+</div>
+
+<div class="mb-6">
+<h3 class="font-label-bold text-label-bold uppercase tracking-widest text-primary mb-2">For Instructors</h3>
+<ul class="font-body-md text-body-md text-on-surface-variant space-y-1 list-disc pl-5">
+<li>Sign in via the Instructor Portal to unlock review mode.</li>
+<li>Open any jobsheet on the Workspace dashboard to mark and comment.</li>
+<li>Marks can be updated any time — students see changes instantly.</li>
+</ul>
+</div>
+
+<div>
+<h3 class="font-label-bold text-label-bold uppercase tracking-widest text-primary mb-2">Quick FAQ</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2"><strong>Where's my data saved?</strong> Locally in this browser — no account needed for students.</p>
+<p class="font-body-md text-body-md text-on-surface-variant"><strong>Still stuck?</strong> Ask your instructor directly — this is a class project tool, not a helpdesk.</p>
+</div>
+</div>
+</div>
+
+<!-- Privacy Policy modal -->
+<div id="privacyModal" onclick="closePrivacy()" class="hidden fixed inset-0 bg-black/70 z-[200] flex items-center justify-center p-4">
+<div onclick="event.stopPropagation()" class="brutalist-card bg-surface-container-lowest max-w-lg w-full p-8 relative max-h-[85vh] overflow-y-auto">
+<button onclick="closePrivacy()" class="absolute top-4 right-4 h-10 w-10 bg-on-background text-surface-container-lowest flex items-center justify-center brutalist-button" aria-label="Close">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h2 class="font-headline-md text-headline-md text-on-background uppercase mb-6">Privacy Policy</h2>
+<div class="mb-6">
+<h3 class="font-label-bold text-label-bold uppercase tracking-widest text-primary mb-2">What We Store</h3>
+<ul class="font-body-md text-body-md text-on-surface-variant space-y-1 list-disc pl-5">
+<li>All jobsheet data, progress, and settings stay in your browser's <strong>localStorage</strong> — nothing is uploaded to a server.</li>
+<li>Uploaded files are stored locally too, tied to this browser only.</li>
+<li>No accounts, no cookies, no third-party tracking.</li>
+</ul>
+</div>
+<div>
+<h3 class="font-label-bold text-label-bold uppercase tracking-widest text-primary mb-2">Clearing Your Data</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Clearing your browser storage for this site removes everything — there's no backup elsewhere, since this is a class project tool, not a production service.</p>
+</div>
+</div>
+</div>
+
+<!-- Terms of Service modal -->
+<div id="termsModal" onclick="closeTerms()" class="hidden fixed inset-0 bg-black/70 z-[200] flex items-center justify-center p-4">
+<div onclick="event.stopPropagation()" class="brutalist-card bg-surface-container-lowest max-w-lg w-full p-8 relative max-h-[85vh] overflow-y-auto">
+<button onclick="closeTerms()" class="absolute top-4 right-4 h-10 w-10 bg-on-background text-surface-container-lowest flex items-center justify-center brutalist-button" aria-label="Close">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h2 class="font-headline-md text-headline-md text-on-background uppercase mb-6">Code of the Brick</h2>
+<div class="mb-6">
+<ol class="font-body-md text-body-md text-on-surface-variant space-y-2 list-decimal pl-5">
+<li>Every jobsheet you upload should be your own build — no borrowed bricks.</li>
+<li>Instructors grade in good faith; disputes go through your instructor directly, not this page.</li>
+<li>This tool runs entirely in your browser — use it, break it, learn from it. It's a class project, not a legal contract.</li>
+<li>Uninstalling/clearing the browser voids all progress. No refunds — there was nothing to pay for.</li>
+</ol>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant/70 text-sm">By closing this modal you agree you read it, or at least skimmed it. Either way, happy building.</p>
+</div>
+</div>
+
+<!-- Contact Us modal -->
+<div id="contactModal" onclick="closeContact()" class="hidden fixed inset-0 bg-black/70 z-[200] flex items-center justify-center p-4">
+<div onclick="event.stopPropagation()" class="brutalist-card bg-surface-container-lowest max-w-lg w-full p-8 relative max-h-[85vh] overflow-y-auto">
+<button onclick="closeContact()" class="absolute top-4 right-4 h-10 w-10 bg-on-background text-surface-container-lowest flex items-center justify-center brutalist-button" aria-label="Close">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h2 class="font-headline-md text-headline-md text-on-background uppercase mb-6">Contact Us</h2>
+<div class="mb-6">
+<h3 class="font-label-bold text-label-bold uppercase tracking-widest text-primary mb-2">Reach The Builders</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Questions, bug reports, or feedback on this project — reach out directly to Misha or Fakhrullah, the two builders behind this workspace.</p>
+<div class="flex flex-col gap-3">
+<a href="mailto:misha@example.com" class="font-label-bold text-label-bold text-on-background bg-primary-container px-4 py-3 border-2 border-on-background brutalist-button flex items-center gap-2"><span class="material-symbols-outlined text-lg">mail</span> misha@example.com</a>
+<a href="mailto:fakhrullah@example.com" class="font-label-bold text-label-bold text-on-background bg-primary-container px-4 py-3 border-2 border-on-background brutalist-button flex items-center gap-2"><span class="material-symbols-outlined text-lg">mail</span> fakhrullah@example.com</a>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant/70 text-sm">This is a Mobile Application coursework project — response time may vary depending on assignment deadlines.</p>
+</div>
+</div>
+
+<!-- Secret Vault easter egg (type LEGO anywhere) -->
+<div id="secretVault" class="fixed inset-0 z-[300] hidden">
+<div id="vaultWallLeft" class="vault-wall vault-wall-left"></div>
+<div id="vaultWallRight" class="vault-wall vault-wall-right"></div>
+<div id="vaultContent" class="absolute inset-0 flex items-center justify-center p-4">
+<div class="brutalist-card bg-primary-container max-w-md w-full p-8 text-center relative">
+<button onclick="closeVault()" class="absolute top-4 right-4 h-10 w-10 bg-on-background text-surface-container-lowest flex items-center justify-center brutalist-button" aria-label="Close">
+<span class="material-symbols-outlined">close</span>
+</button>
+<span class="material-symbols-outlined text-6xl text-on-background">lock_open</span>
+<h2 class="font-headline-md text-headline-md text-on-background uppercase mt-4 mb-3">Secret Vault Unlocked</h2>
+<p class="font-body-md text-body-md text-on-background/80">You typed the master brick code. Every feature on this page — brick graffiti, wall crumble, the cross-tab ghost, all of it — was hand-built for this Mobile Application coursework project. Nice find, builder.</p>
+</div>
+</div>
+</div>
+<script>
+        function openHelp(ev) {
+            if (ev) ev.preventDefault();
+            document.getElementById('helpModal').classList.remove('hidden');
+        }
+        function closeHelp() {
+            document.getElementById('helpModal').classList.add('hidden');
+        }
+        function openPrivacy(ev) {
+            if (ev) ev.preventDefault();
+            document.getElementById('privacyModal').classList.remove('hidden');
+        }
+        function closePrivacy() {
+            document.getElementById('privacyModal').classList.add('hidden');
+        }
+        function openTerms(ev) {
+            if (ev) ev.preventDefault();
+            document.getElementById('termsModal').classList.remove('hidden');
+        }
+        function closeTerms() {
+            document.getElementById('termsModal').classList.add('hidden');
+        }
+        function openContact(ev) {
+            if (ev) ev.preventDefault();
+            document.getElementById('contactModal').classList.remove('hidden');
+        }
+        function closeContact() {
+            document.getElementById('contactModal').classList.add('hidden');
+        }
+
+        /* ===== Trailer Carousel =====
+           TRAILERS: swap/add YouTube video IDs here whenever you have new links.
+           Each entry needs an id (from the youtu.be/<id> URL) and a glow color for the background. */
+        var TRAILERS = [
+            { id: 'NfcWSGZdnAs', glow: '#e8332a' },
+            { id: 'fZ_JOBCLF-I', glow: '#2563c7' },
+            { id: 'sZSYYiATFTI', glow: '#f0c100' },
+            { id: 'oIyea1m3zWI', glow: '#22c55e' },
+            { id: 'WpFR2sOFQcw', glow: '#a855f7' },
+            { id: 'LIg1vmdZxEo', glow: '#f97316' },
+            { id: 'zhIRbLHVD8o', glow: '#06b6d4' }
+        ];
+        var trailerIndex = 0;
+
+        function trailerThumb(id) {
+            return 'https://img.youtube.com/vi/' + id + '/hqdefault.jpg';
+        }
+
+        function wrapIndex(i) {
+            return (i + TRAILERS.length) % TRAILERS.length;
+        }
+
+        function renderTrailerStage() {
+            var current = TRAILERS[trailerIndex];
+            var prev = TRAILERS[wrapIndex(trailerIndex - 1)];
+            var next = TRAILERS[wrapIndex(trailerIndex + 1)];
+
+            document.getElementById('trailerPosterImg').src = trailerThumb(current.id);
+            document.getElementById('trailerPrev').src = trailerThumb(prev.id);
+            document.getElementById('trailerNext').src = trailerThumb(next.id);
+
+            // reset to poster (not mid-playback) whenever the active slide changes
+            document.getElementById('trailerPosterWrap').classList.remove('hidden');
+            var frame = document.getElementById('trailerIframe');
+            frame.classList.add('hidden');
+            frame.src = '';
+
+            // crossfade the blurred background to the new slide's own thumbnail
+            var glow = document.getElementById('trailerGlow');
+            glow.style.opacity = 0;
+            setTimeout(function () {
+                glow.style.backgroundImage = 'url(' + trailerThumb(current.id) + ')';
+                glow.style.opacity = 0.85;
+            }, 200);
+
+            var dots = document.getElementById('trailerDots');
+            dots.innerHTML = TRAILERS.map(function (t, i) {
+                return '<button class="trailer-dot' + (i === trailerIndex ? ' active' : '') + '" onclick="goToTrailer(' + i + ')" aria-label="Trailer ' + (i + 1) + '"></button>';
+            }).join('');
+        }
+
+        function shiftTrailer(delta) {
+            trailerIndex = wrapIndex(trailerIndex + delta);
+            renderTrailerStage();
+        }
+        function goToTrailer(i) {
+            trailerIndex = i;
+            renderTrailerStage();
+        }
+        function playCurrentTrailer() {
+            var current = TRAILERS[trailerIndex];
+            document.getElementById('trailerIframe').src = 'https://www.youtube.com/embed/' + current.id + '?autoplay=1';
+            document.getElementById('trailerIframe').classList.remove('hidden');
+            document.getElementById('trailerPosterWrap').classList.add('hidden');
+        }
+        renderTrailerStage();
+
+        /* ===== LEGO nav stud indicator ===== */
+        function moveNavStud(link, animate) {
+            var stud = document.getElementById('navStud');
+            var wrap = document.getElementById('navLinks');
+            if (!stud || !wrap || !link) return;
+            var lr = link.getBoundingClientRect();
+            var wr = wrap.getBoundingClientRect();
+            var left = lr.left - wr.left + (lr.width / 2) - 3;
+            if (!animate) stud.style.transition = 'none';
+            stud.style.left = left + 'px';
+            if (!animate) requestAnimationFrame(function () { stud.style.transition = ''; });
+            document.querySelectorAll('.nav-link').forEach(function (a) { a.classList.remove('active-lego'); });
+            link.classList.add('active-lego');
+        }
+        (function initNavStud() {
+            var wrap = document.getElementById('navLinks');
+            if (!wrap) return;
+            var links = wrap.querySelectorAll('.nav-link');
+            var active = links[0];
+            links.forEach(function (a) {
+                a.addEventListener('click', function () { moveNavStud(a, true); });
+            });
+            moveNavStud(active, false);
+            window.addEventListener('resize', function () { moveNavStud(document.querySelector('.nav-link.active-lego') || active, false); });
+        })();
+
+        /* ===== Brick click sound ===== */
+        var audioCtx = null;
+        var clickAnalyser = null, clickAnalyserData = null;
+        var studPulseEl = null, studPulseRaf = null;
+        function playClickSound() {
+            try {
+                audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+                if (!clickAnalyser) {
+                    clickAnalyser = audioCtx.createAnalyser();
+                    clickAnalyser.fftSize = 32;
+                    clickAnalyserData = new Uint8Array(clickAnalyser.frequencyBinCount);
+                    clickAnalyser.connect(audioCtx.destination);
+                }
+                if (!studPulseEl) studPulseEl = document.getElementById('heroGridPattern');
+                var fire = function () {
+                    var osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(520, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.09);
+                    osc.connect(gain); gain.connect(clickAnalyser);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+                    runStudPulse();
+                };
+                if (audioCtx.state === 'suspended') audioCtx.resume().then(fire); else fire();
+            } catch (e) { console.error('[click sound]', e); }
+        }
+        function runStudPulse() {
+            if (!studPulseEl || !clickAnalyser) return;
+            if (studPulseRaf) cancelAnimationFrame(studPulseRaf);
+            var start = performance.now();
+            function tick(now) {
+                clickAnalyser.getByteFrequencyData(clickAnalyserData);
+                var sum = 0;
+                for (var i = 0; i < clickAnalyserData.length; i++) sum += clickAnalyserData[i];
+                var level = sum / clickAnalyserData.length / 255;
+                studPulseEl.style.opacity = (0.1 + level * 0.55).toFixed(3);
+                if (now - start < 220) {
+                    studPulseRaf = requestAnimationFrame(tick);
+                } else {
+                    studPulseEl.style.opacity = '';
+                    studPulseRaf = null;
+                }
+            }
+            studPulseRaf = requestAnimationFrame(tick);
+        }
+        document.addEventListener('click', function (ev) {
+            var link = ev.target.closest('a[href]');
+            if (link && link.getAttribute('href') && !link.getAttribute('href').startsWith('#') && link.target !== '_blank') {
+                ev.preventDefault();
+                playClickSound();
+                var href = link.href;
+                setTimeout(function () { window.location.href = href; }, 110);
+                return;
+            }
+            if (ev.target.closest('button, a')) playClickSound();
+        });
+
+        /* ===== Stud cursor + particle trail ===== */
+        document.body.classList.add('stud-cursor');
+        (function setupParticleTrail() {
+            var layer = document.getElementById('particleLayer');
+            if (!layer) return;
+            var last = 0;
+            var colors = ['#ef4444', '#3b82f6', '#eab308', '#22c55e'];
+            document.addEventListener('mousemove', function (ev) {
+                var now = Date.now();
+                if (now - last < 60) return;
+                last = now;
+                var dot = document.createElement('div');
+                dot.className = 'mouse-brick';
+                dot.style.left = ev.clientX + 'px';
+                dot.style.top = ev.clientY + 'px';
+                dot.style.background = colors[Math.floor(Math.random() * colors.length)];
+                layer.appendChild(dot);
+                setTimeout(function () { dot.remove(); }, 650);
+            });
+        })();
+
+        /* ===== Scroll-assemble reveal ===== */
+        (function setupRevealBricks() {
+            var targets = document.querySelectorAll('.reveal-brick');
+            if (!targets.length) return;
+            if (!('IntersectionObserver' in window)) {
+                targets.forEach(function (t) { t.classList.add('in-view'); });
+                return;
+            }
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -80px 0px' });
+            targets.forEach(function (t) { observer.observe(t); });
+        })();
+
+        /* ===== Baseplate scroll progress bar ===== */
+        (function setupBuildProgress() {
+            var fill = document.getElementById('buildProgressFill');
+            if (!fill) return;
+            function update() {
+                var scrollTop = window.scrollY || document.documentElement.scrollTop;
+                var max = document.documentElement.scrollHeight - window.innerHeight;
+                var pct = max > 0 ? Math.min(100, Math.max(0, (scrollTop / max) * 100)) : 0;
+                fill.style.width = pct + '%';
+            }
+            document.addEventListener('scroll', update, { passive: true });
+            window.addEventListener('resize', update);
+            update();
+        })();
+
+        /* ===== Live hero build counter ===== */
+        (function setupHeroCounter() {
+            var el = document.getElementById('heroCounterNum');
+            if (!el) return;
+            var target = 0;
+            try {
+                var jobs = JSON.parse(localStorage.getItem('uploaded-jobsheets-v3') || '[]');
+                target = Array.isArray(jobs) ? jobs.length : 0;
+            } catch (e) { target = 0; }
+            var start = 0;
+            var duration = 900;
+            var startTime = null;
+            function step(ts) {
+                if (!startTime) startTime = ts;
+                var progress = Math.min(1, (ts - startTime) / duration);
+                el.textContent = Math.round(start + (target - start) * progress);
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            if (target > 0) requestAnimationFrame(step); else el.textContent = '0';
+        })();
+
+        /* ===== Minifigure color customizer ===== */
+        (function setupMiniCustomizer() {
+            var wrap = document.getElementById('miniSwatches');
+            var viewer = document.getElementById('heroViewer');
+            if (!wrap || !viewer) return;
+            var palette = [
+                { hex: '#E3000B', name: 'Red' },
+                { hex: '#2563c7', name: 'Blue' },
+                { hex: '#f0c100', name: 'Yellow' },
+                { hex: '#22c55e', name: 'Green' },
+                { hex: '#1a1c1c', name: 'Black' }
+            ];
+            function hexToRgbFloat(hex) {
+                var r = parseInt(hex.slice(1, 3), 16) / 255;
+                var g = parseInt(hex.slice(3, 5), 16) / 255;
+                var b = parseInt(hex.slice(5, 7), 16) / 255;
+                return [r, g, b, 1];
+            }
+            var originalColors = null;
+            function captureOriginalColors() {
+                if (originalColors || !viewer.model || !viewer.model.materials) return;
+                originalColors = viewer.model.materials.map(function (mat) {
+                    return mat.pbrMetallicRoughness ? mat.pbrMetallicRoughness.baseColorFactor.slice() : null;
+                });
+            }
+            viewer.addEventListener('load', captureOriginalColors);
+            captureOriginalColors();
+            function applyColor(hex, btn) {
+                if (!viewer.model || !viewer.model.materials) return;
+                captureOriginalColors();
+                viewer.model.materials.forEach(function (mat) {
+                    if (mat.pbrMetallicRoughness) {
+                        mat.pbrMetallicRoughness.setBaseColorFactor(hexToRgbFloat(hex));
+                    }
+                });
+                wrap.querySelectorAll('.mini-swatch').forEach(function (s) { s.classList.remove('active'); });
+                if (btn) btn.classList.add('active');
+            }
+            function resetColor(btn) {
+                if (!viewer.model || !viewer.model.materials || !originalColors) return;
+                viewer.model.materials.forEach(function (mat, i) {
+                    if (mat.pbrMetallicRoughness && originalColors[i]) {
+                        mat.pbrMetallicRoughness.setBaseColorFactor(originalColors[i]);
+                    }
+                });
+                wrap.querySelectorAll('.mini-swatch').forEach(function (s) { s.classList.remove('active'); });
+                if (btn) btn.classList.add('active');
+            }
+            palette.forEach(function (c) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'mini-swatch';
+                btn.style.background = c.hex;
+                btn.setAttribute('aria-label', c.name);
+                btn.addEventListener('click', function () { applyColor(c.hex, btn); });
+                wrap.appendChild(btn);
+            });
+            var resetBtn = document.createElement('button');
+            resetBtn.type = 'button';
+            resetBtn.className = 'mini-swatch mini-swatch-reset active';
+            resetBtn.setAttribute('aria-label', 'Reset to original colors');
+            resetBtn.title = 'Reset to original colors';
+            resetBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">refresh</span>';
+            resetBtn.addEventListener('click', function () { resetColor(resetBtn); });
+            wrap.appendChild(resetBtn);
+        })();
+
+        var heroParallax = { x: 0, y: 0 };
+
+        /* ===== Brick rain easter egg (click logo 5x) ===== */
+        (function setupBrickRain() {
+            var logo = document.getElementById('logoBrand');
+            if (!logo) return;
+            var clicks = 0;
+            var resetTimer = null;
+            var colors = ['#ef4444', '#3b82f6', '#eab308', '#22c55e', '#a855f7', '#f97316'];
+            function spawnRain() {
+                var toast = document.getElementById('brickRainToast');
+                if (toast) {
+                    toast.classList.add('show');
+                    setTimeout(function () { toast.classList.remove('show'); }, 2000);
+                }
+                for (var i = 0; i < 60; i++) {
+                    (function (i) {
+                        setTimeout(function () {
+                            var brick = document.createElement('div');
+                            brick.className = 'rain-brick';
+                            brick.style.left = Math.random() * 100 + 'vw';
+                            brick.style.background = colors[Math.floor(Math.random() * colors.length)];
+                            brick.style.animationDuration = (1.6 + Math.random() * 1.2) + 's';
+                            document.body.appendChild(brick);
+                            setTimeout(function () { brick.remove(); }, 3200);
+                        }, i * 25);
+                    })(i);
+                }
+            }
+            logo.addEventListener('click', function () {
+                clicks++;
+                clearTimeout(resetTimer);
+                resetTimer = setTimeout(function () { clicks = 0; }, 2000);
+                if (clicks >= 5) {
+                    clicks = 0;
+                    spawnRain();
+                    try { localStorage.setItem('egg-found-brickrain', '1'); } catch (e) {}
+                }
+            });
+        })();
+
+        /* ===== Click-to-place brick graffiti ===== */
+        (function setupGraffiti() {
+            var layer = document.getElementById('graffitiLayer');
+            if (!layer) return;
+            var KEY = 'graffiti-bricks-v1';
+            var MAX_BRICKS = 150;
+            var colors = ['#ef4444', '#3b82f6', '#eab308', '#22c55e', '#a855f7', '#f97316'];
+            var IGNORE_SELECTOR = 'a, button, input, textarea, select, model-viewer, .trailer-nav-btn, .trailer-dot, .mini-swatch';
+
+            function loadBricks() {
+                try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; }
+            }
+            function saveBricks(list) {
+                try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {}
+            }
+            function renderBrick(b) {
+                var el = document.createElement('div');
+                el.className = 'graffiti-brick';
+                el.style.left = b.x + '%';
+                el.style.top = b.y + '%';
+                el.style.background = b.color;
+                el.style.setProperty('--rot', b.rot + 'deg');
+                el.style.transform = 'rotate(' + b.rot + 'deg)';
+                layer.appendChild(el);
+            }
+            function renderAll() {
+                layer.innerHTML = '';
+                loadBricks().forEach(renderBrick);
+            }
+            function anyModalOpen() {
+                return ['helpModal', 'privacyModal', 'termsModal', 'contactModal', 'builderModal'].some(function (id) {
+                    var m = document.getElementById(id);
+                    return m && !m.classList.contains('hidden');
+                });
+            }
+            function clearGraffiti() {
+                saveBricks([]);
+                layer.innerHTML = '';
+                if (typeof playClickSound === 'function') playClickSound();
+            }
+            renderAll();
+
+            var resetBtn = document.getElementById('graffitiResetBtn');
+            if (resetBtn) resetBtn.addEventListener('click', clearGraffiti);
+
+            document.addEventListener('click', function (ev) {
+                if (anyModalOpen()) return;
+                if (ev.target.closest(IGNORE_SELECTOR)) return;
+                var docEl = document.documentElement;
+                var xPct = (ev.pageX / docEl.scrollWidth) * 100;
+                var yPct = (ev.pageY / docEl.scrollHeight) * 100;
+                var brick = { x: xPct, y: yPct, rot: Math.round(Math.random() * 60 - 30), color: colors[Math.floor(Math.random() * colors.length)] };
+                var list = loadBricks();
+                list.push(brick);
+                if (list.length > MAX_BRICKS) list = list.slice(list.length - MAX_BRICKS);
+                saveBricks(list);
+                renderBrick(brick);
+                try { localStorage.setItem('egg-found-graffiti', '1'); } catch (e) {}
+                if (typeof playClickSound === 'function') playClickSound();
+            });
+        })();
+
+        /* ===== Cross-tab live builder ghost (BroadcastChannel) ===== */
+        (function setupCrossTabGhosts() {
+            if (typeof BroadcastChannel === 'undefined') return;
+            var channel = new BroadcastChannel('lego-builder-ghosts');
+            var myId = 'tab-' + Math.random().toString(36).slice(2, 9);
+            var palette = ['#ef4444', '#3b82f6', '#eab308', '#22c55e', '#a855f7', '#f97316'];
+            var myColor = palette[Math.floor(Math.random() * palette.length)];
+            var layer = document.createElement('div');
+            layer.id = 'ghostLayer';
+            document.body.appendChild(layer);
+            var ghosts = {};
+            var lastSent = 0;
+
+            document.addEventListener('mousemove', function (ev) {
+                var now = Date.now();
+                if (now - lastSent < 80) return;
+                lastSent = now;
+                channel.postMessage({ type: 'move', id: myId, color: myColor, xPct: ev.clientX / window.innerWidth * 100, yPct: ev.clientY / window.innerHeight * 100 });
+            });
+            window.addEventListener('beforeunload', function () {
+                channel.postMessage({ type: 'leave', id: myId });
+            });
+            channel.onmessage = function (ev) {
+                var d = ev.data;
+                if (!d || d.id === myId) return;
+                if (d.type === 'leave') {
+                    if (ghosts[d.id]) { ghosts[d.id].el.remove(); delete ghosts[d.id]; }
+                    return;
+                }
+                if (d.type === 'move') {
+                    var g = ghosts[d.id];
+                    if (!g) {
+                        var el = document.createElement('div');
+                        el.className = 'builder-ghost';
+                        el.style.borderColor = d.color;
+                        layer.appendChild(el);
+                        g = ghosts[d.id] = { el: el, lastSeen: Date.now() };
+                        try { localStorage.setItem('egg-found-ghost', '1'); } catch (e) {}
+                    }
+                    g.lastSeen = Date.now();
+                    g.el.style.left = (d.xPct / 100 * window.innerWidth) + 'px';
+                    g.el.style.top = (d.yPct / 100 * window.innerHeight) + 'px';
+                }
+            };
+            setInterval(function () {
+                var now = Date.now();
+                Object.keys(ghosts).forEach(function (id) {
+                    if (now - ghosts[id].lastSeen > 3000) { ghosts[id].el.remove(); delete ghosts[id]; }
+                });
+            }, 1000);
+        })();
+
+        /* ===== Wall-crumble scroll transition ===== */
+        (function setupWallCrumble() {
+            var wallEl = document.getElementById('wallCrumble');
+            var container = document.getElementById('wallCrumbleTiles');
+            if (!wallEl || !container) return;
+            var cols = 10, rows = 4;
+            for (var r = 0; r < rows; r++) {
+                for (var c = 0; c < cols; c++) {
+                    var t = document.createElement('div');
+                    t.className = 'wall-tile';
+                    t.style.left = (c / cols * 100) + '%';
+                    t.style.top = (r / rows * 100) + '%';
+                    t.style.width = (100 / cols) + '%';
+                    t.style.height = (100 / rows) + '%';
+                    t.style.background = (r + c) % 2 === 0 ? '#242424' : '#1a1a1a';
+                    t.style.transitionDelay = ((r * cols + c) * 12) + 'ms';
+                    t.style.setProperty('--dx', (Math.random() * 300 - 150) + 'px');
+                    t.style.setProperty('--dy', (Math.random() * 220 + 80) + 'px');
+                    t.style.setProperty('--rot', (Math.random() * 180 - 90) + 'deg');
+                    container.appendChild(t);
+                }
+            }
+            if (!('IntersectionObserver' in window)) {
+                document.querySelectorAll('.wall-tile').forEach(function (t) { t.classList.add('crumbled'); });
+                return;
+            }
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        document.querySelectorAll('.wall-tile').forEach(function (t) { t.classList.add('crumbled'); });
+                        if (typeof playClickSound === 'function') playClickSound();
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+            observer.observe(wallEl);
+        })();
+
+        /* ===== Mouse-parallax hero depth ===== */
+        (function setupHeroParallax() {
+            var hero = document.getElementById('heroSection');
+            var grid = document.getElementById('heroGridPattern');
+            var textBlock = document.getElementById('heroTextBlock');
+            if (!hero) return;
+            hero.addEventListener('mousemove', function (ev) {
+                var rect = hero.getBoundingClientRect();
+                var nx = ((ev.clientX - rect.left) / rect.width - 0.5) * 2;
+                var ny = ((ev.clientY - rect.top) / rect.height - 0.5) * 2;
+                heroParallax.x = nx;
+                heroParallax.y = ny;
+                if (grid) grid.style.transform = 'translate(' + (-nx * 10) + 'px,' + (-ny * 10) + 'px)';
+                if (textBlock) textBlock.style.transform = 'translate(' + (nx * 8) + 'px,' + (ny * 8) + 'px)';
+            });
+            hero.addEventListener('mouseleave', function () {
+                heroParallax.x = 0;
+                heroParallax.y = 0;
+                if (grid) grid.style.transform = '';
+                if (textBlock) textBlock.style.transform = '';
+            });
+        })();
+
+        /* ===== Secret vault easter egg (type LEGO anywhere) ===== */
+        function closeVault() {
+            var el = document.getElementById('secretVault');
+            if (!el) return;
+            el.classList.remove('opening');
+            setTimeout(function () { el.classList.add('hidden'); }, 400);
+        }
+        (function setupSecretVault() {
+            var KEYWORD = 'lego';
+            var buffer = '';
+            document.addEventListener('keydown', function (ev) {
+                var tag = (document.activeElement && document.activeElement.tagName || '').toLowerCase();
+                if (tag === 'input' || tag === 'textarea' || (document.activeElement && document.activeElement.isContentEditable)) return;
+                if (ev.key.length !== 1) return;
+                buffer = (buffer + ev.key.toLowerCase()).slice(-KEYWORD.length);
+                if (buffer === KEYWORD) {
+                    buffer = '';
+                    var el = document.getElementById('secretVault');
+                    if (!el) return;
+                    el.classList.remove('hidden');
+                    requestAnimationFrame(function () {
+                        requestAnimationFrame(function () { el.classList.add('opening'); });
+                    });
+                    try { localStorage.setItem('egg-found-vault', '1'); } catch (e) {}
+                    if (typeof playClickSound === 'function') playClickSound();
+                }
+            });
+        })();
+    </script>
+</body></html>

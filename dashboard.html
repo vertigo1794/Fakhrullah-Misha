@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lego Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js" type="module"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-fonts">
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #3b82f6; /* Base blue background, obscured by gradient */
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(96, 165, 250, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(96, 165, 250, 0.4) 0%, transparent 40%),
+                linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        h1, h2, h3, h4, .font-anton {
+            font-family: 'Anton', sans-serif;
+            letter-spacing: 0.05em;
+        }
+
+        /* Generic Lego Brick Styling */
+        .lego-border {
+            border: 4px solid #000;
+            border-radius: 12px;
+            box-shadow: inset -4px -4px 0px rgba(0,0,0,0.1), 4px 4px 0px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .lego-border-sm {
+            border: 3px solid #000;
+            border-radius: 8px;
+            box-shadow: inset -3px -3px 0px rgba(0,0,0,0.1), 3px 3px 0px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        /* Studs pseudo-elements generator */
+        .has-studs::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            right: 20px;
+            height: 12px;
+            background-image: radial-gradient(circle, #000 0%, #000 6px, transparent 6px, transparent 100%);
+            background-size: 24px 12px;
+            background-repeat: repeat-x;
+            background-position: center bottom;
+            z-index: -1;
+        }
+
+        .has-studs-sm::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 10px;
+            right: 10px;
+            height: 8px;
+            background-image: radial-gradient(circle, #000 0%, #000 4px, transparent 4px, transparent 100%);
+            background-size: 16px 8px;
+            background-repeat: repeat-x;
+            background-position: center bottom;
+            z-index: -1;
+        }
+
+        /* Flat brick card with exactly 4 evenly-spaced glossy studs (matches real LEGO ref) */
+        .stat-brick-card {
+            border: 4px solid #000;
+            border-radius: 18px;
+            box-shadow: inset -4px -4px 0px rgba(0,0,0,0.12), 5px 5px 0px rgba(0,0,0,0.35);
+            position: relative;
+        }
+        .brick-stud-row {
+            position: absolute;
+            top: -13px;
+            left: 26px;
+            right: 26px;
+            height: 26px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .brick-stud {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2.5px solid #000;
+            flex-shrink: 0;
+        }
+        .brick-stud-blue {
+            background:
+                radial-gradient(circle at 32% 26%, rgba(255,255,255,.8) 0%, rgba(255,255,255,0) 44%),
+                radial-gradient(circle at 68% 78%, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 48%),
+                #3b82f6;
+        }
+        .brick-stud-green {
+            background:
+                radial-gradient(circle at 32% 26%, rgba(255,255,255,.8) 0%, rgba(255,255,255,0) 44%),
+                radial-gradient(circle at 68% 78%, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 48%),
+                #22c55e;
+        }
+        .brick-stud-yellow {
+            background:
+                radial-gradient(circle at 32% 26%, rgba(255,255,255,.8) 0%, rgba(255,255,255,0) 44%),
+                radial-gradient(circle at 68% 78%, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 48%),
+                #eab308;
+        }
+        .brick-stud-grey {
+            background:
+                radial-gradient(circle at 32% 26%, rgba(255,255,255,.8) 0%, rgba(255,255,255,0) 44%),
+                radial-gradient(circle at 68% 78%, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 48%),
+                #9ca3af;
+        }
+        .brick-stud-red {
+            background:
+                radial-gradient(circle at 32% 26%, rgba(255,255,255,.8) 0%, rgba(255,255,255,0) 44%),
+                radial-gradient(circle at 68% 78%, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 48%),
+                #ef4444;
+        }
+        .brick-stud-dark {
+            background:
+                radial-gradient(circle at 32% 26%, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 44%),
+                radial-gradient(circle at 68% 78%, rgba(0,0,0,.4) 0%, rgba(0,0,0,0) 48%),
+                #4b5563;
+        }
+        .brick-stud-pastel-blue {
+            background:
+                radial-gradient(circle at 32% 26%, rgba(255,255,255,.8) 0%, rgba(255,255,255,0) 44%),
+                radial-gradient(circle at 68% 78%, rgba(0,0,0,.25) 0%, rgba(0,0,0,0) 48%),
+                #93c5fd;
+        }
+        .brick-stud-pastel-orange {
+            background:
+                radial-gradient(circle at 32% 26%, rgba(255,255,255,.8) 0%, rgba(255,255,255,0) 44%),
+                radial-gradient(circle at 68% 78%, rgba(0,0,0,.25) 0%, rgba(0,0,0,0) 48%),
+                #fdba74;
+        }
+        .brick-stud-pastel-yellow {
+            background:
+                radial-gradient(circle at 32% 26%, rgba(255,255,255,.8) 0%, rgba(255,255,255,0) 44%),
+                radial-gradient(circle at 68% 78%, rgba(0,0,0,.25) 0%, rgba(0,0,0,0) 48%),
+                #fde047;
+        }
+        .brick-stud-pastel-green {
+            background:
+                radial-gradient(circle at 32% 26%, rgba(255,255,255,.8) 0%, rgba(255,255,255,0) 44%),
+                radial-gradient(circle at 68% 78%, rgba(0,0,0,.25) 0%, rgba(0,0,0,0) 48%),
+                #86efac;
+        }
+
+        /* Specific Component Colors & Gradients */
+        .bg-gradient-yellow-orange {
+            background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 50%, #f59e0b 100%);
+        }
+
+        .bg-gradient-red {
+            background: linear-gradient(135deg, #fca5a5 0%, #ef4444 50%, #b91c1c 100%);
+        }
+
+        .bg-lego-red { background-color: #ef4444; }
+        .bg-lego-blue { background-color: #3b82f6; }
+        .bg-lego-green { background-color: #22c55e; }
+        .bg-lego-yellow { background-color: #eab308; }
+        .bg-lego-grey { background-color: #9ca3af; }
+        .bg-lego-dark { background-color: #1f2937; }
+
+        /* Text Outlines */
+        .text-outline-white {
+            text-shadow:
+                -2px -2px 0 #fff,
+                 2px -2px 0 #fff,
+                -2px  2px 0 #fff,
+                 2px  2px 0 #fff;
+        }
+
+        .text-outline-black {
+            text-shadow:
+                -2px -2px 0 #000,
+                 2px -2px 0 #000,
+                -2px  2px 0 #000,
+                 2px  2px 0 #000;
+        }
+        .stat-num-red { color: #ef4444; }
+
+        /* Progress Bar Inner — glowing neon liquid fill */
+        .progress-bar-inner {
+            background: linear-gradient(120deg, #16a34a 0%, #4ade80 25%, #bbf7d0 50%, #4ade80 75%, #16a34a 100%);
+            background-size: 220% 100%;
+            border: 3px solid #000;
+            border-radius: 9999px;
+            transition: width 0.8s ease;
+            animation: liquidShimmer 3s linear infinite, neonPulse 2.2s ease-in-out infinite;
+        }
+        @keyframes liquidShimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 220% 50%; }
+        }
+        @keyframes neonPulse {
+            0%, 100% {
+                box-shadow: inset -2px -2px 5px rgba(0,0,0,0.3), inset 2px 2px 5px rgba(255,255,255,0.4),
+                    0 0 8px 2px rgba(74,222,128,0.6), 0 0 18px 4px rgba(34,197,94,0.35);
+            }
+            50% {
+                box-shadow: inset -2px -2px 5px rgba(0,0,0,0.3), inset 2px 2px 5px rgba(255,255,255,0.4),
+                    0 0 16px 6px rgba(134,239,172,0.95), 0 0 30px 10px rgba(34,197,94,0.6);
+            }
+        }
+
+        /* Jobsheet card — plain CSS, not Tailwind utilities.
+           This list is built with innerHTML at runtime, and the Tailwind CDN's live
+           compiler doesn't reliably keep up with large batch DOM injections (cards would
+           render structurally correct but visually unstyled). Hand-written CSS has no
+           such dependency, so it always renders regardless of when it's inserted. */
+        .jc-card {
+            border: 4px solid #000;
+            border-radius: 12px;
+            box-shadow: inset -4px -4px 0px rgba(0,0,0,0.1), 4px 4px 0px rgba(0,0,0,0.2);
+            background: #fff;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+        .jc-header {
+            background: #3b82f6;
+            border-bottom: 4px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        .jc-header span {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #fff;
+        }
+        .jc-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .jc-title {
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .jc-date {
+            font-size: 0.875rem;
+            color: #4b5563;
+        }
+        .jc-badge {
+            font-weight: 700;
+            text-align: center;
+            padding: 4px 0;
+            border-radius: 9999px;
+            border: 2px solid #000;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            margin-top: 8px;
+        }
+        .jc-badge-submitted { background: #eab308; color: #000; }
+        .jc-badge-reviewed { background: #22c55e; color: #fff; }
+        .jc-view-btn {
+            background: #3b82f6;
+            color: #fff;
+            font-family: 'Anton', sans-serif;
+            padding: 8px 0;
+            border-radius: 9999px;
+            border: 4px solid #000;
+            margin-top: 8px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+        .jc-view-btn:hover { background: #2563eb; }
+
+        /* ===== Feature 1: brick-stud textured background with scroll parallax ===== */
+        #studLayer {
+            position: fixed;
+            inset: -60px 0 0 0;
+            height: calc(100% + 120px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.16;
+            background-image: radial-gradient(circle, #fff 0 7px, transparent 7px 100%);
+            background-size: 46px 46px;
+            will-change: transform;
+        }
+
+        /* ===== Feature 3: XP / level badges ===== */
+        .xp-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: 'Anton', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            background: #1f2937;
+            color: #fde047;
+            border: 2px solid #000;
+            border-radius: 9999px;
+            padding: 2px 10px;
+            margin-left: 6px;
+        }
+
+        /* ===== Feature 4: live activity ticker ===== */
+        #tickerWrap {
+            overflow: hidden;
+            background: #000;
+            border: 3px solid #000;
+            border-radius: 8px;
+            margin-top: 12px;
+            white-space: nowrap;
+        }
+        #tickerTrack {
+            display: inline-block;
+            padding-left: 100%;
+            animation: tickerScroll 22s linear infinite;
+            color: #fde047;
+            font-family: 'Anton', sans-serif;
+            font-size: 13px;
+            letter-spacing: 0.04em;
+            padding-top: 6px;
+            padding-bottom: 6px;
+        }
+        @keyframes tickerScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* ===== Feature 6: Midnight Brick dark mode ===== */
+        html.midnight body {
+            background-color: #0b1220;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(59,130,246,0.25) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(147,51,234,0.25) 0%, transparent 40%),
+                linear-gradient(135deg, #0b1220 0%, #111827 100%);
+        }
+        html.midnight #studLayer { opacity: 0.10; }
+        html.midnight .lego-border,
+        html.midnight .lego-border-sm,
+        html.midnight .jc-card {
+            box-shadow: inset -4px -4px 0px rgba(255,255,255,0.04), 4px 4px 0px rgba(0,0,0,0.6),
+                0 0 14px rgba(59,130,246,0.25);
+        }
+        html.midnight .bg-white { background-color: #131c2e !important; color: #e5e7eb; }
+        html.midnight .bg-gray-50 { background-color: #1e293b !important; }
+        html.midnight #towerCard,
+        html.midnight #raceCard,
+        html.midnight #achievementCard,
+        html.midnight #streakCard { background: #131c2e !important; color: #e5e7eb; }
+        html.midnight #raceStatus .text-gray-700 { color: #cbd5e1 !important; }
+        html.midnight .text-black { color: #e5e7eb !important; }
+        html.midnight .jc-card { background: #131c2e; }
+        html.midnight .jc-title { color: #f1f5f9; }
+        html.midnight .jc-date { color: #94a3b8; }
+        html.midnight .bg-gradient-yellow-orange {
+            background: linear-gradient(135deg, #312e81 0%, #1e1b4b 60%, #0b1220 100%);
+        }
+        html.midnight .bg-\[\#fde047\] { background-color: #131c2e !important; }
+        html.midnight .bg-\[\#fbbf24\] { background-color: #1e1b4b !important; }
+
+        #themeToggle {
+            width: 40px; height: 40px; border-radius: 9999px;
+            border: 2px solid #000; background: #fff;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 18px;
+        }
+
+        /* ===== Feature 7: draggable jobsheet cards ===== */
+        .jc-card[draggable="true"] { cursor: grab; }
+        .jc-card.dragging { opacity: 0.4; }
+        .jc-card.drag-over { border-color: #eab308; box-shadow: 0 0 0 4px rgba(234,179,8,0.4); }
+
+        /* ===== Feature 8: avatar accent picker ===== */
+        .avatar-btn { cursor: pointer; padding: 0; border: none; background: none; }
+        #colorPickerPopover {
+            position: absolute; z-index: 200; background: #fff; border: 3px solid #000;
+            border-radius: 10px; padding: 8px; display: flex; gap: 6px;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+        }
+        #colorPickerPopover .swatch {
+            width: 22px; height: 22px; border-radius: 50%; border: 2px solid #000; cursor: pointer;
+        }
+
+        /* ===== New Idea 1: LEGO puzzle reveal — the logo assembles brick by brick as progress rises ===== */
+        #towerCard { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        #towerStage {
+            width: 100%; max-width: 220px; height: 220px; position: relative;
+            border: 3px solid #000; border-radius: 8px; overflow: hidden; background: #000;
+        }
+        .tower-logo-backdrop {
+            position: absolute; inset: 0;
+            background-image: url('assets/tower-reveal.jpg');
+            background-size: cover;
+            background-position: center 30%;
+        }
+        .puzzle-tile {
+            position: absolute; width: 25%; height: 20%; border: 2px solid #000; box-sizing: border-box;
+            display: flex; align-items: center; justify-content: center; z-index: 2;
+            transition: transform 0.45s cubic-bezier(.4,1.8,.4,1), opacity 0.4s ease;
+        }
+        .puzzle-tile::after {
+            content: ''; width: 9px; height: 9px; border-radius: 50%; background: rgba(0,0,0,0.18);
+        }
+        .puzzle-tile.revealed {
+            transform: scale(0.2) rotate(35deg);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ===== New Idea 2: achievement wall ===== */
+        #achievementWall { display: flex; flex-wrap: wrap; gap: 10px; }
+        .achievement-badge {
+            width: 64px; display: flex; flex-direction: column; align-items: center; gap: 3px;
+            opacity: 0.25; filter: grayscale(1); transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+        }
+        .achievement-badge.unlocked { opacity: 1; filter: none; }
+        .achievement-badge.just-unlocked { animation: badgePop 0.5s ease; }
+        @keyframes badgePop {
+            0% { transform: scale(0.4) rotate(-15deg); }
+            60% { transform: scale(1.15) rotate(5deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+        .achievement-icon {
+            width: 48px; height: 48px; border-radius: 50%; background: #fde047; border: 3px solid #000;
+            display: flex; align-items: center; justify-content: center; font-size: 22px;
+        }
+        .achievement-label { font-size: 9px; font-weight: 700; text-align: center; text-transform: uppercase; line-height: 1.2; }
+
+        /* ===== New Idea 3: race bar ===== */
+        #raceTrack { position: relative; height: 64px; background: #1f2937; border: 3px solid #000; border-radius: 9999px; overflow: hidden; }
+        #raceFinishFlag {
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+            font-size: 20px; z-index: 2; filter: drop-shadow(0 0 2px rgba(0,0,0,0.8));
+        }
+        .race-runner {
+            position: absolute; width: 26px; height: 26px; border-radius: 50%;
+            border: 2px solid #000; background-size: cover; background-position: center;
+            transition: left 0.6s cubic-bezier(.4,1.6,.4,1); z-index: 3;
+        }
+        #raceMisha { top: 5px; }
+        #raceFakhrullah { top: 33px; }
+        /* Pure CSS flame (no emoji) — sized to the 26px runner circle */
+        .race-runner::before,
+        .race-runner::after {
+            content: '';
+            position: absolute;
+            left: -19px;
+            top: 50%;
+            width: 18px;
+            height: 24px;
+            border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+            transform-origin: center bottom;
+            pointer-events: none;
+        }
+        .race-runner::before {
+            background: radial-gradient(circle at 50% 75%, #fde047 0%, #f97316 45%, #dc2626 80%, transparent 100%);
+            transform: translateY(-50%) scaleY(1) scaleX(1) rotate(-2deg);
+            animation: flameOuter 0.35s ease-in-out infinite alternate;
+            z-index: 1;
+        }
+        .race-runner::after {
+            width: 9px;
+            height: 14px;
+            left: -14px;
+            background: radial-gradient(circle at 50% 75%, #fef9c3 0%, #fde047 55%, #f97316 100%);
+            transform: translateY(-50%) scaleY(1) rotate(2deg);
+            animation: flameInner 0.28s ease-in-out infinite alternate;
+            z-index: 2;
+        }
+        @keyframes flameOuter {
+            0% { opacity: 0.75; transform: translateY(-50%) scaleY(0.85) scaleX(0.85) rotate(-6deg); }
+            100% { opacity: 1; transform: translateY(-50%) scaleY(1.08) scaleX(1.05) rotate(4deg); }
+        }
+        @keyframes flameInner {
+            0% { opacity: 0.8; transform: translateY(-50%) scaleY(0.8) rotate(4deg); }
+            100% { opacity: 1; transform: translateY(-50%) scaleY(1.1) rotate(-3deg); }
+        }
+
+
+        /* ===== New Idea 4: streak heatmap ===== */
+        #streakGrid { display: grid; grid-template-columns: repeat(14, 1fr); gap: 3px; }
+        .streak-cell { aspect-ratio: 1; border-radius: 2px; background: #e5e7eb; border: 1px solid rgba(0,0,0,0.15); }
+        .streak-cell.active-1 { background: #bbf7d0; }
+        .streak-cell.active-2 { background: #4ade80; }
+        .streak-cell.active-3 { background: #16a34a; }
+        .streak-cell-avatars {
+            background: #f0fdf4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+            padding: 1px;
+        }
+        .streak-avatar {
+            width: 46%;
+            height: 90%;
+            border-radius: 50%;
+            border: 1.5px solid #000;
+            object-fit: cover;
+        }
+        .streak-avatar-solo {
+            width: 85%;
+            height: 85%;
+        }
+
+        /* ===== New Idea 5: custom stud cursor ===== */
+        body.stud-cursor, body.stud-cursor * {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" fill="%23eab308" stroke="%23000" stroke-width="2"/></svg>') 14 14, auto;
+        }
+
+        /* ===== New Idea 6: deadline pulse ===== */
+        .jc-deadline { font-size: 11px; font-weight: 700; margin-top: 2px; }
+        .jc-deadline.urgent { color: #dc2626; animation: deadlinePulse 1.2s ease-in-out infinite; }
+        @keyframes deadlinePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* ===== New Idea 8: certificate plaque ===== */
+        #certificateModal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 300;
+            display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        #certificateModal.show { display: flex; }
+        #certificatePlaque {
+            background: linear-gradient(#fefce8, #fef9c3); border: 6px solid #b45309; border-radius: 12px;
+            padding: 36px; max-width: 420px; width: 100%; text-align: center; position: relative;
+            box-shadow: 0 0 0 4px #fde047, 10px 10px 0 rgba(0,0,0,0.4);
+        }
+
+        /* ===== New Idea 9: brick particle mouse trail ===== */
+        #particleLayer { position: fixed; inset: 0; pointer-events: none; z-index: 9998; overflow: hidden; }
+        .mouse-brick {
+            position: absolute; width: 8px; height: 8px; border: 1.5px solid #000; border-radius: 2px;
+            animation: mouseBrickFade 0.6s ease forwards;
+        }
+        @keyframes mouseBrickFade {
+            0% { opacity: 0.9; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-18px) scale(0.5); }
+        }
+
+        /* ===== Hero enrichment: progress ring + quick-launch dock ===== */
+        #heroLogoRing {
+            position: relative;
+            width: 380px;
+            max-width: 100%;
+            aspect-ratio: 1 / 1;
+        }
+        #heroLogoRing svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+        #heroLogoRing circle.ring-track { fill: none; stroke: rgba(0,0,0,0.15); stroke-width: 10; }
+        #heroLogoRing circle.ring-fill {
+            fill: none; stroke: #dc2626; stroke-width: 10; stroke-linecap: round;
+            transition: stroke-dashoffset .6s cubic-bezier(.34,1.56,.64,1);
+        }
+        #heroLogoRing model-viewer { position: relative; z-index: 1; }
+        #heroRingLabel {
+            position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+            background: #1a1a1a; color: #fde047; font-family: 'Anton', sans-serif;
+            font-size: 13px; letter-spacing: .04em; padding: 3px 12px; border-radius: 999px;
+            border: 2px solid #000; z-index: 2; white-space: nowrap;
+        }
+        #heroQuickDock { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+        .hero-dock-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: #1a1a1a; color: #fff; border: 2.5px solid #000; border-radius: 8px;
+            padding: 8px 14px; font-family: 'Anton', sans-serif; font-size: 13px;
+            letter-spacing: .03em; text-transform: uppercase; cursor: pointer;
+            box-shadow: 3px 3px 0 rgba(0,0,0,.4); transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .hero-dock-btn:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 rgba(0,0,0,.4); }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex justify-center items-start">
+<div id="studLayer"></div>
+<canvas id="confettiCanvas" style="position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9999;"></canvas>
+<div id="particleLayer"></div>
+<!-- New Idea 8: Certificate Plaque -->
+<div id="certificateModal" onclick="closeCertificate()">
+<div id="certificatePlaque" onclick="event.stopPropagation()">
+<button onclick="closeCertificate()" class="absolute top-2 right-3 font-anton text-xl">✕</button>
+<p class="font-anton text-sm tracking-widest text-amber-700">CERTIFICATE OF COMPLETION</p>
+<h2 id="certificateName" class="font-anton text-4xl my-3 text-black"></h2>
+<p class="text-sm text-gray-700"><span id="certificateVerb">has</span> completed <strong>100%</strong> of all assigned jobsheets</p>
+<p class="text-xs text-gray-500 mt-4" id="certificateDate"></p>
+</div>
+</div>
+<!-- Main Container -->
+<div class="max-w-7xl w-full flex flex-col lg:flex-row lg:items-start gap-6 mx-auto">
+<!-- BEGIN: Left Column (Main Content) -->
+<main id="mainColumn" class="w-full lg:w-2/3 flex flex-col gap-6">
+<!-- Header Container -->
+<header class="lego-border bg-white flex flex-col sm:flex-row justify-between items-center p-4 gap-4 z-10">
+<div class="flex items-center gap-3">
+<a href="landing.html" class="lego-border-sm bg-lego-yellow hover:bg-yellow-400 text-black p-2 rounded-full flex items-center justify-center transition-colors" aria-label="Back to home">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h4a1 1 0 001-1v-6h2v6a1 1 0 001 1h4a1 1 0 001-1V10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+<h1 class="text-3xl font-anton uppercase text-black">OUR WORKSPACE</h1>
+<button id="roleBadge" onclick="toggleRole()" class="lego-border-sm px-3 py-1 rounded-full text-xs font-anton uppercase tracking-wide"></button>
+</div>
+<div class="flex items-center gap-4 w-full sm:w-auto">
+<!-- Search Bar -->
+<div class="lego-border-sm bg-lego-yellow flex items-center px-3 py-1 flex-grow sm:w-64 relative">
+<svg class="w-5 h-5 mr-2 text-black" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg>
+<input id="jobsheetSearchInput" oninput="filterJobsheets(this.value)" class="bg-transparent border-none focus:ring-0 w-full placeholder-black text-black font-bold" placeholder="Search jobsheets..." type="text"/>
+</div>
+<!-- Dark Mode Toggle -->
+<button id="themeToggle" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
+<!-- Notification Bell -->
+<div class="relative">
+<button onclick="toggleNotifications(event)" class="lego-border-sm bg-white p-2 rounded-full relative cursor-pointer">
+<svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<!-- Red Dot -->
+<span id="notifDot" class="absolute top-0 right-0 w-3 h-3 bg-red-600 border-2 border-black rounded-full"></span>
+</button>
+<!-- Notification Dropdown -->
+<div id="notifPanel" class="hidden absolute right-0 mt-2 w-80 bg-white lego-border rounded-lg z-50 overflow-hidden">
+<div class="bg-lego-dark text-white font-anton uppercase tracking-widest px-4 py-2 text-sm">Notifications</div>
+<div id="notifList" class="max-h-80 overflow-y-auto divide-y-2 divide-black"></div>
+</div>
+</div>
+</div>
+</header>
+<!-- Live Activity Ticker -->
+<div id="tickerWrap">
+<div id="tickerTrack">Welcome back to OUR WORKSPACE!</div>
+</div>
+<!-- Main Content Area with Gradient -->
+<div class="lego-border bg-gradient-yellow-orange p-6 sm:p-8 flex flex-col gap-8 relative z-0">
+<!-- Welcome Section -->
+<section class="flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex flex-col items-start gap-4 z-10 w-full md:w-1/2">
+<h2 class="text-5xl sm:text-6xl font-anton uppercase text-black leading-tight text-outline-white">
+                            WELCOME TO<br/>
+                            OUR <span class="text-lego-red text-outline-black">WORKSPACE</span>
+</h2>
+<a href="library.html" class="stat-brick-card bg-lego-red hover:bg-red-600 text-white font-anton text-xl px-8 py-3 mt-4 transition-colors inline-block relative">
+<div class="brick-stud-row"><span class="brick-stud brick-stud-red"></span><span class="brick-stud brick-stud-red"></span><span class="brick-stud brick-stud-red"></span><span class="brick-stud brick-stud-red"></span></div>
+EXPLORE JOBSHEETS
+</a>
+<div id="heroQuickDock">
+<button type="button" class="hero-dock-btn" onclick="window.location.href='library.html'"><span>⬆️</span> Upload</button>
+<button type="button" class="hero-dock-btn" onclick="document.getElementById('jobsheetList').scrollIntoView({behavior:'smooth',block:'center'})"><span>📋</span> Jobsheets</button>
+<button type="button" class="hero-dock-btn" onclick="document.getElementById('achievementCard').scrollIntoView({behavior:'smooth',block:'center'})"><span>🏆</span> Achievements</button>
+<button type="button" class="hero-dock-btn" onclick="document.getElementById('raceTrack').scrollIntoView({behavior:'smooth',block:'center'})"><span>🏁</span> Race</button>
+</div>
+</div>
+<!-- Hero 3D Logo -->
+<div class="w-full md:w-1/2 z-10 flex items-center justify-center">
+<div id="heroLogoRing">
+<svg viewBox="0 0 100 100">
+<circle class="ring-track" cx="50" cy="50" r="45"></circle>
+<circle id="heroRingFill" class="ring-fill" cx="50" cy="50" r="45" stroke-dasharray="282.7" stroke-dashoffset="282.7"></circle>
+</svg>
+<model-viewer src="models/lego_logo_3d.glb" alt="LEGO Logo 3D model" auto-rotate rotation-per-second="25deg" camera-controls disable-zoom field-of-view="8deg" shadow-intensity="1" exposure="1" style="display:block;width:380px;height:380px;max-width:100%;background:transparent;"></model-viewer>
+<div id="heroRingLabel">0% BUILT</div>
+</div>
+</div>
+</section>
+<!-- Stats Section -->
+<section>
+<h3 class="text-2xl font-anton mb-4 text-black">STATS</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Total Card -->
+<div class="stat-brick-card bg-lego-blue p-4 flex flex-col justify-between text-white relative mt-3">
+<div class="brick-stud-row"><span class="brick-stud brick-stud-blue"></span><span class="brick-stud brick-stud-blue"></span><span class="brick-stud brick-stud-blue"></span><span class="brick-stud brick-stud-blue"></span></div>
+<span class="font-bold text-sm uppercase tracking-wider">TOTAL JOBSHEET</span>
+<div class="flex justify-between items-end mt-2">
+<span class="text-4xl font-anton text-outline-black">48</span>
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 4h6a1 1 0 011 1v1H8V5a1 1 0 011-1z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><rect height="16" rx="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="14" x="5" y="6"></rect><path d="M9 11h6M9 15h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<!-- Completed Card -->
+<div class="stat-brick-card bg-lego-green p-4 flex flex-col justify-between text-white relative mt-3">
+<div class="brick-stud-row"><span class="brick-stud brick-stud-green"></span><span class="brick-stud brick-stud-green"></span><span class="brick-stud brick-stud-green"></span><span class="brick-stud brick-stud-green"></span></div>
+<span class="font-bold text-sm uppercase tracking-wider">COMPLETED</span>
+<div class="flex justify-between items-end mt-2">
+<span id="stat-completed" class="text-4xl font-anton text-outline-black">0</span>
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg>
+</div>
+</div>
+<!-- In Progress Card -->
+<div class="stat-brick-card bg-lego-yellow p-4 flex flex-col justify-between text-black relative mt-3">
+<div class="brick-stud-row"><span class="brick-stud brick-stud-yellow"></span><span class="brick-stud brick-stud-yellow"></span><span class="brick-stud brick-stud-yellow"></span><span class="brick-stud brick-stud-yellow"></span></div>
+<span class="font-bold text-sm uppercase tracking-wider">IN PROGRESS</span>
+<div class="flex justify-between items-end mt-2">
+<span class="text-4xl font-anton text-white text-outline-black">0</span>
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<!-- Pending Card -->
+<div class="stat-brick-card bg-lego-grey p-4 flex flex-col justify-between text-black relative mt-3">
+<div class="brick-stud-row"><span class="brick-stud brick-stud-grey"></span><span class="brick-stud brick-stud-grey"></span><span class="brick-stud brick-stud-grey"></span><span class="brick-stud brick-stud-grey"></span></div>
+<span class="font-bold text-sm uppercase tracking-wider">PENDING</span>
+<div class="flex justify-between items-end mt-2">
+<span class="text-4xl font-anton text-lego-red text-outline-black stat-num-red">0</span>
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 3h12M6 21h12M8 3c0 4 3 5.5 4 6.5 1-1 4-2.5 4-6.5M8 21c0-4 3-5.5 4-6.5 1 1 4 2.5 4 6.5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+</div>
+</section>
+<!-- Progress Overview Section -->
+<section>
+<h3 class="text-2xl font-anton mb-4 text-black">PROGRESS</h3>
+<div class="stat-brick-card bg-lego-dark p-6 text-white relative mt-3">
+<div class="brick-stud-row"><span class="brick-stud brick-stud-dark"></span><span class="brick-stud brick-stud-dark"></span><span class="brick-stud brick-stud-dark"></span><span class="brick-stud brick-stud-dark"></span><span class="brick-stud brick-stud-dark"></span><span class="brick-stud brick-stud-dark"></span><span class="brick-stud brick-stud-dark"></span><span class="brick-stud brick-stud-dark"></span><span class="brick-stud brick-stud-dark"></span><span class="brick-stud brick-stud-dark"></span></div>
+<h4 class="text-xl font-anton text-center mb-4 tracking-widest">PROGRESS OVERVIEW</h4>
+<!-- Progress Bar -->
+<div class="w-full h-12 bg-gray-800 border-4 border-black rounded-full relative mb-6">
+<div id="main-bar" class="progress-bar-inner h-full flex items-center justify-center" style="width: 0%;">
+<span id="main-bar-label" class="font-anton text-2xl text-white text-outline-black relative z-10 drop-shadow-md">0%</span>
+</div>
+</div>
+<!-- Stats Breakdown -->
+<div class="grid grid-cols-5 gap-2 text-center text-sm md:text-base">
+<div>
+<div class="text-gray-400 mb-1">Status:</div>
+<div id="main-status" class="font-anton text-xl">0%</div>
+</div>
+<div>
+<div class="text-gray-400 mb-1">Total:</div>
+<div class="font-anton text-xl">48</div>
+</div>
+<div>
+<div class="text-gray-400 mb-1">Completed:</div>
+<div id="main-completed" class="font-anton text-xl">0</div>
+</div>
+<div>
+<div class="text-gray-400 mb-1">In Progress:</div>
+<div class="font-anton text-xl">0</div>
+</div>
+<div>
+<div class="text-gray-400 mb-1">Pending:</div>
+<div class="font-anton text-xl">0</div>
+</div>
+</div>
+</div>
+<!-- Per-Builder Progress -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+<div id="misha-panel" class="stat-brick-card bg-lego-blue p-5 text-white relative mt-3">
+<div class="brick-stud-row"><span class="brick-stud brick-stud-blue"></span><span class="brick-stud brick-stud-blue"></span><span class="brick-stud brick-stud-blue"></span><span class="brick-stud brick-stud-blue"></span></div>
+<h4 class="text-lg font-anton text-center mb-3 tracking-widest flex items-center justify-center gap-2">
+<button class="avatar-btn" onclick="openColorPicker(event, 'misha')">
+<img id="avatar-misha" alt="Misha" class="w-8 h-8 rounded-full border-2 border-black object-cover bg-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmPNFjMaMoz3woDkA7pYwJxd45i9D8CB1HVm1mPSk7s59i1RDP0lDsdl9h1WxS0Xnuuahf1ptFOJOg23CtqWQpbczqd-cDD44pOVuukxMLKK8tjIfVAU2YGy_zg-INvxdpi0WCmFabqiEoSszd7FodgCJbpqMsWO0Wt2TBiffLja8t2i-Lamlj_S2GOztG0VswBDWNbHclA-wNz5Se6hrkJcFncuVgPQplAU_mjK9ZV7hP-1XYR04Y"/>
+</button>
+                        MISHA
+<span id="misha-xp-badge" class="xp-badge">LVL 1</span>
+                    </h4>
+<div class="w-full h-9 bg-blue-900 border-4 border-black rounded-full relative mb-4">
+<div id="misha-bar" class="progress-bar-inner h-full flex items-center justify-center" style="width: 0%;">
+<span id="misha-bar-label" class="font-anton text-base text-white text-outline-black relative z-10">0%</span>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-1 text-center text-xs md:text-sm">
+<div>
+<div class="text-blue-200 mb-1">Total</div>
+<div class="font-anton text-lg">24</div>
+</div>
+<div>
+<div class="text-blue-200 mb-1">Done</div>
+<div id="misha-done" class="font-anton text-lg">0</div>
+</div>
+<div>
+<div class="text-blue-200 mb-1">Doing</div>
+<div class="font-anton text-lg">0</div>
+</div>
+<div>
+<div class="text-blue-200 mb-1">Pending</div>
+<div class="font-anton text-lg">0</div>
+</div>
+</div>
+</div>
+<div id="fakhrullah-panel" class="stat-brick-card bg-lego-red p-5 text-white relative mt-3">
+<div class="brick-stud-row"><span class="brick-stud brick-stud-red"></span><span class="brick-stud brick-stud-red"></span><span class="brick-stud brick-stud-red"></span><span class="brick-stud brick-stud-red"></span></div>
+<h4 class="text-lg font-anton text-center mb-3 tracking-widest flex items-center justify-center gap-2">
+<button class="avatar-btn" onclick="openColorPicker(event, 'fakhrullah')">
+<img id="avatar-fakhrullah" alt="Fakhrullah" class="w-8 h-8 rounded-full border-2 border-black object-cover bg-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAySv-LeusA5hqoaNd_DjzaWnk2I7HryG9lKrHkIpZGrkTAkv8j0x6Q-eDhTMlDoNmElau5WezahCQQ66UvvUvEslEY-3qA5pNQwra9k49_uxklURnz2_udyU9e6tHW9Fj9QSGqlnQsoItz2cngoZwBBXfwD-6gIG5uLIVbG6TxXOjr3SwakopaCaLhvWoeiBO5JwZsW3iV55wa--zL6arl9bBbvcGAKO3c1UBdQIturn7snM6HEA06"/>
+</button>
+                        FAKHRULLAH
+<span id="fakhrullah-xp-badge" class="xp-badge">LVL 1</span>
+                    </h4>
+<div class="w-full h-9 bg-red-900 border-4 border-black rounded-full relative mb-4">
+<div id="fakhrullah-bar" class="progress-bar-inner h-full flex items-center justify-center" style="width: 0%;">
+<span id="fakhrullah-bar-label" class="font-anton text-base text-white text-outline-black relative z-10">0%</span>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-1 text-center text-xs md:text-sm">
+<div>
+<div class="text-red-200 mb-1">Total</div>
+<div class="font-anton text-lg">24</div>
+</div>
+<div>
+<div class="text-red-200 mb-1">Done</div>
+<div id="fakhrullah-done" class="font-anton text-lg">0</div>
+</div>
+<div>
+<div class="text-red-200 mb-1">Doing</div>
+<div class="font-anton text-lg">0</div>
+</div>
+<div>
+<div class="text-red-200 mb-1">Pending</div>
+<div class="font-anton text-lg">0</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ===== Extra Features Section (additive, doesn't touch anything above) ===== -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+<!-- New Idea 1: LEGO Tower -->
+<div class="stat-brick-card p-4 mt-3" id="towerCard" style="background:#dbeafe;">
+<div class="brick-stud-row"><span class="brick-stud brick-stud-pastel-blue"></span><span class="brick-stud brick-stud-pastel-blue"></span><span class="brick-stud brick-stud-pastel-blue"></span><span class="brick-stud brick-stud-pastel-blue"></span></div>
+<h3 class="font-anton text-lg mb-2 text-black tracking-widest">BUILD TOWER</h3>
+<div id="towerStage"></div>
+<p class="text-xs text-gray-500 mt-1">Grows brick by brick with overall progress</p>
+</div>
+
+<!-- New Idea 3: Race Bar -->
+<div id="raceCard" class="stat-brick-card p-4 mt-3 flex flex-col" style="background:#ffedd5;">
+<div class="brick-stud-row"><span class="brick-stud brick-stud-pastel-orange"></span><span class="brick-stud brick-stud-pastel-orange"></span><span class="brick-stud brick-stud-pastel-orange"></span><span class="brick-stud brick-stud-pastel-orange"></span></div>
+<h3 class="font-anton text-lg mb-3 text-black tracking-widest">BUILDER RACE</h3>
+<div id="raceTrack">
+<span id="raceFinishFlag">🏁</span>
+<div id="raceMisha" class="race-runner" style="left:2px; background-color:#3b82f6;"></div>
+<div id="raceFakhrullah" class="race-runner" style="left:2px; background-color:#ef4444;"></div>
+</div>
+<div class="flex justify-between text-xs font-bold mt-2">
+<span class="text-blue-600">START</span>
+<span class="text-red-600">FINISH</span>
+</div>
+
+<!-- Fill the remaining card space with a live status readout -->
+<div id="raceStatus" class="lego-border-sm bg-gray-50 p-3 mt-4 flex-1 flex flex-col items-center justify-center gap-2 text-center"></div>
+</div>
+
+<!-- New Idea 2: Achievement Wall -->
+<div id="achievementCard" class="stat-brick-card p-4 mt-3 md:col-span-2" style="background:#fef9c3;">
+<div class="brick-stud-row"><span class="brick-stud brick-stud-pastel-yellow"></span><span class="brick-stud brick-stud-pastel-yellow"></span><span class="brick-stud brick-stud-pastel-yellow"></span><span class="brick-stud brick-stud-pastel-yellow"></span><span class="brick-stud brick-stud-pastel-yellow"></span><span class="brick-stud brick-stud-pastel-yellow"></span><span class="brick-stud brick-stud-pastel-yellow"></span><span class="brick-stud brick-stud-pastel-yellow"></span><span class="brick-stud brick-stud-pastel-yellow"></span><span class="brick-stud brick-stud-pastel-yellow"></span></div>
+<h3 class="font-anton text-lg mb-3 text-black tracking-widest">ACHIEVEMENTS</h3>
+<div id="achievementWall"></div>
+</div>
+
+<!-- New Idea 4: Streak Heatmap -->
+<div id="streakCard" class="stat-brick-card p-4 mt-3 md:col-span-2" style="background:#dcfce7;">
+<div class="brick-stud-row"><span class="brick-stud brick-stud-pastel-green"></span><span class="brick-stud brick-stud-pastel-green"></span><span class="brick-stud brick-stud-pastel-green"></span><span class="brick-stud brick-stud-pastel-green"></span><span class="brick-stud brick-stud-pastel-green"></span><span class="brick-stud brick-stud-pastel-green"></span><span class="brick-stud brick-stud-pastel-green"></span><span class="brick-stud brick-stud-pastel-green"></span><span class="brick-stud brick-stud-pastel-green"></span><span class="brick-stud brick-stud-pastel-green"></span></div>
+<h3 class="font-anton text-lg mb-3 text-black tracking-widest">BUILD STREAK (LAST 14 DAYS)</h3>
+<div id="streakGrid"></div>
+</div>
+
+</section>
+</div>
+</main>
+<!-- END: Left Column -->
+<!-- BEGIN: Right Column (Sidebar) -->
+<aside class="w-full lg:w-1/3 flex flex-col gap-6 min-h-0">
+<!-- Sidebar Background Wrapper -->
+<div id="sidebarBox" class="lego-border bg-[#fde047] flex flex-col gap-6 relative z-0 min-h-0 overflow-hidden">
+<!-- Red Background Overlay for top part -->
+<div class="absolute top-0 left-0 right-0 h-[400px] bg-[#fbbf24] rounded-t-lg z-[-1]"></div>
+<div class="p-6 flex flex-col gap-8 h-full z-10 min-h-0">
+<!-- Library Section -->
+<section class="flex flex-col flex-1 min-h-0">
+<h3 class="text-sm font-bold mb-1 uppercase tracking-wider text-black">LIBRARY</h3>
+<h2 class="text-3xl font-anton mb-4 text-black">ALL JOBSHEETS</h2>
+<div id="jobsheetList" class="flex-1 min-h-0 overflow-y-auto pr-2"></div>
+</section>
+</div>
+</div>
+
+<!-- Jobsheet Detail Modal -->
+<div id="jobsheetModal" class="hidden fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4" onclick="closeJobsheetModal()">
+<div onclick="event.stopPropagation()" class="lego-border bg-white p-6 max-w-sm w-full relative">
+<button onclick="closeJobsheetModal()" class="absolute top-3 right-3 text-black font-anton text-xl">✕</button>
+<h3 id="modalJobTitle" class="font-anton text-2xl mb-3 pr-6"></h3>
+<p class="text-sm text-gray-600 mb-1">Uploaded by: <span id="modalJobUploader" class="font-bold text-black"></span></p>
+<p class="text-sm text-gray-600 mb-1">Date: <span id="modalJobDate" class="font-bold text-black"></span></p>
+<p class="text-sm text-gray-600 mb-3">Status: <span id="modalJobStatus" class="font-bold text-lego-green"></span></p>
+
+<!-- Uploaded file -->
+<div id="modalFileBlock" class="bg-gray-100 lego-border-sm p-3 mb-4 flex items-center justify-between gap-2">
+<span class="text-sm font-bold truncate" id="modalFileName"></span>
+<a id="modalFileLink" href="#" target="_blank" class="bg-lego-blue hover:bg-blue-600 text-white font-anton text-xs px-3 py-2 rounded-full border-2 border-black whitespace-nowrap">Review File</a>
+</div>
+<p id="modalNoFile" class="hidden text-sm text-gray-500 mb-4">No file attached.</p>
+
+<!-- Shown once an instructor has marked/commented -->
+<div id="modalReviewedBlock" class="hidden bg-gray-100 lego-border-sm p-3 mb-4">
+<p class="text-sm text-gray-600">Mark: <span id="modalJobMark" class="font-anton text-lg text-black"></span>/100</p>
+<p class="text-sm text-gray-600 mt-1">Comment: <span id="modalJobComment" class="font-bold text-black"></span></p>
+</div>
+<p id="modalNotReviewedYet" class="hidden text-sm text-gray-500 mb-4">Not reviewed by an instructor yet.</p>
+
+<!-- Instructor-only: mark & comment. Students only ever see the read-only block above. -->
+<div id="modalReviewForm" class="hidden border-t-4 border-black pt-4">
+<p class="text-xs uppercase font-bold text-gray-500 mb-2">Instructor Review</p>
+<input id="modalMarkInput" type="number" min="0" max="100" placeholder="Mark (0-100)" class="lego-border-sm w-full px-3 py-2 mb-2 text-sm"/>
+<textarea id="modalCommentInput" placeholder="Comment..." class="lego-border-sm w-full px-3 py-2 mb-2 text-sm" rows="2"></textarea>
+<button id="reviewSubmitBtn" onclick="submitInstructorReview()" class="w-full bg-lego-green hover:bg-green-600 text-white font-anton py-2 rounded-full border-4 border-black transition-colors">Mark &amp; Comment</button>
+</div>
+</div>
+</div>
+</aside>
+<!-- END: Right Column -->
+</div>
+<script>
+        function filterJobsheets(query) {
+            var q = query.trim().toLowerCase();
+            document.querySelectorAll('.jobsheet-card').forEach(function (card) {
+                var text = card.textContent.toLowerCase();
+                card.style.display = text.indexOf(q) !== -1 ? '' : 'none';
+            });
+        }
+        function toggleNotifications(ev) {
+            ev.stopPropagation();
+            var panel = document.getElementById('notifPanel');
+            panel.classList.toggle('hidden');
+            document.getElementById('notifDot').classList.add('hidden');
+            localStorage.setItem(NOTIF_SEEN_COUNT_KEY, String(loadNotifications().length));
+        }
+        document.addEventListener('click', function (ev) {
+            var panel = document.getElementById('notifPanel');
+            if (!panel.classList.contains('hidden') && !panel.contains(ev.target)) {
+                panel.classList.add('hidden');
+            }
+        });
+
+        /* Reads jobsheet upload counts set from library.html and renders the tally.
+           Shared pool of 24 jobsheets total — Misha and Fakhrullah's uploads both count toward it. */
+        var PER_BUILDER_TOTAL = 24;
+        var MAIN_TOTAL = 48; // Misha's 24 + Fakhrullah's 24 — each maxes out at 50% overall on their own
+        var PROGRESS_KEY = 'jobsheet-progress-v3';
+
+        function loadProgressState() {
+            try {
+                var saved = JSON.parse(localStorage.getItem(PROGRESS_KEY));
+                if (saved && typeof saved.misha === 'number' && typeof saved.fakhrullah === 'number') return saved;
+            } catch (e) {}
+            return { misha: 0, fakhrullah: 0 };
+        }
+
+        var XP_TIERS = [
+            { min: 0, label: 'LVL 1', icon: '🔧' },
+            { min: 25, label: 'LVL 2', icon: '🥉' },
+            { min: 50, label: 'LVL 3', icon: '🥈' },
+            { min: 75, label: 'LVL 4', icon: '🥇' },
+            { min: 100, label: 'LVL 5', icon: '🏆' }
+        ];
+        function xpTierFor(pct) {
+            var tier = XP_TIERS[0];
+            for (var i = 0; i < XP_TIERS.length; i++) {
+                if (pct >= XP_TIERS[i].min) tier = XP_TIERS[i];
+            }
+            return tier;
+        }
+        function renderProgress(state) {
+            var newlyCompleted = []; // tracks who crossed 100% in THIS render pass — if both, they share one certificate
+            ['misha', 'fakhrullah'].forEach(function (key) {
+                var done = Math.min(state[key], PER_BUILDER_TOTAL);
+                var pct = Math.round((done / PER_BUILDER_TOTAL) * 100);
+                document.getElementById(key + '-done').textContent = done;
+                document.getElementById(key + '-bar').style.width = pct + '%';
+                document.getElementById(key + '-bar-label').textContent = pct + '%';
+
+                var tier = xpTierFor(pct);
+                document.getElementById(key + '-xp-badge').textContent = tier.icon + ' ' + tier.label;
+
+                var milestoneKey = 'milestone-' + key;
+                var lastMilestone = Number(localStorage.getItem(milestoneKey) || 0);
+                if (pct >= 100 && lastMilestone < 100) {
+                    newlyCompleted.push(key);
+                }
+                localStorage.setItem(milestoneKey, String(pct));
+            });
+            if (newlyCompleted.length > 0) {
+                launchConfetti();
+                if (typeof showCertificate === 'function') showCertificate(newlyCompleted); // New Idea 8
+            }
+
+            var overallDone = Math.min(state.misha + state.fakhrullah, MAIN_TOTAL);
+            var overallPct = Math.round((overallDone / MAIN_TOTAL) * 100);
+            document.getElementById('main-bar').style.width = overallPct + '%';
+            document.getElementById('main-bar-label').textContent = overallPct + '%';
+            document.getElementById('main-status').textContent = overallPct + '%';
+            document.getElementById('main-completed').textContent = overallDone;
+            document.getElementById('stat-completed').textContent = overallDone;
+        }
+
+        renderProgress(loadProgressState());
+        renderExtras(); // additive: tower / race bar / achievements / streak (safe no-op before defined? no — defined below, hoisted)
+        window.addEventListener('storage', function (ev) {
+            if (ev.key === PROGRESS_KEY) { renderProgress(loadProgressState()); renderExtras(); }
+            if (ev.key === JOBSHEETS_KEY) renderJobsheetList(); // also re-syncs notifications
+            if (ev.key === NOTIF_KEY) renderNotifications();
+        });
+
+        /* Uploaded jobsheet list, populated from library.html's upload panel */
+        var JOBSHEETS_KEY = 'uploaded-jobsheets-v3';
+        var SEEDED_KEY = 'jobsheets-seeded';
+        var jobsheetsCache = [];
+        var currentJobIndex = null;
+
+        function loadJobsheets() {
+            try {
+                var saved = JSON.parse(localStorage.getItem(JOBSHEETS_KEY));
+                if (Array.isArray(saved)) return saved;
+            } catch (e) {}
+            return [];
+        }
+
+        function saveJobsheets(jobsheets) {
+            localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(jobsheets));
+        }
+
+        function seedDemoJobsheetOnce() {
+            if (localStorage.getItem(SEEDED_KEY)) return;
+            localStorage.setItem(SEEDED_KEY, '1');
+            var jobsheets = loadJobsheets();
+            if (jobsheets.length > 0) return;
+            jobsheets.push({
+                id: Date.now(),
+                title: 'Demo Jobsheet — CSS Layouts',
+                uploader: 'Misha',
+                date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+                status: 'Submitted',
+                mark: null,
+                comment: null,
+                fileName: 'css-layouts.txt',
+                fileData: 'data:text/plain;charset=utf-8,' + encodeURIComponent(
+                    'Demo Jobsheet: CSS Layouts\n\nSubmitted by Misha.\nThis is placeholder content standing in for a real upload.'
+                )
+            });
+            saveJobsheets(jobsheets);
+        }
+
+        /* Test-only: seeds 12 demo jobsheets so the scroll-cap on the ALL JOBSHEETS box can be checked.
+           Guarded so it only ever runs once; remove the call below (or this function) when done testing. */
+        function seedTwelveDemoJobsheetsOnce() {
+            var TWELVE_SEEDED_KEY = 'jobsheets-seeded-12';
+            if (localStorage.getItem(TWELVE_SEEDED_KEY)) return;
+            localStorage.setItem(TWELVE_SEEDED_KEY, '1');
+            var jobsheets = loadJobsheets();
+            var titles = [
+                'HTML Fundamentals', 'CSS Layouts', 'JavaScript Basics', 'Responsive Design',
+                'Git & GitHub', 'API Integration', 'Database Design', 'UI Wireframing',
+                'Accessibility Audit', 'Testing & Debugging', 'Deployment Pipeline', 'Final Capstone'
+            ];
+            titles.forEach(function (title, i) {
+                jobsheets.push({
+                    id: Date.now() + i,
+                    title: title,
+                    uploader: i % 2 === 0 ? 'Misha' : 'Fakhrullah',
+                    date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+                    status: 'Submitted',
+                    mark: null,
+                    comment: null,
+                    fileName: null,
+                    fileData: null
+                });
+            });
+            saveJobsheets(jobsheets);
+        }
+
+        function renderJobsheetList() {
+            jobsheetsCache = loadJobsheets();
+            var list = document.getElementById('jobsheetList');
+            if (jobsheetsCache.length === 0) {
+                list.innerHTML = '<div class="lego-border-sm border-dashed bg-white/60 p-6 text-center">' +
+                    '<p class="font-anton text-lg text-gray-500">NO JOBSHEETS YET</p>' +
+                    '<p class="text-sm text-gray-500 mt-1">Upload one in the Jobsheet Library to see it here.</p></div>';
+                renderNotifications();
+                return;
+            }
+            list.innerHTML = jobsheetsCache.map(function (job, i) {
+                var badgeClass = job.status === 'Reviewed' ? 'jc-badge-reviewed' : 'jc-badge-submitted';
+                var deadlineHtml = deadlineBadgeHtml(job); // New Idea 6: deadline pulse (purely additive display)
+                return '<div class="jc-card jobsheet-card" draggable="true" data-index="' + i + '">' +
+                    '<div class="jc-header">' +
+                    '<span>' + job.uploader + '</span></div>' +
+                    '<div class="jc-body">' +
+                    '<h5 class="jc-title">' + job.title + '</h5>' +
+                    '<p class="jc-date">Uploaded: ' + job.date + '</p>' +
+                    deadlineHtml +
+                    '<span class="jc-badge ' + badgeClass + '">' + job.status + '</span>' +
+                    '<button onclick="viewJobsheet(' + i + ')" class="jc-view-btn">VIEW</button>' +
+                    '</div></div>';
+            }).join('');
+            renderNotifications();
+            renderExtras(); // additive: tower / race bar / achievements / streak
+        }
+
+        /* New Idea 6: synthetic due date (upload time + 7 days), display-only, doesn't touch stored data */
+        function deadlineBadgeHtml(job) {
+            var due = job.id + 7 * 24 * 60 * 60 * 1000;
+            var msLeft = due - Date.now();
+            var daysLeft = Math.ceil(msLeft / (24 * 60 * 60 * 1000));
+            if (job.status === 'Reviewed') return '';
+            var urgent = daysLeft <= 2;
+            var text = daysLeft < 0 ? 'OVERDUE' : (daysLeft === 0 ? 'DUE TODAY' : 'DUE IN ' + daysLeft + 'D');
+            return '<p class="jc-deadline' + (urgent ? ' urgent' : '') + '">⏰ ' + text + '</p>';
+        }
+
+        /* Feature 7: drag-to-reorder jobsheet cards */
+        var dragFromIndex = null;
+        (function setupDragReorder() {
+            var list = document.getElementById('jobsheetList');
+            list.addEventListener('dragstart', function (ev) {
+                var card = ev.target.closest('.jc-card');
+                if (!card) return;
+                dragFromIndex = Number(card.getAttribute('data-index'));
+                card.classList.add('dragging');
+            });
+            list.addEventListener('dragend', function (ev) {
+                var card = ev.target.closest('.jc-card');
+                if (card) card.classList.remove('dragging');
+                list.querySelectorAll('.drag-over').forEach(function (el) { el.classList.remove('drag-over'); });
+            });
+            list.addEventListener('dragover', function (ev) {
+                var card = ev.target.closest('.jc-card');
+                if (!card) return;
+                ev.preventDefault();
+                card.classList.add('drag-over');
+            });
+            list.addEventListener('dragleave', function (ev) {
+                var card = ev.target.closest('.jc-card');
+                if (card) card.classList.remove('drag-over');
+            });
+            list.addEventListener('drop', function (ev) {
+                var card = ev.target.closest('.jc-card');
+                if (!card || dragFromIndex === null) return;
+                ev.preventDefault();
+                var toIndex = Number(card.getAttribute('data-index'));
+                if (toIndex === dragFromIndex) return;
+                var moved = jobsheetsCache.splice(dragFromIndex, 1)[0];
+                jobsheetsCache.splice(toIndex, 0, moved);
+                saveJobsheets(jobsheetsCache);
+                dragFromIndex = null;
+                renderJobsheetList();
+            });
+        })();
+
+        var ROLE_KEY = 'user-role';
+        function currentRole() {
+            return localStorage.getItem(ROLE_KEY) === 'instructor' ? 'instructor' : 'student';
+        }
+
+        function renderRoleBadge() {
+            var role = currentRole();
+            var badge = document.getElementById('roleBadge');
+            badge.textContent = role === 'instructor' ? 'INSTRUCTOR — SIGN OUT' : 'STUDENT VIEW — INSTRUCTOR LOGIN';
+            badge.className = 'lego-border-sm px-3 py-1 rounded-full text-xs font-anton uppercase tracking-wide ' +
+                (role === 'instructor' ? 'bg-lego-red text-white' : 'bg-lego-grey text-black');
+        }
+
+        /* Becoming an instructor only happens through login.html's real sign-in flow.
+           This badge can only sign an instructor OUT back to student — it can't self-promote a student. */
+        function toggleRole() {
+            if (currentRole() !== 'instructor') {
+                setTimeout(function () { window.location.href = 'login.html'; }, 110); // let the click sound finish first
+                return;
+            }
+            localStorage.setItem(ROLE_KEY, 'student');
+            renderRoleBadge();
+            if (currentJobIndex !== null && !document.getElementById('jobsheetModal').classList.contains('hidden')) {
+                viewJobsheet(currentJobIndex);
+            }
+        }
+
+        function viewJobsheet(index) {
+            var job = jobsheetsCache[index];
+            if (!job) return;
+            currentJobIndex = index;
+            document.getElementById('modalJobTitle').textContent = job.title;
+            document.getElementById('modalJobUploader').textContent = job.uploader;
+            document.getElementById('modalJobDate').textContent = job.date;
+            document.getElementById('modalJobStatus').textContent = job.status;
+
+            // File review
+            var hasFile = !!job.fileData;
+            document.getElementById('modalFileBlock').classList.toggle('hidden', !hasFile);
+            document.getElementById('modalNoFile').classList.toggle('hidden', hasFile);
+            if (hasFile) {
+                document.getElementById('modalFileName').textContent = job.fileName || 'attachment';
+                document.getElementById('modalFileLink').href = job.fileData;
+                document.getElementById('modalFileLink').setAttribute('download', job.fileName || 'jobsheet-file');
+            }
+
+            // Mark/comment — students always get the read-only block.
+            // Instructors get an editable form, pre-filled with the existing mark/comment so they can revise it.
+            var reviewed = job.status === 'Reviewed';
+            var isInstructor = currentRole() === 'instructor';
+            document.getElementById('modalReviewedBlock').classList.toggle('hidden', !reviewed || isInstructor);
+            document.getElementById('modalNotReviewedYet').classList.toggle('hidden', reviewed || isInstructor);
+            document.getElementById('modalReviewForm').classList.toggle('hidden', !isInstructor);
+            if (reviewed) {
+                document.getElementById('modalJobMark').textContent = job.mark;
+                document.getElementById('modalJobComment').textContent = job.comment;
+            }
+            if (isInstructor) {
+                document.getElementById('modalMarkInput').value = reviewed ? job.mark : '';
+                document.getElementById('modalCommentInput').value = reviewed ? job.comment : '';
+                document.getElementById('reviewSubmitBtn').textContent = reviewed ? 'Update Mark & Comment' : 'Mark & Comment';
+            }
+            document.getElementById('jobsheetModal').classList.remove('hidden');
+        }
+
+        function closeJobsheetModal() {
+            document.getElementById('jobsheetModal').classList.add('hidden');
+        }
+
+        /* Instructor-only: marking/commenting flips the jobsheet to "Reviewed" and fires a notification.
+           Students can never reach this — the form itself stays hidden for them, and this is a second check. */
+        function submitInstructorReview() {
+            if (currentRole() !== 'instructor') return;
+            if (currentJobIndex === null) return;
+            var mark = document.getElementById('modalMarkInput').value;
+            var comment = document.getElementById('modalCommentInput').value.trim();
+            if (mark === '' || !comment) return;
+
+            var job = jobsheetsCache[currentJobIndex];
+            var wasReviewed = job.status === 'Reviewed';
+            job.status = 'Reviewed';
+            job.mark = Math.max(0, Math.min(100, Number(mark)));
+            job.comment = comment;
+            saveJobsheets(jobsheetsCache);
+
+            addNotification({
+                jobId: job.id,
+                icon: wasReviewed ? '✏️' : '✅',
+                title: job.title + (wasReviewed ? ' — mark updated' : ' reviewed'),
+                message: 'Instructor marked: ' + job.mark + '/100 — "' + comment + '"'
+            });
+            if (!wasReviewed) launchConfetti();
+            if (typeof logActivity === 'function') logActivity(); // New Idea 4: streak heatmap
+
+            renderJobsheetList();
+            viewJobsheet(currentJobIndex);
+        }
+
+        /* Notifications */
+        var NOTIF_KEY = 'notifications-v2';
+        var NOTIF_SEEN_COUNT_KEY = 'notifications-seen-count';
+
+        function loadNotifications() {
+            try {
+                var saved = JSON.parse(localStorage.getItem(NOTIF_KEY));
+                if (Array.isArray(saved)) return saved;
+            } catch (e) {}
+            return [];
+        }
+
+        function addNotification(notif) {
+            var notifs = loadNotifications();
+            notifs.unshift(notif);
+            localStorage.setItem(NOTIF_KEY, JSON.stringify(notifs));
+            renderNotifications();
+        }
+
+        function renderNotifications() {
+            var notifs = loadNotifications();
+
+            // Self-heal: drop notifications whose jobsheet no longer exists (deleted, cleared, etc).
+            var liveJobIds = loadJobsheets().map(function (j) { return j.id; });
+            var pruned = notifs.filter(function (n) {
+                return n.jobId === undefined || liveJobIds.indexOf(n.jobId) !== -1;
+            });
+            if (pruned.length !== notifs.length) {
+                notifs = pruned;
+                localStorage.setItem(NOTIF_KEY, JSON.stringify(notifs));
+            }
+
+            var list = document.getElementById('notifList');
+            if (notifs.length === 0) {
+                list.innerHTML = '<div class="p-4 text-center text-sm text-gray-500">No notifications yet.</div>';
+            } else {
+                list.innerHTML = notifs.map(function (n) {
+                    return '<div class="p-3 flex gap-2 items-start">' +
+                        '<span class="text-lg leading-none">' + n.icon + '</span>' +
+                        '<div class="text-sm"><p class="font-bold">' + n.title + '</p>' +
+                        '<p class="text-gray-600">' + n.message + '</p></div></div>';
+                }).join('');
+            }
+            var seenCount = Number(localStorage.getItem(NOTIF_SEEN_COUNT_KEY) || 0);
+            document.getElementById('notifDot').classList.toggle('hidden', notifs.length <= seenCount);
+            renderTicker(notifs);
+        }
+
+        /* Feature 4: live activity ticker, built from the same notifications feed */
+        function renderTicker(notifs) {
+            var track = document.getElementById('tickerTrack');
+            if (!notifs || notifs.length === 0) {
+                track.textContent = 'Welcome back to OUR WORKSPACE! Upload a jobsheet in the Library to get started.';
+                return;
+            }
+            track.textContent = notifs.slice(0, 6).map(function (n) {
+                return n.icon + ' ' + n.title + ' — ' + n.message;
+            }).join('     •     ');
+        }
+
+        // seedDemoJobsheetOnce(); — demo entry disabled for now; function kept for later testing.
+        // seedTwelveDemoJobsheetsOnce(); — 12-demo scroll test done; function kept for later testing.
+
+        /* TEMP: seeds demo progress at 100% so the full puzzle-reveal tower is visible right away.
+           Guarded — only runs once. Function kept for later testing; call is disabled below. */
+        function seedDemoRaceProgressOnce() {
+            var FLAG = 'race-demo-seeded-100';
+            if (localStorage.getItem(FLAG)) return;
+            localStorage.setItem(FLAG, '1');
+            localStorage.setItem(PROGRESS_KEY, JSON.stringify({ misha: 24, fakhrullah: 24 }));
+            renderProgress(loadProgressState()); // re-render — this seed runs after the first render pass
+            renderExtras();
+        }
+        // seedDemoRaceProgressOnce(); — demo done, disabled. Real progress starts at 0 until jobsheets are uploaded.
+
+        /* TEMP: seeds demo build-streak activity so the heatmap shows all 3 intensity levels
+           plus per-builder avatars on upload days. Guarded — only runs once. Function kept for later testing. */
+        function seedDemoStreakOnce() {
+            var FLAG = 'streak-demo-seeded-avatars';
+            if (localStorage.getItem(FLAG)) return;
+            localStorage.setItem(FLAG, '1');
+            var log = {};
+            var uploadLog = {};
+            // [days ago, activity count, uploader-or-null] — mixes light/medium/heavy days,
+            // and marks a few days as a specific builder's upload so their avatar shows.
+            var entries = [
+                [13, 1, 'misha'], [11, 2, null], [10, 2, 'fakhrullah'], [8, 1, null],
+                [6, 4, 'misha'], [5, 3, 'fakhrullah'], [3, 1, null], [1, 2, 'misha'], [0, 3, 'both']
+            ];
+            entries.forEach(function (e) {
+                var d = new Date();
+                d.setDate(d.getDate() - e[0]);
+                var key = d.toISOString().slice(0, 10);
+                log[key] = e[1];
+                if (e[2] === 'misha') uploadLog[key] = { misha: e[1], fakhrullah: 0 };
+                else if (e[2] === 'fakhrullah') uploadLog[key] = { misha: 0, fakhrullah: e[1] };
+                else if (e[2] === 'both') uploadLog[key] = { misha: 1, fakhrullah: e[1] - 1 };
+            });
+            localStorage.setItem('activity-log', JSON.stringify(log));
+            localStorage.setItem('upload-log', JSON.stringify(uploadLog));
+            renderExtras();
+        }
+        // seedDemoStreakOnce(); — demo done, disabled. Real streak starts empty until jobsheets are uploaded.
+
+        /* ONE-TIME cleanup: wipes the demo data that was already written to localStorage by the two
+           seeders above, so the dashboard goes back to a real, empty 0-progress state. Runs once. */
+        (function clearDemoDataOnce() {
+            var FLAG = 'demo-data-cleared';
+            if (localStorage.getItem(FLAG)) return;
+            localStorage.setItem(FLAG, '1');
+            localStorage.setItem(PROGRESS_KEY, JSON.stringify({ misha: 0, fakhrullah: 0 }));
+            localStorage.setItem('activity-log', '{}');
+            localStorage.setItem('upload-log', '{}');
+            localStorage.removeItem('milestone-misha');
+            localStorage.removeItem('milestone-fakhrullah');
+            localStorage.removeItem('achievements-unlocked');
+            renderProgress(loadProgressState());
+            renderExtras();
+        })();
+
+        renderJobsheetList();
+        renderNotifications();
+        renderRoleBadge();
+
+        /* Pixel-locks the sidebar box to the main column's actual rendered height, instead of
+           relying on flexbox stretch (which several nested flex-col ancestors kept fighting).
+           #jobsheetList's flex-1 + overflow-y-auto then scrolls within that exact, fixed space. */
+        function syncSidebarHeight() {
+            var main = document.getElementById('mainColumn');
+            var sidebar = document.getElementById('sidebarBox');
+            if (window.innerWidth < 1024) {
+                sidebar.style.height = ''; // stacked layout below lg: breakpoint, let it flow naturally
+                return;
+            }
+            sidebar.style.height = main.getBoundingClientRect().height + 'px';
+        }
+        syncSidebarHeight();
+        window.addEventListener('resize', syncSidebarHeight);
+        if (window.ResizeObserver) {
+            new ResizeObserver(syncSidebarHeight).observe(document.getElementById('mainColumn'));
+        }
+
+        /* ===== Feature 1: brick-stud parallax ===== */
+        (function () {
+            var layer = document.getElementById('studLayer');
+            window.addEventListener('scroll', function () {
+                layer.style.transform = 'translateY(' + (window.scrollY * 0.15) + 'px)';
+            }, { passive: true });
+        })();
+
+        /* ===== Feature 2: confetti brick explosion ===== */
+        function launchConfetti() {
+            var canvas = document.getElementById('confettiCanvas');
+            var ctx = canvas.getContext('2d');
+            var dpr = window.devicePixelRatio || 1;
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            var colors = ['#ef4444', '#3b82f6', '#22c55e', '#eab308', '#fff'];
+            var pieces = [];
+            for (var i = 0; i < 90; i++) {
+                pieces.push({
+                    x: window.innerWidth / 2 + (Math.random() - 0.5) * 200,
+                    y: window.innerHeight / 3,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: -Math.random() * 10 - 4,
+                    size: 6 + Math.random() * 8,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rot: Math.random() * 360,
+                    vr: (Math.random() - 0.5) * 12
+                });
+            }
+            var start = performance.now();
+            function frame(now) {
+                var elapsed = now - start;
+                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                pieces.forEach(function (p) {
+                    p.vy += 0.35; // gravity
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.rot += p.vr;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rot * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 1.5;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.strokeRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+                });
+                if (elapsed < 2200) {
+                    requestAnimationFrame(frame);
+                } else {
+                    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                }
+            }
+            requestAnimationFrame(frame);
+        }
+
+        /* ===== Feature 5: LEGO click sound (synthesized, no audio file needed) ===== */
+        var audioCtx = null;
+        function playClickSound() {
+            try {
+                audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+                var fire = function () {
+                    var osc = audioCtx.createOscillator();
+                    var gain = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(520, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.09);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.1);
+                };
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().then(fire);
+                } else {
+                    fire();
+                }
+            } catch (e) { console.error('[click sound]', e); }
+        }
+        document.addEventListener('click', function (ev) {
+            var link = ev.target.closest('a[href]');
+            if (link && link.getAttribute('href') && !link.getAttribute('href').startsWith('#') && link.target !== '_blank') {
+                // navigating away happens instantly on click, which cuts the sound off before
+                // it plays — hold the browser back just long enough to hear the click first.
+                ev.preventDefault();
+                playClickSound();
+                var href = link.href;
+                setTimeout(function () { window.location.href = href; }, 110);
+                return;
+            }
+            if (ev.target.closest('button, a, .swatch')) {
+                playClickSound();
+            }
+        });
+
+        /* ===== Feature 6: Midnight Brick dark mode ===== */
+        var THEME_KEY = 'theme-mode';
+        function applyTheme(mode) {
+            document.documentElement.classList.toggle('midnight', mode === 'midnight');
+            document.getElementById('themeToggle').textContent = mode === 'midnight' ? '☀️' : '🌙';
+        }
+        function toggleTheme() {
+            var next = document.documentElement.classList.contains('midnight') ? 'light' : 'midnight';
+            localStorage.setItem(THEME_KEY, next);
+            applyTheme(next);
+        }
+        applyTheme(localStorage.getItem(THEME_KEY) || 'light');
+
+        /* ===== Feature 8: avatar accent-color customizer ===== */
+        var ACCENT_KEY = 'builder-accent';
+        var ACCENT_SWATCHES = ['#3b82f6', '#ef4444', '#22c55e', '#a855f7', '#f97316', '#0ea5e9'];
+        function loadAccents() {
+            try {
+                var saved = JSON.parse(localStorage.getItem(ACCENT_KEY));
+                if (saved) return saved;
+            } catch (e) {}
+            return {};
+        }
+        function applyAccents() {
+            var accents = loadAccents();
+            ['misha', 'fakhrullah'].forEach(function (key) {
+                var panel = document.getElementById(key + '-panel');
+                if (accents[key]) panel.style.backgroundColor = accents[key];
+            });
+        }
+        function openColorPicker(ev, key) {
+            ev.stopPropagation();
+            closeColorPicker();
+            var btn = ev.currentTarget;
+            var rect = btn.getBoundingClientRect();
+            var pop = document.createElement('div');
+            pop.id = 'colorPickerPopover';
+            pop.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+            pop.style.left = (rect.left + window.scrollX) + 'px';
+            ACCENT_SWATCHES.forEach(function (color) {
+                var sw = document.createElement('div');
+                sw.className = 'swatch';
+                sw.style.background = color;
+                sw.onclick = function (e) {
+                    e.stopPropagation();
+                    var accents = loadAccents();
+                    accents[key] = color;
+                    localStorage.setItem(ACCENT_KEY, JSON.stringify(accents));
+                    applyAccents();
+                    closeColorPicker();
+                };
+                pop.appendChild(sw);
+            });
+            document.body.appendChild(pop);
+            setTimeout(function () {
+                document.addEventListener('click', closeColorPicker, { once: true });
+            }, 0);
+        }
+        function closeColorPicker() {
+            var pop = document.getElementById('colorPickerPopover');
+            if (pop) pop.remove();
+        }
+        applyAccents();
+
+        /* =====================================================================
+           NEW FEATURES (additive only — everything above this line is untouched
+           except a few single-line hooks marked "New Idea N" where they sit)
+           ===================================================================== */
+
+        function renderExtras() {
+            try {
+                var state = loadProgressState();
+                var mishaPct = Math.round((Math.min(state.misha, PER_BUILDER_TOTAL) / PER_BUILDER_TOTAL) * 100);
+                var fakhrullahPct = Math.round((Math.min(state.fakhrullah, PER_BUILDER_TOTAL) / PER_BUILDER_TOTAL) * 100);
+                var overallPct = Math.round((Math.min(state.misha + state.fakhrullah, MAIN_TOTAL) / MAIN_TOTAL) * 100);
+                renderTower(overallPct);
+                renderRaceBar(mishaPct, fakhrullahPct);
+                renderAchievements(overallPct);
+                renderStreak();
+            } catch (e) { console.error('[renderExtras]', e); }
+        }
+
+        /* New Idea 1: LEGO puzzle reveal — 20 brick tiles cover a LEGO logo. As progress rises
+           (one tile per 5%), tiles pop away in a shuffled order, uncovering the logo underneath.
+           At 100% every tile is gone and the full logo is revealed. */
+        var TOWER_COLORS = ['#ef4444', '#3b82f6', '#eab308', '#22c55e', '#a855f7', '#f97316'];
+        var TOWER_BUILT = false;
+        var TOWER_REVEAL_ORDER = [];
+        var lastTowerCount = -1;
+
+        function buildTowerPuzzleOnce(stage) {
+            if (TOWER_BUILT) return;
+            TOWER_BUILT = true;
+            stage.innerHTML = '<div class="tower-logo-backdrop"></div>';
+            var order = [];
+            for (var i = 0; i < 20; i++) order.push(i);
+            for (var j = order.length - 1; j > 0; j--) {
+                var k = Math.floor(Math.random() * (j + 1));
+                var tmp = order[j]; order[j] = order[k]; order[k] = tmp;
+            }
+            TOWER_REVEAL_ORDER = order;
+            for (var cell = 0; cell < 20; cell++) {
+                var row = Math.floor(cell / 4);
+                var col = cell % 4;
+                var tile = document.createElement('div');
+                tile.className = 'puzzle-tile';
+                tile.setAttribute('data-cell', cell);
+                tile.style.left = (col * 25) + '%';
+                tile.style.top = (row * 20) + '%';
+                tile.style.background = TOWER_COLORS[cell % TOWER_COLORS.length];
+                stage.appendChild(tile);
+            }
+        }
+
+        function renderTower(pct) {
+            var stage = document.getElementById('towerStage');
+            if (!stage) return;
+            buildTowerPuzzleOnce(stage);
+            var count = Math.min(20, Math.round(pct / 5));
+            if (count === lastTowerCount) return;
+            lastTowerCount = count;
+            var revealedCells = TOWER_REVEAL_ORDER.slice(0, count);
+            stage.querySelectorAll('.puzzle-tile').forEach(function (tile) {
+                var cell = Number(tile.getAttribute('data-cell'));
+                tile.classList.toggle('revealed', revealedCells.indexOf(cell) !== -1);
+            });
+        }
+
+        /* New Idea 3: head-to-head race bar between Misha and Fakhrullah */
+        function renderRaceBar(mishaPct, fakhrullahPct) {
+            var track = document.getElementById('raceTrack');
+            var misha = document.getElementById('raceMisha');
+            var fakhrullah = document.getElementById('raceFakhrullah');
+            if (!track || !misha || !fakhrullah) return;
+            // Misha and Fakhrullah each get their own permanent lane (top vs bottom), set via CSS —
+            // so they never overlap regardless of how close their percentages are, ties included.
+            var usable = Math.max(track.clientWidth - 26 - 30, 0); // leaves room for the finish flag
+            misha.style.left = (2 + usable * (mishaPct / 100)) + 'px';
+            fakhrullah.style.left = (2 + usable * (fakhrullahPct / 100)) + 'px';
+            var mishaImg = document.getElementById('avatar-misha');
+            var fakhImg = document.getElementById('avatar-fakhrullah');
+            if (mishaImg) misha.style.backgroundImage = 'url(' + mishaImg.src + ')';
+            if (fakhImg) fakhrullah.style.backgroundImage = 'url(' + fakhImg.src + ')';
+            renderRaceStatus(mishaPct, fakhrullahPct);
+        }
+
+        /* Fills the empty space under the track with a live leader readout */
+        function renderRaceStatus(mishaPct, fakhrullahPct) {
+            var box = document.getElementById('raceStatus');
+            if (!box) return;
+            var diff = Math.abs(mishaPct - fakhrullahPct);
+            var line;
+            if (mishaPct === 0 && fakhrullahPct === 0) {
+                line = '🚦 On your marks — no jobsheets uploaded yet!';
+            } else if (mishaPct === fakhrullahPct) {
+                line = "🔥 It's neck and neck!";
+            } else if (mishaPct > fakhrullahPct) {
+                line = '🏆 MISHA leads by ' + diff + '%';
+            } else {
+                line = '🏆 FAKHRULLAH leads by ' + diff + '%';
+            }
+            box.innerHTML =
+                '<div class="flex gap-6 font-anton text-2xl">' +
+                '<span class="text-blue-600">' + mishaPct + '%</span>' +
+                '<span class="text-gray-300">vs</span>' +
+                '<span class="text-red-600">' + fakhrullahPct + '%</span>' +
+                '</div>' +
+                '<p class="text-sm font-bold text-gray-700">' + line + '</p>';
+        }
+
+        /* New Idea 2: achievement wall */
+        var ACHIEVEMENTS_KEY = 'achievements-unlocked';
+        var ACHIEVEMENT_DEFS = [
+            { id: 'first_upload', icon: '📥', label: 'First Upload', check: function (jobs) { return jobs.length >= 1; } },
+            { id: 'five_uploads', icon: '📦', label: '5 Uploads', check: function (jobs) { return jobs.length >= 5; } },
+            { id: 'first_review', icon: '✅', label: 'First Review', check: function (jobs) { return jobs.some(function (j) { return j.status === 'Reviewed'; }); } },
+            { id: 'perfectionist', icon: '💯', label: 'Perfect Mark', check: function (jobs) { return jobs.some(function (j) { return j.mark === 100; }); } },
+            { id: 'quarter', icon: '🥉', label: '25% Team', check: function (jobs, pct) { return pct >= 25; } },
+            { id: 'half', icon: '🥈', label: '50% Team', check: function (jobs, pct) { return pct >= 50; } },
+            { id: 'three_quarter', icon: '🥇', label: '75% Team', check: function (jobs, pct) { return pct >= 75; } },
+            { id: 'complete', icon: '🏆', label: '100% Team', check: function (jobs, pct) { return pct >= 100; } },
+            { id: 'ten_uploads', icon: '🚚', label: '10 Uploads', check: function (jobs) { return jobs.length >= 10; } },
+            { id: 'team_player', icon: '🤝', label: 'Team Player', check: function (jobs) {
+                return jobs.some(function (j) { return j.uploader === 'Misha'; }) && jobs.some(function (j) { return j.uploader === 'Fakhrullah'; });
+            } },
+            { id: 'reviewer_3', icon: '🕵️', label: '3 Reviews', check: function (jobs) { return jobs.filter(function (j) { return j.status === 'Reviewed'; }).length >= 3; } },
+            { id: 'three_day_streak', icon: '📅', label: '3-Day Streak', check: function () {
+                try {
+                    var log = JSON.parse(localStorage.getItem('activity-log') || '{}');
+                    return Object.keys(log).filter(function (k) { return log[k] > 0; }).length >= 3;
+                } catch (e) { return false; }
+            } },
+            { id: 'fifteen_uploads', icon: '📚', label: '15 Uploads', check: function (jobs) { return jobs.length >= 15; } },
+            { id: 'twenty_uploads', icon: '🏗️', label: '20 Uploads', check: function (jobs) { return jobs.length >= 20; } },
+            { id: 'five_reviews', icon: '🧐', label: '5 Reviews', check: function (jobs) { return jobs.filter(function (j) { return j.status === 'Reviewed'; }).length >= 5; } },
+            { id: 'ten_reviews', icon: '📖', label: '10 Reviews', check: function (jobs) { return jobs.filter(function (j) { return j.status === 'Reviewed'; }).length >= 10; } },
+            { id: 'high_scorer', icon: '⭐', label: '90+ Score', check: function (jobs) { return jobs.some(function (j) { return j.mark !== null && j.mark >= 90; }); } },
+            { id: 'egg_hunter', icon: '🥚', label: 'Easter Egg Hunter', check: function () {
+                return ['egg-found-vault', 'egg-found-brickrain', 'egg-found-graffiti', 'egg-found-ghost'].every(function (k) { return localStorage.getItem(k) === '1'; });
+            } },
+            { id: 'week_streak', icon: '🗓️', label: '7-Day Streak', check: function () {
+                try {
+                    var log = JSON.parse(localStorage.getItem('activity-log') || '{}');
+                    return Object.keys(log).filter(function (k) { return log[k] > 0; }).length >= 7;
+                } catch (e) { return false; }
+            } },
+            { id: 'balanced_team', icon: '⚖️', label: 'Balanced Team', check: function (jobs) {
+                var m = jobs.filter(function (j) { return j.uploader === 'Misha'; }).length;
+                var f = jobs.filter(function (j) { return j.uploader === 'Fakhrullah'; }).length;
+                return m > 0 && f > 0 && Math.abs(m - f) <= 1;
+            } }
+        ];
+        function renderAchievements(overallPct) {
+            var wall = document.getElementById('achievementWall');
+            if (!wall) return;
+            var jobs = jobsheetsCache || [];
+            var unlocked = {};
+            try { unlocked = JSON.parse(localStorage.getItem(ACHIEVEMENTS_KEY)) || {}; } catch (e) {}
+            var changed = false;
+            wall.innerHTML = ACHIEVEMENT_DEFS.map(function (def) {
+                var isUnlocked = !!unlocked[def.id];
+                var justUnlocked = false;
+                if (!isUnlocked && def.check(jobs, overallPct)) {
+                    isUnlocked = true;
+                    justUnlocked = true;
+                    unlocked[def.id] = true;
+                    changed = true;
+                }
+                return '<div class="achievement-badge' + (isUnlocked ? ' unlocked' : '') + (justUnlocked ? ' just-unlocked' : '') + '">' +
+                    '<div class="achievement-icon">' + def.icon + '</div>' +
+                    '<div class="achievement-label">' + def.label + '</div></div>';
+            }).join('');
+            if (changed) localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(unlocked));
+        }
+
+        /* New Idea 4: build-streak heatmap, last 14 days */
+        function logActivity() {
+            try {
+                var today = new Date().toISOString().slice(0, 10);
+                var log = JSON.parse(localStorage.getItem('activity-log') || '{}');
+                log[today] = (log[today] || 0) + 1;
+                localStorage.setItem('activity-log', JSON.stringify(log));
+            } catch (e) {}
+        }
+        function renderStreak() {
+            var grid = document.getElementById('streakGrid');
+            if (!grid) return;
+            var log = {};
+            var uploadLog = {};
+            try { log = JSON.parse(localStorage.getItem('activity-log') || '{}'); } catch (e) {}
+            try { uploadLog = JSON.parse(localStorage.getItem('upload-log') || '{}'); } catch (e) {}
+            var mishaSrc = (document.getElementById('avatar-misha') || {}).src;
+            var fakhSrc = (document.getElementById('avatar-fakhrullah') || {}).src;
+
+            var html = '';
+            for (var i = 13; i >= 0; i--) {
+                var d = new Date();
+                d.setDate(d.getDate() - i);
+                var key = d.toISOString().slice(0, 10);
+                var count = log[key] || 0;
+                var day = uploadLog[key] || { misha: 0, fakhrullah: 0 };
+                var title = key + ': ' + count + ' activity';
+
+                if (day.misha > 0 && day.fakhrullah > 0) {
+                    html += '<div class="streak-cell streak-cell-avatars" title="' + title + '">' +
+                        '<img class="streak-avatar" src="' + mishaSrc + '"/>' +
+                        '<img class="streak-avatar" src="' + fakhSrc + '"/></div>';
+                } else if (day.misha > 0) {
+                    html += '<div class="streak-cell streak-cell-avatars" title="' + title + '">' +
+                        '<img class="streak-avatar streak-avatar-solo" src="' + mishaSrc + '"/></div>';
+                } else if (day.fakhrullah > 0) {
+                    html += '<div class="streak-cell streak-cell-avatars" title="' + title + '">' +
+                        '<img class="streak-avatar streak-avatar-solo" src="' + fakhSrc + '"/></div>';
+                } else {
+                    var level = count === 0 ? '' : (count === 1 ? ' active-1' : (count <= 3 ? ' active-2' : ' active-3'));
+                    html += '<div class="streak-cell' + level + '" title="' + title + '"></div>';
+                }
+            }
+            grid.innerHTML = html;
+        }
+
+        /* New Idea 8: certificate plaque — accepts one key or an array of keys (both finishing together) */
+        function showCertificate(builderKeys) {
+            var keys = Array.isArray(builderKeys) ? builderKeys : [builderKeys];
+            var names = keys.map(function (k) { return k.charAt(0).toUpperCase() + k.slice(1); });
+            var name = names.length > 1 ? names.join(' & ') : names[0];
+            document.getElementById('certificateName').textContent = name;
+            document.getElementById('certificateVerb').textContent = names.length > 1 ? 'have' : 'has';
+            document.getElementById('certificateDate').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('certificateModal').classList.add('show');
+        }
+        function closeCertificate() {
+            document.getElementById('certificateModal').classList.remove('show');
+        }
+
+        /* New Idea 5: custom LEGO stud cursor (always on, purely cosmetic) */
+        document.body.classList.add('stud-cursor');
+
+        /* New Idea 9: mini brick particle mouse trail (throttled) */
+        (function setupParticleTrail() {
+            var layer = document.getElementById('particleLayer');
+            if (!layer) return;
+            var last = 0;
+            var colors = ['#ef4444', '#3b82f6', '#eab308', '#22c55e'];
+            document.addEventListener('mousemove', function (ev) {
+                var now = Date.now();
+                if (now - last < 60) return;
+                last = now;
+                var dot = document.createElement('div');
+                dot.className = 'mouse-brick';
+                dot.style.left = ev.clientX + 'px';
+                dot.style.top = ev.clientY + 'px';
+                dot.style.background = colors[Math.floor(Math.random() * colors.length)];
+                layer.appendChild(dot);
+                setTimeout(function () { dot.remove(); }, 650);
+            });
+        })();
+
+        /* New Idea 7: secret brick code easter egg — type BRICK anywhere */
+        (function setupEasterEgg() {
+            var secret = 'brick';
+            var buffer = '';
+            document.addEventListener('keydown', function (ev) {
+                if (ev.key.length !== 1) return;
+                buffer = (buffer + ev.key.toLowerCase()).slice(-secret.length);
+                if (buffer === secret) {
+                    launchConfetti();
+                    document.documentElement.style.transition = 'filter 0.4s ease';
+                    document.documentElement.style.filter = 'hue-rotate(180deg) saturate(1.4)';
+                    setTimeout(function () {
+                        document.documentElement.style.filter = '';
+                    }, 3000);
+                }
+            });
+        })();
+
+        renderExtras();
+
+        /* ===== Hero logo progress ring (isolated, reads jobsheet-progress-v3 directly) ===== */
+        (function setupHeroLogoRing() {
+            var fill = document.getElementById('heroRingFill');
+            var label = document.getElementById('heroRingLabel');
+            if (!fill || !label) return;
+            var CIRCUMFERENCE = 282.7;
+            var TOTAL = 48;
+            function update() {
+                var state;
+                try { state = JSON.parse(localStorage.getItem('jobsheet-progress-v3')); } catch (e) { state = null; }
+                var done = state ? Math.min((state.misha || 0) + (state.fakhrullah || 0), TOTAL) : 0;
+                var pct = TOTAL > 0 ? Math.round((done / TOTAL) * 100) : 0;
+                fill.style.strokeDashoffset = String(CIRCUMFERENCE - (CIRCUMFERENCE * pct / 100));
+                label.textContent = pct + '% BUILT';
+            }
+            update();
+            window.addEventListener('storage', update);
+            setInterval(update, 4000);
+        })();
+    </script>
+</body></html>

@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Jobsheet Library — OUR WORKSPACE</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js" type="module"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'lego-red': '#ef4444',
+            'lego-blue': '#3b82f6',
+            'lego-green': '#22c55e',
+            'lego-yellow': '#eab308',
+            'lego-grey': '#9ca3af',
+            'lego-dark': '#1f2937',
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #3b82f6;
+      background-image:
+          radial-gradient(circle at 10% 20%, rgba(96, 165, 250, 0.4) 0%, transparent 40%),
+          radial-gradient(circle at 90% 80%, rgba(96, 165, 250, 0.4) 0%, transparent 40%),
+          linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      background-size: cover;
+      background-attachment: fixed;
+      position: relative;
+    }
+    /* Idea 5: skybox time-of-day tint — swaps the same 3-layer gradient recipe to a
+       different palette, JS just adds one of these classes based on the real hour. */
+    body.sky-morning {
+      background-image:
+          radial-gradient(circle at 10% 20%, rgba(147, 197, 253, 0.45) 0%, transparent 40%),
+          radial-gradient(circle at 90% 80%, rgba(191, 219, 254, 0.45) 0%, transparent 40%),
+          linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    }
+    body.sky-evening {
+      background-image:
+          radial-gradient(circle at 10% 20%, rgba(251, 191, 36, 0.3) 0%, transparent 40%),
+          radial-gradient(circle at 90% 80%, rgba(249, 115, 22, 0.3) 0%, transparent 40%),
+          linear-gradient(135deg, #2563eb 0%, #7c2d92 100%);
+    }
+    body.sky-night {
+      background-image:
+          radial-gradient(circle at 10% 20%, rgba(30, 64, 175, 0.5) 0%, transparent 40%),
+          radial-gradient(circle at 90% 80%, rgba(88, 28, 135, 0.4) 0%, transparent 40%),
+          linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    }
+
+    /* Idea 1: subtle brick-block wall texture, fixed behind everything */
+    #bgBrickWall {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .08;
+      background-image:
+          linear-gradient(to right, rgba(0,0,0,.6) 2px, transparent 2px),
+          linear-gradient(to bottom, rgba(0,0,0,.6) 2px, transparent 2px);
+      background-size: 80px 40px;
+    }
+    /* Idea 3: larger baseplate grid, layered under the brick texture for depth */
+    #bgBaseplateGrid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .05;
+      background-image:
+          linear-gradient(to right, #fff 1px, transparent 1px),
+          linear-gradient(to bottom, #fff 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+    /* Idea 2: floating stud dot pattern, parallax-shifted on scroll via JS */
+    #bgStudLayer {
+      position: fixed; inset: -60px 0 0 0; height: calc(100% + 120px);
+      pointer-events: none; z-index: 0; opacity: 0.12;
+      background-image: radial-gradient(circle, #fff 0 7px, transparent 7px 100%);
+      background-size: 46px 46px;
+      will-change: transform;
+    }
+    /* Idea 4: floating decorative corner bricks, CSS-drawn (same stud technique as .has-studs) */
+    .corner-brick {
+      position: fixed; z-index: 0; pointer-events: none;
+      width: 120px; height: 56px;
+      background: rgba(255,255,255,0.09);
+      border: 3px solid rgba(0,0,0,0.14);
+      border-radius: 6px;
+    }
+    .corner-brick::before {
+      content: ''; position: absolute; top: -9px; left: 12px; right: 12px; height: 9px;
+      background-image: radial-gradient(circle, rgba(0,0,0,0.14) 0%, rgba(0,0,0,0.14) 4px, transparent 4px, transparent 100%);
+      background-size: 22px 9px; background-repeat: repeat-x; background-position: center bottom;
+    }
+    #cornerBrickTL { top: 90px; left: 20px; animation: cornerFloatA 7s ease-in-out infinite; }
+    #cornerBrickBR { bottom: 20px; right: 20px; animation: cornerFloatB 8s ease-in-out infinite; }
+    @keyframes cornerFloatA {
+      0%, 100% { transform: rotate(-8deg) translateY(0); }
+      50% { transform: rotate(-4deg) translateY(-14px); }
+    }
+    @keyframes cornerFloatB {
+      0%, 100% { transform: rotate(7deg) translateY(0); }
+      50% { transform: rotate(3deg) translateY(-14px); }
+    }
+
+    /* Idea 6: brick-stud frame around the whole page content */
+    .frame-studs { position: relative; z-index: 10; }
+    .frame-studs::before, .frame-studs::after {
+      content: ''; display: block; height: 12px;
+      background-image: radial-gradient(circle, rgba(255,255,255,.4) 0%, rgba(255,255,255,.4) 5px, transparent 5px, transparent 100%);
+      background-size: 26px 12px; background-repeat: repeat-x; background-position: center;
+    }
+    .frame-studs::before { margin-bottom: 14px; }
+    .frame-studs::after { margin-top: 14px; }
+    h1, h2, h3, h4, h5, .font-anton {
+      font-family: 'Anton', sans-serif;
+      letter-spacing: 0.05em;
+    }
+    .lego-border {
+      border: 4px solid #000;
+      border-radius: 12px;
+      box-shadow: inset -4px -4px 0px rgba(0,0,0,0.1), 4px 4px 0px rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .lego-border-sm {
+      border: 3px solid #000;
+      border-radius: 8px;
+      box-shadow: inset -3px -3px 0px rgba(0,0,0,0.1), 3px 3px 0px rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .has-studs::before {
+      content: '';
+      position: absolute;
+      top: -12px; left: 20px; right: 20px; height: 12px;
+      background-image: radial-gradient(circle, #000 0%, #000 6px, transparent 6px, transparent 100%);
+      background-size: 24px 12px;
+      background-repeat: repeat-x;
+      background-position: center bottom;
+      z-index: -1;
+    }
+    .bg-gradient-yellow-orange {
+      background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 50%, #f59e0b 100%);
+    }
+    .text-outline-white {
+      text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff;
+    }
+    .uploader-pill { background: #fff; color: #000; }
+    .uploader-pill.active { background: #000; color: #fff; }
+
+    /* Jobsheet card — plain hand-written CSS, not Tailwind utility classes, so batch
+       innerHTML rendering always renders styled even if the Tailwind CDN compiler
+       hasn't caught up yet (same pattern as dashboard.html's .jc-card). */
+    .jc-card {
+      border: 4px solid #000;
+      border-radius: 12px;
+      box-shadow: inset -4px -4px 0px rgba(0,0,0,0.1), 4px 4px 0px rgba(0,0,0,0.2);
+      background: #fff;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .jc-header {
+      border-bottom: 4px solid #000;
+      padding: 10px;
+      text-align: center;
+    }
+    .jc-header span {
+      font-family: 'Anton', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .jc-header-misha { background: #22c55e; }
+    .jc-header-misha span { color: #000; }
+    .jc-header-fakhrullah { background: #ef4444; }
+    .jc-header-fakhrullah span { color: #fff; }
+    .jc-body { padding: 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .jc-title { font-weight: 700; line-height: 1.2; font-size: 1.15rem; }
+    .jc-date { font-size: 0.875rem; color: #4b5563; }
+    .jc-mark { font-size: 0.875rem; color: #15803d; font-weight: 700; }
+    .jc-badge {
+      font-weight: 700; text-align: center; padding: 4px 0; border-radius: 9999px;
+      border: 2px solid #000; text-transform: uppercase; font-size: 0.875rem; margin-top: auto;
+    }
+    .jc-badge-submitted { background: #eab308; color: #000; }
+    .jc-badge-reviewed { background: #22c55e; color: #fff; }
+    .jc-view-btn {
+      background: #3b82f6; color: #fff; font-family: 'Anton', sans-serif;
+      padding: 10px 0; border-radius: 9999px; border: 4px solid #000; margin-top: 8px;
+      cursor: pointer; transition: background-color 0.15s ease; text-transform: uppercase;
+    }
+    .jc-view-btn:hover { background: #2563eb; }
+
+    .filter-pill {
+      padding: 8px 20px; border-radius: 9999px; border: 3px solid #000;
+      font-weight: 700; font-family: 'Anton', sans-serif; text-transform: uppercase;
+      background: #fff; color: #000; cursor: pointer; transition: all .15s ease;
+    }
+    .filter-pill.active { background: #000; color: #fff; }
+    .filter-pill:hover:not(.active) { transform: translate(1px, 1px); }
+
+    #jobsheetModal { z-index: 200; }
+    #jobsheetModal .modal-card { max-width: 480px; width: 100%; }
+
+    /* Idea 3: card flip-reveal (front = normal card, back = quick stats) */
+    .jc-flip-outer { perspective: 1200px; min-height: 300px; cursor: grab; position: relative; }
+    .jc-flip-outer:active { cursor: grabbing; }
+    .jc-flip-inner {
+      position: relative; width: 100%; height: 100%;
+      transition: transform .6s cubic-bezier(.4,.2,.2,1);
+      transform-style: preserve-3d;
+    }
+    .jc-flip-outer.flipped .jc-flip-inner { transform: rotateY(180deg); }
+    .jc-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .jc-face-front .jc-card { height: 100%; }
+    .jc-face-back {
+      transform: rotateY(180deg);
+      background: #1f2937; color: #fff; border: 4px solid #000; border-radius: 12px;
+      padding: 20px; display: flex; flex-direction: column; justify-content: center; gap: 8px;
+    }
+    .jc-face-back h5 { font-size: 1.1rem; }
+    .jc-face-back .jc-back-mark { font-family: 'Anton', sans-serif; font-size: 2rem; color: #fde047; }
+    .jc-face-back .jc-back-comment { font-size: 0.8rem; color: #d1d5db; font-style: italic; }
+    .jc-flip-btn {
+      position: absolute; bottom: 10px; right: 10px; z-index: 5;
+      width: 30px; height: 30px; border-radius: 50%; background: #fff; border: 2px solid #000;
+      cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Idea 1: rarity badge ribbon */
+    .jc-rarity {
+      position: absolute; top: -10px; left: -10px; z-index: 6;
+      background: #1f2937; color: #fde047; border: 2px solid #000; border-radius: 999px;
+      padding: 3px 10px; font-size: 0.7rem; font-weight: 700; white-space: nowrap;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+    }
+
+    /* Idea 4: featured build spotlight */
+    .jc-featured .jc-card {
+      box-shadow: 0 0 0 4px #facc15, 0 0 22px rgba(250,204,21,.85), inset -4px -4px 0px rgba(0,0,0,0.1), 4px 4px 0px rgba(0,0,0,0.2);
+    }
+    .jc-featured-label {
+      position: absolute; top: -10px; right: -10px; z-index: 6;
+      background: #facc15; color: #000; border: 2px solid #000; border-radius: 999px;
+      padding: 3px 10px; font-size: 0.7rem; font-weight: 700; white-space: nowrap;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+    }
+
+    /* Hero background: falling + shattering brick model */
+    #fallingBrickModel { animation: none; }
+    #fallingBrickModel.brick-fall-anim {
+      animation: brickFallDrop 1.6s cubic-bezier(.45,0,.8,.3) forwards;
+    }
+    @keyframes brickFallDrop {
+      0%   { transform: translateY(-220%) rotate(-14deg) scale(1); opacity: 0; }
+      10%  { opacity: 1; }
+      60%  { transform: translateY(0) rotate(3deg) scale(1); opacity: 1; }
+      70%  { transform: translateY(-4%) rotate(-2deg) scale(1); }
+      80%  { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      86%  { transform: translateY(0) rotate(0deg) scale(.4); opacity: 0; }
+      100% { transform: translateY(0) rotate(0deg) scale(.4); opacity: 0; }
+    }
+
+    /* Idea 5: secret brick-explode reassembly */
+    @keyframes brickPopIn {
+      0% { transform: scale(.2) rotate(180deg); opacity: 0; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .jc-pop-in { animation: brickPopIn .5s cubic-bezier(.34,1.56,.64,1) both; }
+
+    /* Idea 6: drag card to trash bin */
+    #trashDropZone {
+      position: fixed; bottom: 24px; right: 24px; z-index: 250;
+      width: 76px; height: 76px; border-radius: 50%;
+      background: #ef4444; border: 4px solid #000;
+      align-items: center; justify-content: center; font-size: 32px;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
+      transition: transform .15s ease, background-color .15s ease;
+    }
+    #trashDropZone.drag-active { transform: scale(1.18); background: #b91c1c; }
+
+    /* Idea 2: drag-drop upload zone */
+    #uploadDropzone { transition: background-color .15s ease, border-color .15s ease; }
+    #uploadDropzone.drag-over { background: #fef3c7 !important; border-color: #eab308 !important; }
+    #brickTowerPreview { display: flex; gap: 2px; align-items: flex-end; height: 24px; }
+
+    /* Custom LEGO stud cursor + brick particle mouse trail — same as dashboard.html */
+    body.stud-cursor, body.stud-cursor * {
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" fill="%23eab308" stroke="%23000" stroke-width="2"/></svg>') 14 14, auto;
+    }
+    #particleLayer { position: fixed; inset: 0; pointer-events: none; z-index: 9998; overflow: hidden; }
+    .mouse-brick {
+      position: absolute; width: 8px; height: 8px; border: 1.5px solid #000; border-radius: 2px;
+      animation: mouseBrickFade 0.6s ease forwards;
+    }
+    @keyframes mouseBrickFade {
+      0% { opacity: 0.9; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-18px) scale(0.5); }
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+<div id="particleLayer"></div>
+<div id="bgBaseplateGrid"></div>
+<div id="bgBrickWall"></div>
+<div id="bgStudLayer"></div>
+<div id="cornerBrickTL" class="corner-brick"></div>
+<div id="cornerBrickBR" class="corner-brick"></div>
+<div class="max-w-7xl mx-auto p-4 sm:p-6 flex flex-col gap-6 frame-studs">
+<!-- Header -->
+<header class="lego-border bg-white flex flex-col sm:flex-row justify-between items-center p-4 gap-4 z-10">
+<div class="flex items-center gap-3">
+<a href="landing.html" class="lego-border-sm bg-lego-yellow hover:bg-yellow-400 text-black p-2 rounded-full flex items-center justify-center transition-colors" aria-label="Back to landing page">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h4a1 1 0 001-1v-6h2v6a1 1 0 001 1h4a1 1 0 001-1V10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+<div class="w-11 h-11 -my-1">
+<model-viewer src="models/lego_logo_3d.glb" alt="LEGO Logo" auto-rotate rotation-per-second="25deg" disable-zoom field-of-view="10deg" shadow-intensity="1" exposure="1" style="width:100%;height:100%;background:transparent;"></model-viewer>
+</div>
+<h1 class="text-2xl sm:text-3xl font-anton uppercase text-black">Jobsheet Library</h1>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<a href="dashboard.html" class="lego-border-sm bg-white px-4 py-2 font-anton uppercase text-sm hover:bg-gray-50 transition-colors">Workspace</a>
+<a href="login.html" class="lego-border-sm bg-white px-4 py-2 font-anton uppercase text-sm hover:bg-gray-50 transition-colors">Sign In</a>
+</div>
+</header>
+
+<!-- Hero / Search / Filters -->
+<section class="lego-border bg-gradient-yellow-orange p-6 sm:p-8 relative z-0 overflow-hidden">
+<div class="absolute inset-0 z-0 opacity-15 pointer-events-none" style="background-size: 64px 64px; background-image: linear-gradient(to right, #1a1c1c 2px, transparent 2px), linear-gradient(to bottom, #1a1c1c 2px, transparent 2px);"></div>
+<div id="heroBricksBg" class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+<div id="fallingBrickWrap" class="absolute inset-0 flex items-center justify-center opacity-30 mix-blend-multiply">
+<div id="fallingBrickModel" style="width:50%;height:65%;">
+<model-viewer src="models/lego_bricks.glb" alt="" auto-rotate rotation-per-second="240deg" disable-zoom camera-orbit="0deg 65deg 220%" field-of-view="20deg" shadow-intensity="0" exposure="1" style="width:100%;height:100%;background:transparent;"></model-viewer>
+</div>
+</div>
+<div id="brickShatterLayer" class="absolute inset-0"></div>
+</div>
+<div class="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-40 h-40 sm:w-56 sm:h-56 pointer-events-none z-10">
+<model-viewer id="heroAvatarMisha" src="models/lego_island_sky_lane.glb" alt="Misha" auto-rotate rotation-per-second="20deg" disable-zoom autoplay field-of-view="16deg" shadow-intensity="0" exposure="1" style="width:100%;height:100%;background:transparent;"></model-viewer>
+</div>
+<div class="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 w-40 h-40 sm:w-56 sm:h-56 pointer-events-none z-10">
+<model-viewer id="heroAvatarFakhrullah" src="models/lego_racers_2_rocket_racer.glb" alt="Fakhrullah" auto-rotate rotation-per-second="20deg" disable-zoom autoplay field-of-view="16deg" shadow-intensity="0" exposure="1" style="width:100%;height:100%;background:transparent;"></model-viewer>
+</div>
+<div class="relative z-10 flex flex-col items-center gap-6">
+<h2 class="text-4xl sm:text-5xl font-anton uppercase text-black text-outline-white text-center leading-none">Browse The Library</h2>
+<p class="text-black/80 font-medium text-center max-w-lg -mt-2">Every jobsheet Misha and Fakhrullah have uploaded, all in one shelf. Search, filter, and jump straight to any submission.</p>
+<!-- Search Bar -->
+<div class="w-full max-w-2xl lego-border-sm bg-white flex items-center px-5 py-3">
+<svg class="h-5 w-5 mr-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<input id="librarySearchInput" oninput="handleSearchInput(this.value)" class="flex-1 outline-none border-none text-base text-gray-700 placeholder-gray-500 bg-transparent w-full" placeholder="Search jobsheet title..." type="text"/>
+</div>
+<!-- Filters -->
+<div class="flex flex-wrap gap-3 items-center justify-center">
+<button data-filter="all" onclick="setStatusFilter('all')" class="filter-pill active">All</button>
+<button data-filter="Submitted" onclick="setStatusFilter('Submitted')" class="filter-pill">Submitted</button>
+<button data-filter="Reviewed" onclick="setStatusFilter('Reviewed')" class="filter-pill">Reviewed</button>
+</div>
+</div>
+</section>
+
+<!-- Upload Panel -->
+<section class="lego-border bg-white p-5 flex flex-wrap items-center gap-4 justify-between z-0">
+<div class="flex items-center gap-3 flex-wrap">
+<span class="font-anton text-sm uppercase tracking-wide">Uploading as:</span>
+<div id="uploaderToggle" class="flex items-center gap-2">
+<div class="w-11 h-11 flex-shrink-0 pointer-events-none">
+<model-viewer id="uploaderAvatarMisha" src="models/lego_island_sky_lane.glb" alt="Misha" auto-rotate rotation-per-second="20deg" disable-zoom field-of-view="16deg" shadow-intensity="0" exposure="1" style="width:100%;height:100%;background:transparent;"></model-viewer>
+</div>
+<button data-uploader="misha" onclick="setUploader('misha')" class="uploader-pill lego-border-sm px-4 py-2 font-bold text-sm">Misha</button>
+<button data-uploader="fakhrullah" onclick="setUploader('fakhrullah')" class="uploader-pill lego-border-sm px-4 py-2 font-bold text-sm">Fakhrullah</button>
+<div class="w-11 h-11 flex-shrink-0 pointer-events-none">
+<model-viewer id="uploaderAvatarFakhrullah" src="models/lego_racers_2_rocket_racer.glb" alt="Fakhrullah" auto-rotate rotation-per-second="20deg" disable-zoom field-of-view="16deg" shadow-intensity="0" exposure="1" style="width:100%;height:100%;background:transparent;"></model-viewer>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 flex-wrap">
+<input id="uploadTitleInput" type="text" placeholder="Jobsheet title..." class="px-4 py-3 lego-border-sm text-sm font-medium w-48"/>
+<div id="uploadDropzone" onclick="document.getElementById('uploadFileInput').click()" class="lego-border-sm bg-gray-50 px-3 py-2 flex items-center gap-2 cursor-pointer w-44">
+<span id="uploadDropzoneLabel" class="text-xs text-gray-500 truncate flex-1">📎 Drop file or click</span>
+<input id="uploadFileInput" type="file" class="hidden" onchange="handleFileSelected(this.files[0])"/>
+</div>
+<div id="brickTowerPreview"></div>
+<span id="uploadCountLabel" class="font-bold text-sm text-gray-600"></span>
+<button onclick="uploadJobsheet()" class="px-6 py-3 bg-lego-yellow text-black font-anton text-lg lego-border-sm hover:bg-yellow-400 transition-colors">+ Upload Jobsheet</button>
+</div>
+</section>
+
+<!-- Jobsheet Grid -->
+<section class="z-0">
+<div id="jobsheetGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+</section>
+</div>
+
+<!-- Drag-to-delete trash bin (shown while dragging a card) -->
+<div id="trashDropZone" class="hidden" aria-label="Drop here to delete">🗑️</div>
+
+<!-- Detail View Modal -->
+<div id="jobsheetModal" class="hidden fixed inset-0 flex items-center justify-center p-4 bg-black/70" onclick="closeJobsheetModal()">
+<div onclick="event.stopPropagation()" class="modal-card lego-border bg-white p-8 relative">
+<button onclick="closeJobsheetModal()" class="absolute top-4 right-4 text-black hover:text-gray-600" aria-label="Close">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+<h3 class="font-anton text-sm uppercase text-gray-500 mb-1">Jobsheet</h3>
+<h2 id="modalJobTitle" class="text-3xl font-anton mb-6 leading-tight"></h2>
+<div class="space-y-4 mb-6">
+<div>
+<h4 class="font-anton text-xs uppercase text-gray-500">Uploaded By</h4>
+<p id="modalJobUploader" class="text-sm font-bold"></p>
+</div>
+<div>
+<h4 class="font-anton text-xs uppercase text-gray-500">Date</h4>
+<p id="modalJobDate" class="text-sm font-bold"></p>
+</div>
+<div>
+<h4 class="font-anton text-xs uppercase text-gray-500 mb-1">Status</h4>
+<span id="modalJobStatus" class="jc-badge inline-block px-4"></span>
+</div>
+<div id="modalReviewedBlock" class="hidden">
+<h4 class="font-anton text-xs uppercase text-gray-500">Mark</h4>
+<p id="modalJobMark" class="text-2xl font-anton text-lego-green"></p>
+<h4 class="font-anton text-xs uppercase text-gray-500 mt-2">Instructor Comment</h4>
+<p id="modalJobComment" class="text-sm font-medium"></p>
+</div>
+<div id="modalNotReviewedYet" class="hidden">
+<p class="text-sm text-gray-500 font-medium italic">Not reviewed yet — check back after your instructor marks it.</p>
+</div>
+</div>
+<div id="modalFileBlock" class="hidden">
+<a id="modalFileLink" href="#" class="w-full py-3 bg-lego-yellow text-black font-anton text-lg lego-border-sm hover:bg-yellow-400 transition-colors flex items-center justify-center gap-2" download="">
+<span>⬇</span> <span id="modalFileName"></span>
+</a>
+</div>
+<p id="modalNoFile" class="hidden text-sm text-gray-400 italic text-center">No file attached to this jobsheet.</p>
+<button onclick="deleteJobsheet(currentModalIndex)" class="w-full py-3 mt-4 bg-white text-lego-red font-anton text-lg lego-border-sm hover:bg-red-50 transition-colors">🗑 Delete Jobsheet</button>
+</div>
+</div>
+
+<script>
+        /* Shares tally with dashboard.html via localStorage.
+           Shared pool of 24 jobsheets total -> dashboard reads combined uploads capped at 24. */
+        var PER_BUILDER_TOTAL = 24;
+        var PROGRESS_KEY = 'jobsheet-progress-v3';
+        var UPLOADER_KEY = 'jobsheet-current-uploader';
+        var currentUploader = localStorage.getItem(UPLOADER_KEY) || 'misha';
+
+        function loadProgressState() {
+            try {
+                var saved = JSON.parse(localStorage.getItem(PROGRESS_KEY));
+                if (saved && typeof saved.misha === 'number' && typeof saved.fakhrullah === 'number') return saved;
+            } catch (e) {}
+            return { misha: 0, fakhrullah: 0 };
+        }
+
+        function renderUploaderUI() {
+            document.querySelectorAll('.uploader-pill').forEach(function (btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-uploader') === currentUploader);
+            });
+            var state = loadProgressState();
+            var done = state[currentUploader];
+            document.getElementById('uploadCountLabel').textContent = done + ' / ' + PER_BUILDER_TOTAL + ' uploaded';
+        }
+
+        function setUploader(key) {
+            currentUploader = key;
+            localStorage.setItem(UPLOADER_KEY, key);
+            renderUploaderUI();
+        }
+
+        var JOBSHEETS_KEY = 'uploaded-jobsheets-v3';
+        var UPLOADER_NAMES = { misha: 'Misha', fakhrullah: 'Fakhrullah' };
+
+        function loadJobsheets() {
+            try {
+                var saved = JSON.parse(localStorage.getItem(JOBSHEETS_KEY));
+                if (Array.isArray(saved)) return saved;
+            } catch (e) {}
+            return [];
+        }
+
+        function saveJobsheetRecord(title, fileName, fileData) {
+            var state = loadProgressState();
+            if (state[currentUploader] >= PER_BUILDER_TOTAL) return;
+            state[currentUploader] += 1;
+            localStorage.setItem(PROGRESS_KEY, JSON.stringify(state));
+
+            var jobsheets = loadJobsheets();
+            jobsheets.push({
+                id: Date.now(),
+                title: title,
+                uploader: UPLOADER_NAMES[currentUploader],
+                date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+                status: 'Submitted',
+                mark: null,
+                comment: null,
+                fileName: fileName,
+                fileData: fileData
+            });
+            try {
+                localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(jobsheets));
+            } catch (e) {
+                // Ran out of browser storage quota with the file attached — retry without it
+                // rather than losing the whole upload.
+                jobsheets[jobsheets.length - 1].fileData = null;
+                try {
+                    localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(jobsheets));
+                    alert('Storage is full — jobsheet saved, but the file itself could not be stored. Try a smaller file.');
+                } catch (e2) {
+                    alert('Could not save this jobsheet — browser storage is full.');
+                    state[currentUploader] -= 1;
+                    localStorage.setItem(PROGRESS_KEY, JSON.stringify(state));
+                    return;
+                }
+            }
+
+            // Streak heatmap on the dashboard reads this same key — additive, doesn't affect anything here.
+            try {
+                var today = new Date().toISOString().slice(0, 10);
+                var log = JSON.parse(localStorage.getItem('activity-log') || '{}');
+                log[today] = (log[today] || 0) + 1;
+                localStorage.setItem('activity-log', JSON.stringify(log));
+            } catch (e) {}
+
+            // Per-uploader daily log — lets the dashboard streak heatmap show whose avatar uploaded that day.
+            try {
+                var today2 = new Date().toISOString().slice(0, 10);
+                var uploadLog = JSON.parse(localStorage.getItem('upload-log') || '{}');
+                if (!uploadLog[today2]) uploadLog[today2] = { misha: 0, fakhrullah: 0 };
+                uploadLog[today2][currentUploader] = (uploadLog[today2][currentUploader] || 0) + 1;
+                localStorage.setItem('upload-log', JSON.stringify(uploadLog));
+            } catch (e) {}
+
+            document.getElementById('uploadTitleInput').value = '';
+            document.getElementById('uploadFileInput').value = '';
+            if (typeof handleFileSelected === 'function') handleFileSelected(null);
+            renderUploaderUI();
+            renderJobsheets();
+        }
+
+        function uploadJobsheet() {
+            var titleInput = document.getElementById('uploadTitleInput');
+            var title = titleInput.value.trim();
+            if (!title) {
+                titleInput.focus();
+                return;
+            }
+            var fileInput = document.getElementById('uploadFileInput');
+            var file = fileInput.files[0];
+
+            if (!file) {
+                saveJobsheetRecord(title, null, null);
+                return;
+            }
+            // Data-URL cap — generous, but browser localStorage quota (shared across the
+            // whole site, usually ~5-10MB total) is the real ceiling. saveJobsheetRecord()
+            // catches quota overflow too, so this is just an early, friendlier warning.
+            if (file.size > 20 * 1024 * 1024) {
+                alert('File too large (max 20MB). Jobsheet saved without the file.');
+                saveJobsheetRecord(title, file.name, null);
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function () {
+                saveJobsheetRecord(title, file.name, reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /* ===== Library grid: search + status filter + render ===== */
+        var jobsheetsCache = [];
+        var currentSearchTerm = '';
+        var currentStatusFilter = 'all';
+
+        function handleSearchInput(value) {
+            currentSearchTerm = value.trim().toLowerCase();
+            renderJobsheets();
+        }
+
+        function setStatusFilter(status) {
+            currentStatusFilter = status;
+            document.querySelectorAll('.filter-pill').forEach(function (btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-filter') === status);
+            });
+            renderJobsheets();
+        }
+
+        var featuredJobId = null;
+        var shuffleDisplayOnce = false;
+
+        /* Idea 1: rarity badge — computed against full chronological upload order,
+           not the filtered/displayed subset, so it never shifts as you search/filter. */
+        function computeRarityBadge(job, chronological) {
+            if (job.status === 'Reviewed' && job.mark !== null && job.mark >= 90) return '⭐ Golden Brick';
+            var idx = chronological.findIndex(function (j) { return j.id === job.id; });
+            if (idx === 0) return '🥇 First Brick';
+            if ((idx + 1) % 5 === 0) return '🏆 Milestone #' + (idx + 1);
+            return null;
+        }
+
+        function pickFeaturedJob(all) {
+            var eligible = all.filter(function (j) { return j.status === 'Reviewed' && j.mark !== null && j.mark >= 80; });
+            if (!eligible.length) return null;
+            return eligible[Math.floor(Math.random() * eligible.length)].id;
+        }
+
+        function renderJobsheets() {
+            jobsheetsCache = loadJobsheets();
+            var grid = document.getElementById('jobsheetGrid');
+            var chronological = jobsheetsCache.slice().sort(function (a, b) { return a.id - b.id; });
+
+            if (featuredJobId === null || !jobsheetsCache.some(function (j) { return j.id === featuredJobId; })) {
+                featuredJobId = pickFeaturedJob(jobsheetsCache);
+            }
+
+            var filtered = jobsheetsCache.filter(function (job) {
+                var matchesSearch = !currentSearchTerm || job.title.toLowerCase().indexOf(currentSearchTerm) !== -1;
+                var matchesStatus = currentStatusFilter === 'all' || job.status === currentStatusFilter;
+                return matchesSearch && matchesStatus;
+            });
+
+            if (jobsheetsCache.length === 0) {
+                grid.innerHTML = '<div class="lego-border-sm border-dashed bg-white/60 p-10 text-center md:col-span-2 lg:col-span-3">' +
+                    '<p class="font-anton text-2xl text-gray-500">NO JOBSHEETS YET</p>' +
+                    '<p class="text-sm text-gray-500 mt-2">Upload one using the panel above to see it here.</p></div>';
+                return;
+            }
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="lego-border-sm border-dashed bg-white/60 p-10 text-center md:col-span-2 lg:col-span-3">' +
+                    '<p class="font-anton text-2xl text-gray-500">NO MATCHES</p>' +
+                    '<p class="text-sm text-gray-500 mt-2">Try a different search term or filter.</p></div>';
+                return;
+            }
+
+            if (shuffleDisplayOnce) {
+                for (var i = filtered.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var tmp = filtered[i]; filtered[i] = filtered[j]; filtered[j] = tmp;
+                }
+            }
+
+            // Render against the full (unfiltered) cache so data-index always maps correctly.
+            grid.innerHTML = filtered.map(function (job, displayPos) {
+                var realIndex = jobsheetsCache.indexOf(job);
+                var badgeClass = job.status === 'Reviewed' ? 'jc-badge-reviewed' : 'jc-badge-submitted';
+                var markHtml = (job.status === 'Reviewed' && job.mark !== null) ? '<p class="jc-mark">Mark: ' + job.mark + '</p>' : '';
+                var rarity = computeRarityBadge(job, chronological);
+                var rarityHtml = rarity ? '<div class="jc-rarity">' + rarity + '</div>' : '';
+                var isFeatured = job.id === featuredJobId;
+                var featuredHtml = isFeatured ? '<div class="jc-featured-label">★ Featured Build</div>' : '';
+                var popClass = shuffleDisplayOnce ? ' jc-pop-in' : '';
+                var popDelay = shuffleDisplayOnce ? ' style="animation-delay:' + (displayPos * 40) + 'ms"' : '';
+                var backComment = job.comment ? (job.comment.length > 90 ? job.comment.slice(0, 90) + '…' : job.comment) : 'No comment yet.';
+                var backMark = (job.status === 'Reviewed' && job.mark !== null) ? job.mark : '—';
+                return '<div class="jc-flip-outer' + popClass + (isFeatured ? ' jc-featured' : '') + '" draggable="true" data-index="' + realIndex + '"' + popDelay + '>' +
+                    rarityHtml + featuredHtml +
+                    '<div class="jc-flip-inner">' +
+                    '<div class="jc-face jc-face-front">' +
+                    '<div class="jc-card">' +
+                    '<div class="jc-header jc-header-' + job.uploader.toLowerCase() + '"><span>' + job.uploader + '</span></div>' +
+                    '<div class="jc-body">' +
+                    '<h5 class="jc-title">' + job.title + '</h5>' +
+                    '<p class="jc-date">Uploaded: ' + job.date + '</p>' +
+                    markHtml +
+                    '<span class="jc-badge ' + badgeClass + '">' + job.status + '</span>' +
+                    '<button onclick="viewJobsheet(' + realIndex + ')" class="jc-view-btn">View</button>' +
+                    '</div></div>' +
+                    '<button type="button" class="jc-flip-btn" title="Quick stats" onclick="event.stopPropagation(); this.closest(\'.jc-flip-outer\').classList.toggle(\'flipped\')">🔄</button>' +
+                    '</div>' +
+                    '<div class="jc-face jc-face-back">' +
+                    '<h5 class="font-anton uppercase">' + job.title + '</h5>' +
+                    '<div class="jc-back-mark">' + backMark + (backMark !== '—' ? '<span style="font-size:1rem;">/100</span>' : '') + '</div>' +
+                    '<p class="jc-back-comment">' + backComment + '</p>' +
+                    '<button type="button" class="jc-flip-btn" title="Back to front" onclick="event.stopPropagation(); this.closest(\'.jc-flip-outer\').classList.toggle(\'flipped\')">↩️</button>' +
+                    '</div>' +
+                    '</div></div>';
+            }).join('');
+            shuffleDisplayOnce = false;
+        }
+
+        var currentModalIndex = null;
+        function viewJobsheet(index) {
+            var job = jobsheetsCache[index];
+            if (!job) return;
+            currentModalIndex = index;
+            document.getElementById('modalJobTitle').textContent = job.title;
+            document.getElementById('modalJobUploader').textContent = job.uploader;
+            document.getElementById('modalJobDate').textContent = job.date;
+            var statusEl = document.getElementById('modalJobStatus');
+            statusEl.textContent = job.status;
+            statusEl.className = 'jc-badge inline-block px-4 ' + (job.status === 'Reviewed' ? 'jc-badge-reviewed' : 'jc-badge-submitted');
+
+            var reviewed = job.status === 'Reviewed';
+            document.getElementById('modalReviewedBlock').classList.toggle('hidden', !reviewed);
+            document.getElementById('modalNotReviewedYet').classList.toggle('hidden', reviewed);
+            if (reviewed) {
+                document.getElementById('modalJobMark').textContent = job.mark;
+                document.getElementById('modalJobComment').textContent = job.comment || '—';
+            }
+
+            var hasFile = !!job.fileData;
+            document.getElementById('modalFileBlock').classList.toggle('hidden', !hasFile);
+            document.getElementById('modalNoFile').classList.toggle('hidden', hasFile);
+            if (hasFile) {
+                document.getElementById('modalFileName').textContent = job.fileName || 'Download attachment';
+                var link = document.getElementById('modalFileLink');
+                link.href = job.fileData;
+                link.setAttribute('download', job.fileName || 'jobsheet-file');
+            }
+
+            document.getElementById('jobsheetModal').classList.remove('hidden');
+        }
+
+        function closeJobsheetModal() {
+            document.getElementById('jobsheetModal').classList.add('hidden');
+        }
+
+        /* Deletes a jobsheet and keeps every other localStorage-derived view (this page,
+           dashboard.html's list/progress/streak) in sync — dashboard.html already listens
+           for 'storage' events on PROGRESS_KEY and JOBSHEETS_KEY, so writing here is enough
+           to update it live in another tab; same-tab views are re-rendered explicitly below. */
+        function deleteJobsheet(index) {
+            var job = jobsheetsCache[index];
+            if (!job) return;
+            if (!confirm('Delete "' + job.title + '"? This cannot be undone.')) return;
+
+            var uploaderKey = job.uploader === 'Misha' ? 'misha' : 'fakhrullah';
+
+            var state = loadProgressState();
+            state[uploaderKey] = Math.max(0, (state[uploaderKey] || 0) - 1);
+            localStorage.setItem(PROGRESS_KEY, JSON.stringify(state));
+
+            var jobsheets = loadJobsheets().filter(function (j) { return j.id !== job.id; });
+            localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(jobsheets));
+
+            try {
+                var dateKey = new Date(job.id).toISOString().slice(0, 10);
+                var log = JSON.parse(localStorage.getItem('activity-log') || '{}');
+                if (log[dateKey]) {
+                    log[dateKey] = Math.max(0, log[dateKey] - 1);
+                    if (log[dateKey] === 0) delete log[dateKey];
+                    localStorage.setItem('activity-log', JSON.stringify(log));
+                }
+                var uploadLog = JSON.parse(localStorage.getItem('upload-log') || '{}');
+                if (uploadLog[dateKey] && uploadLog[dateKey][uploaderKey]) {
+                    uploadLog[dateKey][uploaderKey] = Math.max(0, uploadLog[dateKey][uploaderKey] - 1);
+                    localStorage.setItem('upload-log', JSON.stringify(uploadLog));
+                }
+            } catch (e) {}
+
+            currentModalIndex = null;
+            closeJobsheetModal();
+            renderUploaderUI();
+            renderJobsheets();
+        }
+
+        renderUploaderUI();
+        renderJobsheets();
+
+        /* LEGO click sound (synthesized, no audio file needed) — same as dashboard.html */
+        var audioCtx = null;
+        function playClickSound() {
+            try {
+                audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+                var fire = function () {
+                    var osc = audioCtx.createOscillator();
+                    var gain = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(520, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.09);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.1);
+                };
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().then(fire);
+                } else {
+                    fire();
+                }
+            } catch (e) { console.error('[click sound]', e); }
+        }
+        document.addEventListener('click', function (ev) {
+            var link = ev.target.closest('a[href]');
+            if (link && link.getAttribute('href') && !link.getAttribute('href').startsWith('#') && link.target !== '_blank') {
+                ev.preventDefault();
+                playClickSound();
+                var href = link.href;
+                setTimeout(function () { window.location.href = href; }, 110);
+                return;
+            }
+            if (ev.target.closest('button, a, .swatch')) {
+                playClickSound();
+            }
+        });
+
+        /* Idea 2: drag-and-drop upload zone with brick-build size preview */
+        function handleFileSelected(file) {
+            var label = document.getElementById('uploadDropzoneLabel');
+            var tower = document.getElementById('brickTowerPreview');
+            if (!file) {
+                label.textContent = '📎 Drop file or click';
+                tower.innerHTML = '';
+                return;
+            }
+            label.textContent = file.name;
+            var bricks = Math.min(10, Math.max(1, Math.ceil(file.size / (300 * 1024))));
+            var html = '';
+            for (var i = 0; i < bricks; i++) {
+                html += '<div style="width:8px;height:' + (6 + i * 2) + 'px;background:#eab308;border:1.5px solid #000;border-radius:1px;"></div>';
+            }
+            tower.innerHTML = html;
+        }
+        (function setupUploadDropzone() {
+            var zone = document.getElementById('uploadDropzone');
+            if (!zone) return;
+            ['dragenter', 'dragover'].forEach(function (evt) {
+                zone.addEventListener(evt, function (ev) { ev.preventDefault(); zone.classList.add('drag-over'); });
+            });
+            ['dragleave', 'drop'].forEach(function (evt) {
+                zone.addEventListener(evt, function (ev) { ev.preventDefault(); zone.classList.remove('drag-over'); });
+            });
+            zone.addEventListener('drop', function (ev) {
+                var file = ev.dataTransfer.files[0];
+                if (!file) return;
+                var input = document.getElementById('uploadFileInput');
+                try {
+                    var dt = new DataTransfer();
+                    dt.items.add(file);
+                    input.files = dt.files;
+                } catch (e) {}
+                handleFileSelected(file);
+            });
+        })();
+
+        /* Idea 7: brick-snap hover sound (delegated, throttled so rapid mouse movement doesn't spam it) */
+        var lastHoverSoundAt = 0;
+        function playHoverTick() {
+            try {
+                audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+                var fire = function () {
+                    var osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(700, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.04);
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.06);
+                };
+                if (audioCtx.state === 'suspended') audioCtx.resume().then(fire); else fire();
+            } catch (e) {}
+        }
+        (function setupHoverSound() {
+            var grid = document.getElementById('jobsheetGrid');
+            if (!grid) return;
+            grid.addEventListener('mouseover', function (ev) {
+                var card = ev.target.closest('.jc-flip-outer');
+                if (!card) return;
+                var now = Date.now();
+                if (now - lastHoverSoundAt < 250) return;
+                lastHoverSoundAt = now;
+                playHoverTick();
+            });
+        })();
+
+        /* Idea 6: drag a card onto the trash bin to delete it */
+        (function setupDragToTrash() {
+            var trash = document.getElementById('trashDropZone');
+            if (!trash) return;
+            var draggingIndex = null;
+            document.addEventListener('dragstart', function (ev) {
+                var card = ev.target.closest('.jc-flip-outer');
+                if (!card) return;
+                draggingIndex = Number(card.getAttribute('data-index'));
+                trash.classList.remove('hidden');
+                trash.style.display = 'flex';
+                if (ev.dataTransfer) ev.dataTransfer.effectAllowed = 'move';
+            });
+            document.addEventListener('dragend', function () {
+                trash.style.display = '';
+                trash.classList.add('hidden');
+                trash.classList.remove('drag-active');
+                draggingIndex = null;
+            });
+            trash.addEventListener('dragover', function (ev) { ev.preventDefault(); trash.classList.add('drag-active'); });
+            trash.addEventListener('dragleave', function () { trash.classList.remove('drag-active'); });
+            trash.addEventListener('drop', function (ev) {
+                ev.preventDefault();
+                trash.style.display = '';
+                trash.classList.add('hidden');
+                trash.classList.remove('drag-active');
+                if (draggingIndex !== null) deleteJobsheet(draggingIndex);
+            });
+        })();
+
+        /* Idea 5: secret keyword "brick" -> every card explodes apart, then reassembles shuffled */
+        function explodeAndReassembleCards() {
+            var cards = document.querySelectorAll('.jc-flip-outer');
+            if (!cards.length) return;
+            cards.forEach(function (c) {
+                var dx = (Math.random() * 400 - 200), dy = (Math.random() * 400 - 200), rot = (Math.random() * 720 - 360);
+                c.style.transition = 'transform .5s ease-in, opacity .5s ease-in';
+                c.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(' + rot + 'deg) scale(.3)';
+                c.style.opacity = '0';
+            });
+            setTimeout(function () {
+                shuffleDisplayOnce = true;
+                renderJobsheets();
+            }, 520);
+        }
+        (function setupBrickExplodeEasterEgg() {
+            var KEYWORD = 'brick';
+            var buffer = '';
+            document.addEventListener('keydown', function (ev) {
+                var tag = (document.activeElement && document.activeElement.tagName || '').toLowerCase();
+                if (tag === 'input' || tag === 'textarea') return;
+                if (ev.key.length !== 1) return;
+                buffer = (buffer + ev.key.toLowerCase()).slice(-KEYWORD.length);
+                if (buffer === KEYWORD) {
+                    buffer = '';
+                    explodeAndReassembleCards();
+                }
+            });
+        })();
+
+        /* Custom LEGO stud cursor (always on, purely cosmetic) — same as dashboard.html */
+        document.body.classList.add('stud-cursor');
+
+        /* Mini brick particle mouse trail (throttled) — same as dashboard.html */
+        (function setupParticleTrail() {
+            var layer = document.getElementById('particleLayer');
+            if (!layer) return;
+            var last = 0;
+            var colors = ['#ef4444', '#3b82f6', '#eab308', '#22c55e'];
+            document.addEventListener('mousemove', function (ev) {
+                var now = Date.now();
+                if (now - last < 60) return;
+                last = now;
+                var dot = document.createElement('div');
+                dot.className = 'mouse-brick';
+                dot.style.left = ev.clientX + 'px';
+                dot.style.top = ev.clientY + 'px';
+                dot.style.background = colors[Math.floor(Math.random() * colors.length)];
+                layer.appendChild(dot);
+                setTimeout(function () { dot.remove(); }, 650);
+            });
+        })();
+
+        /* Idea 5: skybox time-of-day tint on the page background */
+        (function setupSkybox() {
+            var hour = new Date().getHours();
+            if (hour >= 5 && hour < 8) document.body.classList.add('sky-morning');
+            else if (hour >= 17 && hour < 20) document.body.classList.add('sky-evening');
+            else if (hour >= 20 || hour < 5) document.body.classList.add('sky-night');
+            // 8am-5pm keeps the default daytime blue — no class needed.
+        })();
+
+        /* Idea 2: parallax drift for the floating stud background layer */
+        (function setupBgStudParallax() {
+            var layer = document.getElementById('bgStudLayer');
+            if (!layer) return;
+            window.addEventListener('scroll', function () {
+                layer.style.transform = 'translateY(' + (window.scrollY * 0.15) + 'px)';
+            }, { passive: true });
+        })();
+
+        /* Uploader avatars mirror landing.html's "Meet the Builders" model pick, live-synced */
+        (function setupUploaderAvatars() {
+            var VIEWER_IDS = {
+                'builder-misha-viewer': ['uploaderAvatarMisha', 'heroAvatarMisha'],
+                'builder-fakhrullah-viewer': ['uploaderAvatarFakhrullah', 'heroAvatarFakhrullah']
+            };
+            function applySaved(storageKey) {
+                var localIds = VIEWER_IDS[storageKey];
+                var saved = localStorage.getItem(storageKey);
+                if (!localIds || !saved) return;
+                localIds.forEach(function (localId) {
+                    var target = document.getElementById(localId);
+                    if (target) target.setAttribute('src', saved);
+                });
+            }
+            Object.keys(VIEWER_IDS).forEach(applySaved);
+            window.addEventListener('storage', function (e) {
+                if (e.key && VIEWER_IDS[e.key]) applySaved(e.key);
+            });
+        })();
+
+        /* Hero background: brick falls then shatters into fragments, on loop */
+        (function setupFallingBrick() {
+            var model = document.getElementById('fallingBrickModel');
+            var stage = document.getElementById('heroBricksBg');
+            var burstLayer = document.getElementById('brickShatterLayer');
+            if (!model || !stage || !burstLayer) return;
+
+            var FALL_DURATION = 1600;
+            var SHATTER_AT = 1320;
+            var CYCLE = 4600;
+            var FRAG_COLORS = ['#dc2626', '#eab308', '#2563eb', '#16a34a', '#111111', '#f97316'];
+
+            function spawnShatterBurst() {
+                var w = stage.clientWidth, h = stage.clientHeight;
+                var cx = w / 2, cy = h / 2 + h * 0.14;
+                for (var i = 0; i < 16; i++) {
+                    var frag = document.createElement('div');
+                    var size = 7 + Math.random() * 11;
+                    frag.style.cssText = 'position:absolute;width:' + size + 'px;height:' + size + 'px;' +
+                        'background:' + FRAG_COLORS[i % FRAG_COLORS.length] + ';border:1px solid rgba(0,0,0,.35);' +
+                        'left:' + cx + 'px;top:' + cy + 'px;opacity:.5;';
+                    var angle = Math.random() * Math.PI * 2;
+                    var dist = 50 + Math.random() * 150;
+                    var tx = Math.cos(angle) * dist;
+                    var ty = Math.sin(angle) * dist * 0.6 - 30;
+                    var rot = Math.round(Math.random() * 720 - 360);
+                    burstLayer.appendChild(frag);
+                    if (frag.animate) {
+                        frag.animate([
+                            { transform: 'translate(0,0) rotate(0deg)', opacity: .5 },
+                            { transform: 'translate(' + tx + 'px,' + ty + 'px) rotate(' + rot + 'deg)', opacity: 0 }
+                        ], { duration: 850 + Math.random() * 350, easing: 'cubic-bezier(.25,.7,.4,1)', fill: 'forwards' });
+                    }
+                    (function (f) { setTimeout(function () { f.remove(); }, 1300); })(frag);
+                }
+            }
+
+            function runCycle() {
+                model.classList.remove('brick-fall-anim');
+                void model.offsetWidth;
+                model.classList.add('brick-fall-anim');
+                setTimeout(spawnShatterBurst, SHATTER_AT);
+            }
+
+            runCycle();
+            setInterval(runCycle, CYCLE);
+        })();
+    </script>
+</body></html>
