@@ -635,7 +635,7 @@
             return [];
         }
 
-        function saveJobsheetRecord(title, fileName, fileData, fileUrl) {
+        function saveJobsheetRecord(title, fileName, fileData, fileUrl, filePath) {
             var state = loadProgressState();
             if (state[currentUploader] >= PER_BUILDER_TOTAL) return;
             state[currentUploader] += 1;
@@ -652,7 +652,8 @@
                 comment: null,
                 fileName: fileName,
                 fileData: fileData,
-                fileUrl: fileUrl || null
+                fileUrl: fileUrl || null,
+                filePath: filePath || null
             });
             try {
                 localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(jobsheets));
@@ -740,7 +741,7 @@
                 .then(function (res) { return res.json(); })
                 .then(function (result) {
                     if (result && result.ok) {
-                        saveJobsheetRecord(title, file.name, dataUrl, result.url);
+                        saveJobsheetRecord(title, file.name, dataUrl, result.url, result.path);
                     } else {
                         saveJobsheetRecord(title, file.name, dataUrl, null);
                         alert('Jobsheet saved, but syncing the file to GitHub failed — only visible on this device for now.');
@@ -918,34 +919,48 @@
             if (!job) return;
             if (!confirm('Delete "' + job.title + '"? This cannot be undone.')) return;
 
-            var uploaderKey = job.uploader === 'Misha' ? 'misha' : 'fakhrullah';
+            function finishDelete() {
+                var uploaderKey = job.uploader === 'Misha' ? 'misha' : 'fakhrullah';
 
-            var state = loadProgressState();
-            state[uploaderKey] = Math.max(0, (state[uploaderKey] || 0) - 1);
-            localStorage.setItem(PROGRESS_KEY, JSON.stringify(state));
+                var state = loadProgressState();
+                state[uploaderKey] = Math.max(0, (state[uploaderKey] || 0) - 1);
+                localStorage.setItem(PROGRESS_KEY, JSON.stringify(state));
 
-            var jobsheets = loadJobsheets().filter(function (j) { return j.id !== job.id; });
-            localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(jobsheets));
+                var jobsheets = loadJobsheets().filter(function (j) { return j.id !== job.id; });
+                localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(jobsheets));
 
-            try {
-                var dateKey = new Date(job.id).toISOString().slice(0, 10);
-                var log = JSON.parse(localStorage.getItem('activity-log') || '{}');
-                if (log[dateKey]) {
-                    log[dateKey] = Math.max(0, log[dateKey] - 1);
-                    if (log[dateKey] === 0) delete log[dateKey];
-                    localStorage.setItem('activity-log', JSON.stringify(log));
-                }
-                var uploadLog = JSON.parse(localStorage.getItem('upload-log') || '{}');
-                if (uploadLog[dateKey] && uploadLog[dateKey][uploaderKey]) {
-                    uploadLog[dateKey][uploaderKey] = Math.max(0, uploadLog[dateKey][uploaderKey] - 1);
-                    localStorage.setItem('upload-log', JSON.stringify(uploadLog));
-                }
-            } catch (e) {}
+                try {
+                    var dateKey = new Date(job.id).toISOString().slice(0, 10);
+                    var log = JSON.parse(localStorage.getItem('activity-log') || '{}');
+                    if (log[dateKey]) {
+                        log[dateKey] = Math.max(0, log[dateKey] - 1);
+                        if (log[dateKey] === 0) delete log[dateKey];
+                        localStorage.setItem('activity-log', JSON.stringify(log));
+                    }
+                    var uploadLog = JSON.parse(localStorage.getItem('upload-log') || '{}');
+                    if (uploadLog[dateKey] && uploadLog[dateKey][uploaderKey]) {
+                        uploadLog[dateKey][uploaderKey] = Math.max(0, uploadLog[dateKey][uploaderKey] - 1);
+                        localStorage.setItem('upload-log', JSON.stringify(uploadLog));
+                    }
+                } catch (e) {}
 
-            currentModalIndex = null;
-            closeJobsheetModal();
-            renderUploaderUI();
-            renderJobsheets();
+                currentModalIndex = null;
+                closeJobsheetModal();
+                renderUploaderUI();
+                renderJobsheets();
+            }
+
+            if (job.filePath) {
+                fetch(UPLOAD_WORKER_URL, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path: job.filePath })
+                })
+                .catch(function () { /* ignored — still remove the local record below */ })
+                .finally(finishDelete);
+            } else {
+                finishDelete();
+            }
         }
 
         renderUploaderUI();
