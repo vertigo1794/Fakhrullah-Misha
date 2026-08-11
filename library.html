@@ -539,7 +539,7 @@
 </div>
 <div id="brickTowerPreview"></div>
 <span id="uploadCountLabel" class="font-bold text-sm text-gray-600"></span>
-<button onclick="uploadJobsheet()" class="px-6 py-3 bg-lego-yellow text-black font-anton text-lg lego-border-sm hover:bg-yellow-400 transition-colors">+ Upload Jobsheet</button>
+<button id="uploadJobsheetBtn" onclick="uploadJobsheet()" class="px-6 py-3 bg-lego-yellow text-black font-anton text-lg lego-border-sm hover:bg-yellow-400 transition-colors">+ Upload Jobsheet</button>
 </div>
 </section>
 
@@ -635,7 +635,7 @@
             return [];
         }
 
-        function saveJobsheetRecord(title, fileName, fileData) {
+        function saveJobsheetRecord(title, fileName, fileData, fileUrl) {
             var state = loadProgressState();
             if (state[currentUploader] >= PER_BUILDER_TOTAL) return;
             state[currentUploader] += 1;
@@ -651,7 +651,8 @@
                 mark: null,
                 comment: null,
                 fileName: fileName,
-                fileData: fileData
+                fileData: fileData,
+                fileUrl: fileUrl || null
             });
             try {
                 localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(jobsheets));
@@ -694,6 +695,10 @@
             renderJobsheets();
         }
 
+        // Cloudflare Worker that commits the uploaded file straight into the GitHub repo
+        // (under site/uploads/) so it's downloadable from any device, not just this browser.
+        var UPLOAD_WORKER_URL = 'https://jobsheet-upload-worker.vertigo1794.workers.dev';
+
         function uploadJobsheet() {
             var titleInput = document.getElementById('uploadTitleInput');
             var title = titleInput.value.trim();
@@ -705,20 +710,49 @@
             var file = fileInput.files[0];
 
             if (!file) {
-                saveJobsheetRecord(title, null, null);
+                saveJobsheetRecord(title, null, null, null);
                 return;
             }
-            // Data-URL cap — generous, but browser localStorage quota (shared across the
-            // whole site, usually ~5-10MB total) is the real ceiling. saveJobsheetRecord()
-            // catches quota overflow too, so this is just an early, friendlier warning.
-            if (file.size > 20 * 1024 * 1024) {
-                alert('File too large (max 20MB). Jobsheet saved without the file.');
-                saveJobsheetRecord(title, file.name, null);
+            // Worker/GitHub Contents API cap — comfortably under GitHub's ~100MB hard limit.
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File too large (max 10MB). Jobsheet saved without the file.');
+                saveJobsheetRecord(title, file.name, null, null);
                 return;
             }
+
+            var uploadBtn = document.getElementById('uploadJobsheetBtn');
+            if (uploadBtn) { uploadBtn.disabled = true; uploadBtn.textContent = 'Uploading...'; }
+
             var reader = new FileReader();
             reader.onload = function () {
-                saveJobsheetRecord(title, file.name, reader.result);
+                var dataUrl = reader.result;
+                var base64Content = dataUrl.slice(dataUrl.indexOf(',') + 1);
+
+                fetch(UPLOAD_WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fileName: file.name,
+                        uploader: currentUploader,
+                        contentBase64: base64Content
+                    })
+                })
+                .then(function (res) { return res.json(); })
+                .then(function (result) {
+                    if (result && result.ok) {
+                        saveJobsheetRecord(title, file.name, dataUrl, result.url);
+                    } else {
+                        saveJobsheetRecord(title, file.name, dataUrl, null);
+                        alert('Jobsheet saved, but syncing the file to GitHub failed — only visible on this device for now.');
+                    }
+                })
+                .catch(function () {
+                    saveJobsheetRecord(title, file.name, dataUrl, null);
+                    alert('Jobsheet saved, but syncing the file to GitHub failed (offline or worker unreachable) — only visible on this device for now.');
+                })
+                .finally(function () {
+                    if (uploadBtn) { uploadBtn.disabled = false; uploadBtn.textContent = '+ Upload Jobsheet'; }
+                });
             };
             reader.readAsDataURL(file);
         }
@@ -854,14 +888,18 @@
                 document.getElementById('modalJobComment').textContent = job.comment || '—';
             }
 
-            var hasFile = !!job.fileData;
+            var fileHref = job.fileUrl || job.fileData;
+            var hasFile = !!fileHref;
             document.getElementById('modalFileBlock').classList.toggle('hidden', !hasFile);
             document.getElementById('modalNoFile').classList.toggle('hidden', hasFile);
             if (hasFile) {
                 document.getElementById('modalFileName').textContent = job.fileName || 'Download attachment';
                 var link = document.getElementById('modalFileLink');
-                link.href = job.fileData;
+                link.href = fileHref;
                 link.setAttribute('download', job.fileName || 'jobsheet-file');
+                // A GitHub-hosted file is downloadable from any device; a plain
+                // data: URL (upload sync failed) only works on the browser that made it.
+                link.target = job.fileUrl ? '_blank' : '_self';
             }
 
             document.getElementById('jobsheetModal').classList.remove('hidden');
