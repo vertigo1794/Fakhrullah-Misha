@@ -177,7 +177,16 @@
     .jc-body { padding: 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
     .jc-title { font-weight: 700; line-height: 1.2; font-size: 1.15rem; }
     .jc-date { font-size: 0.875rem; color: #4b5563; }
-    .jc-desc-preview { font-size: 0.8rem; color: #374151; font-style: italic; line-height: 1.35; margin-top: -2px; }
+    .jc-desc-preview {
+        font-size: 0.8rem; color: #374151; font-style: italic; line-height: 1.35; margin-top: -2px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
 
     /* Notes-pad style checklist: jotter-style box, red margin, tickable to-do rows */
     .notes-checklist {
@@ -614,7 +623,7 @@
 </div>
 <div id="modalDescriptionBlock" class="hidden">
 <h4 class="font-anton text-xs uppercase text-gray-500 mb-1">Description</h4>
-<p id="modalJobDescription" class="text-sm font-medium whitespace-pre-line"></p>
+<p id="modalJobDescription" class="text-sm font-medium whitespace-pre-line" style="word-break: break-word; overflow-wrap: anywhere;"></p>
 <button id="modalDescriptionToggle" type="button" onclick="toggleDescriptionExpand()" class="hidden text-xs font-bold text-lego-blue hover:underline mt-1"></button>
 </div>
 </div>
@@ -1012,7 +1021,7 @@
                 var backComment = job.comment ? (job.comment.length > 90 ? job.comment.slice(0, 90) + '…' : job.comment) : 'No comment yet.';
                 var backMark = (job.status === 'Reviewed' && job.mark !== null) ? job.mark : '—';
                 var descPreview = job.description
-                    ? '<p class="jc-desc-preview">' + escapeHtml(job.description.length > 70 ? job.description.slice(0, 70) + '…' : job.description) + '</p>'
+                    ? '<p class="jc-desc-preview">' + escapeHtml(job.description) + '</p>'
                     : '';
                 return '<div class="jc-flip-outer' + popClass + (isFeatured ? ' jc-featured' : '') + '" draggable="true" data-index="' + realIndex + '"' + popDelay + '>' +
                     rarityHtml + featuredHtml +
