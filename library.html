@@ -857,7 +857,13 @@
                 if (!res.ok) throw new Error('fetch failed: ' + res.status);
                 return res.blob();
             }).then(function (blob) {
-                var blobUrl = URL.createObjectURL(blob);
+                // Re-wrap as a generic binary blob. Safari (and some other browsers)
+                // decide whether to save-or-preview a blob: URL based on its original
+                // content-type — a PDF/HTML/image blob often gets opened inline instead
+                // of downloaded, even with the `download` attribute set. Forcing an
+                // unrecognized type makes every browser treat it as "just save this".
+                var forcedBlob = new Blob([blob], { type: 'application/octet-stream' });
+                var blobUrl = URL.createObjectURL(forcedBlob);
                 var a = document.createElement('a');
                 a.href = blobUrl;
                 a.download = fileName || 'jobsheet-file';
