@@ -857,20 +857,27 @@
                 if (!res.ok) throw new Error('fetch failed: ' + res.status);
                 return res.blob();
             }).then(function (blob) {
-                // Re-wrap as a generic binary blob. Safari (and some other browsers)
-                // decide whether to save-or-preview a blob: URL based on its original
-                // content-type — a PDF/HTML/image blob often gets opened inline instead
-                // of downloaded, even with the `download` attribute set. Forcing an
-                // unrecognized type makes every browser treat it as "just save this".
+                // Re-wrap as a generic binary blob so no browser tries to inline-preview
+                // it based on the original content-type.
                 var forcedBlob = new Blob([blob], { type: 'application/octet-stream' });
-                var blobUrl = URL.createObjectURL(forcedBlob);
-                var a = document.createElement('a');
-                a.href = blobUrl;
-                a.download = fileName || 'jobsheet-file';
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                setTimeout(function () { URL.revokeObjectURL(blobUrl); }, 1000);
+                // Safari has a long-standing WebKit bug where the `download` attribute
+                // is simply ignored on blob: URLs — clicking just navigates to (and
+                // renders) the blob's raw content instead of saving it. A data: URI
+                // doesn't hit that bug; Safari honours `download` on those reliably.
+                // FileReader is what converts the blob into one.
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var a = document.createElement('a');
+                    a.href = reader.result;
+                    a.download = fileName || 'jobsheet-file';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                };
+                reader.onerror = function () {
+                    window.open(url, '_blank', 'noopener');
+                };
+                reader.readAsDataURL(forcedBlob);
             }).catch(function () {
                 // Fetch/CORS hiccup — fall back to a plain navigation rather than
                 // leaving the click with no effect at all.
