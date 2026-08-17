@@ -541,6 +541,9 @@
 <span id="uploadCountLabel" class="font-bold text-sm text-gray-600"></span>
 <button id="uploadJobsheetBtn" onclick="uploadJobsheet()" class="px-6 py-3 bg-lego-yellow text-black font-anton text-lg lego-border-sm hover:bg-yellow-400 transition-colors">+ Upload Jobsheet</button>
 </div>
+<div class="w-full">
+<textarea id="uploadDescriptionInput" placeholder="Description (optional) — write details about this jobsheet..." class="w-full px-4 py-3 lego-border-sm text-sm font-medium resize-y" rows="2"></textarea>
+</div>
 </section>
 
 <!-- Jobsheet Grid -->
@@ -581,6 +584,11 @@
 </div>
 <div id="modalNotReviewedYet" class="hidden">
 <p class="text-sm text-gray-500 font-medium italic">Not reviewed yet — check back after your instructor marks it.</p>
+</div>
+<div id="modalDescriptionBlock" class="hidden">
+<h4 class="font-anton text-xs uppercase text-gray-500 mb-1">Description</h4>
+<p id="modalJobDescription" class="text-sm font-medium whitespace-pre-line"></p>
+<button id="modalDescriptionToggle" type="button" onclick="toggleDescriptionExpand()" class="hidden text-xs font-bold text-lego-blue hover:underline mt-1"></button>
 </div>
 </div>
 <div id="modalFileBlock" class="hidden flex flex-col gap-2"></div>
@@ -631,7 +639,7 @@
             return [];
         }
 
-        function saveJobsheetRecord(title, filesArray) {
+        function saveJobsheetRecord(title, filesArray, description) {
             var state = loadProgressState();
             if (state[currentUploader] >= PER_BUILDER_TOTAL) return;
             state[currentUploader] += 1;
@@ -646,6 +654,7 @@
                 status: 'Submitted',
                 mark: null,
                 comment: null,
+                description: description || '',
                 files: filesArray || []
             });
             try {
@@ -684,6 +693,8 @@
 
             document.getElementById('uploadTitleInput').value = '';
             document.getElementById('uploadFileInput').value = '';
+            var descInput = document.getElementById('uploadDescriptionInput');
+            if (descInput) descInput.value = '';
             if (typeof handleFileSelected === 'function') handleFileSelected(null);
             renderUploaderUI();
             renderJobsheets();
@@ -737,11 +748,13 @@
                 titleInput.focus();
                 return;
             }
+            var descriptionInput = document.getElementById('uploadDescriptionInput');
+            var description = descriptionInput ? descriptionInput.value.trim() : '';
             var fileInput = document.getElementById('uploadFileInput');
             var files = Array.prototype.slice.call(fileInput.files);
 
             if (!files.length) {
-                saveJobsheetRecord(title, []);
+                saveJobsheetRecord(title, [], description);
                 return;
             }
 
@@ -752,7 +765,7 @@
                 files = files.filter(function (f) { return f.size <= 10 * 1024 * 1024; });
             }
             if (!files.length) {
-                saveJobsheetRecord(title, []);
+                saveJobsheetRecord(title, [], description);
                 return;
             }
 
@@ -794,7 +807,7 @@
             if (anyFailed) {
                 alert('Jobsheet saved. Some files failed to sync to GitHub and are only visible on this device for now.');
             }
-            saveJobsheetRecord(title, filesArray);
+            saveJobsheetRecord(title, filesArray, description);
         }
 
         /* ===== Library grid: search + status filter + render ===== */
@@ -928,6 +941,21 @@
                 document.getElementById('modalJobComment').textContent = job.comment || '—';
             }
 
+            var DESC_LIMIT = 160;
+            var description = job.description || '';
+            var descBlock = document.getElementById('modalDescriptionBlock');
+            var descText = document.getElementById('modalJobDescription');
+            var descToggle = document.getElementById('modalDescriptionToggle');
+            descBlock.classList.toggle('hidden', !description);
+            if (description) {
+                var isLong = description.length > DESC_LIMIT;
+                descText.textContent = isLong ? description.slice(0, DESC_LIMIT) + '…' : description;
+                descText.setAttribute('data-full', description);
+                descText.setAttribute('data-expanded', 'false');
+                descToggle.classList.toggle('hidden', !isLong);
+                descToggle.textContent = 'See more...';
+            }
+
             var files = jobFiles(job);
             var hasFile = files.length > 0;
             var fileBlock = document.getElementById('modalFileBlock');
@@ -953,6 +981,22 @@
 
         function closeJobsheetModal() {
             document.getElementById('jobsheetModal').classList.add('hidden');
+        }
+
+        function toggleDescriptionExpand() {
+            var descText = document.getElementById('modalJobDescription');
+            var descToggle = document.getElementById('modalDescriptionToggle');
+            var full = descText.getAttribute('data-full') || '';
+            var expanded = descText.getAttribute('data-expanded') === 'true';
+            if (expanded) {
+                descText.textContent = full.slice(0, 160) + '…';
+                descToggle.textContent = 'See more...';
+                descText.setAttribute('data-expanded', 'false');
+            } else {
+                descText.textContent = full;
+                descToggle.textContent = 'See less';
+                descText.setAttribute('data-expanded', 'true');
+            }
         }
 
         /* Deletes a jobsheet and keeps every other localStorage-derived view (this page,
