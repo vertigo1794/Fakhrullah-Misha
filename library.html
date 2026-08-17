@@ -803,20 +803,25 @@
         // Opens a file's GitHub Pages URL, but checks it's actually live first —
         // right after upload, Pages can take ~30-90s to redeploy, and opening a
         // not-yet-live URL just shows GitHub's 404 page.
+        //
+        // Deliberately does NOT use the "open a blank tab, then set its .location
+        // once the check resolves" trick: GitHub Pages sends a strict
+        // Cross-Origin-Opener-Policy header, which silently breaks that pattern —
+        // the opener loses the ability to navigate the popup it created, so the
+        // tab is left stuck on about:blank with no error. Opening the real URL in
+        // one shot, only once we know it's live, sidesteps that entirely.
         function openLiveView(filePath) {
             var url = pagesUrlFor(filePath);
-            var win = window.open('about:blank', '_blank');
             fetch(url, { method: 'HEAD', cache: 'no-store' }).then(function (res) {
                 if (res.ok) {
-                    if (win) win.location = url;
+                    window.open(url, '_blank', 'noopener');
                 } else {
-                    if (win) win.close();
                     alert('This file is still deploying on GitHub Pages (usually ready within ~1 minute of upload). Try again shortly.');
                 }
             }).catch(function () {
                 // Network hiccup on the check itself — still try opening directly
                 // rather than blocking the user.
-                if (win) win.location = url;
+                window.open(url, '_blank', 'noopener');
             });
         }
 
