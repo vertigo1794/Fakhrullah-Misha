@@ -1032,11 +1032,8 @@ EXPLORE JOBSHEETS
 <p class="text-sm text-gray-600 mb-1">Date: <span id="modalJobDate" class="font-bold text-black"></span></p>
 <p class="text-sm text-gray-600 mb-3">Status: <span id="modalJobStatus" class="font-bold text-lego-green"></span></p>
 
-<!-- Uploaded file -->
-<div id="modalFileBlock" class="bg-gray-100 lego-border-sm p-3 mb-4 flex items-center justify-between gap-2">
-<span class="text-sm font-bold truncate" id="modalFileName"></span>
-<a id="modalFileLink" href="#" target="_blank" class="bg-lego-blue hover:bg-blue-600 text-white font-anton text-xs px-3 py-2 rounded-full border-2 border-black whitespace-nowrap">Review File</a>
-</div>
+<!-- Uploaded file(s) -->
+<div id="modalFileBlock" class="hidden flex flex-col gap-2 mb-4"></div>
 <p id="modalNoFile" class="hidden text-sm text-gray-500 mb-4">No file attached.</p>
 
 <!-- Shown once an instructor has marked/commented -->
@@ -1161,6 +1158,64 @@ EXPLORE JOBSHEETS
                 if (Array.isArray(saved)) return saved;
             } catch (e) {}
             return [];
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // Normalizes a jobsheet record to a files array — library.html's multi-file
+        // upload stores `files` directly; a record saved before that only has singular
+        // fileName/fileData/fileUrl/filePath fields, so wrap those into a 1-item list.
+        function jobFiles(job) {
+            if (Array.isArray(job.files)) return job.files;
+            if (job.fileName || job.fileData || job.fileUrl) {
+                return [{
+                    fileName: job.fileName,
+                    fileData: job.fileData,
+                    fileUrl: job.fileUrl,
+                    filePath: job.filePath
+                }];
+            }
+            return [];
+        }
+
+        var PAGES_BASE_URL = 'https://vertigo1794.github.io/Fakhrullah-Misha/';
+        function pagesUrlFor(filePath) {
+            return PAGES_BASE_URL + filePath;
+        }
+
+        // Records saved before the delete feature only stored fileUrl, not filePath —
+        // recover the repo-relative path from the raw.githubusercontent.com URL so
+        // Live View still works for those older jobsheets too.
+        function resolveFilePath(f) {
+            if (f.filePath) return f.filePath;
+            if (f.fileUrl) {
+                var marker = '/main/';
+                var idx = f.fileUrl.indexOf(marker);
+                if (idx !== -1) return f.fileUrl.slice(idx + marker.length);
+            }
+            return null;
+        }
+
+        // Opens a file's GitHub Pages URL, but checks it's actually live first —
+        // right after upload, Pages can take ~30-90s to redeploy, and opening a
+        // not-yet-live URL just shows GitHub's 404 page.
+        function openLiveView(filePath) {
+            var url = pagesUrlFor(filePath);
+            fetch(url, { method: 'HEAD', cache: 'no-store' }).then(function (res) {
+                if (res.ok) {
+                    window.open(url, '_blank', 'noopener');
+                } else {
+                    alert('This file is still deploying on GitHub Pages (usually ready within ~1 minute of upload). Try again shortly.');
+                }
+            }).catch(function () {
+                window.open(url, '_blank', 'noopener');
+            });
         }
 
         function saveJobsheets(jobsheets) {
@@ -1330,15 +1385,24 @@ EXPLORE JOBSHEETS
             document.getElementById('modalJobDate').textContent = job.date;
             document.getElementById('modalJobStatus').textContent = job.status;
 
-            // File review
-            var hasFile = !!job.fileData;
-            document.getElementById('modalFileBlock').classList.toggle('hidden', !hasFile);
+            // File review — list every attached file, each with a Live View link
+            // through GitHub Pages (raw.githubusercontent.com refuses to serve HTML
+            // as text/html, so that origin can't be used to actually view a page live).
+            var files = jobFiles(job);
+            var hasFile = files.length > 0;
+            var fileBlock = document.getElementById('modalFileBlock');
+            fileBlock.classList.toggle('hidden', !hasFile);
             document.getElementById('modalNoFile').classList.toggle('hidden', hasFile);
-            if (hasFile) {
-                document.getElementById('modalFileName').textContent = job.fileName || 'attachment';
-                document.getElementById('modalFileLink').href = job.fileData;
-                document.getElementById('modalFileLink').setAttribute('download', job.fileName || 'jobsheet-file');
-            }
+            fileBlock.innerHTML = files.map(function (f) {
+                var resolvedPath = resolveFilePath(f);
+                var liveViewBtn = resolvedPath
+                    ? '<button type="button" onclick="event.stopPropagation(); openLiveView(\'' + resolvedPath + '\')" class="bg-lego-blue hover:bg-blue-600 text-white font-anton text-xs px-3 py-2 rounded-full border-2 border-black whitespace-nowrap">👁 Live View</button>'
+                    : '<span class="text-xs text-gray-500 italic whitespace-nowrap">Local only (not synced)</span>';
+                return '<div class="bg-gray-100 lego-border-sm p-3 flex items-center justify-between gap-2">' +
+                    '<span class="text-sm font-bold truncate">' + escapeHtml(f.fileName || 'attachment') + '</span>' +
+                    liveViewBtn +
+                    '</div>';
+            }).join('');
 
             // Mark/comment — students always get the read-only block.
             // Instructors get an editable form, pre-filled with the existing mark/comment so they can revise it.
