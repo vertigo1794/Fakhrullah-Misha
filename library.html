@@ -179,16 +179,22 @@
     .jc-date { font-size: 0.875rem; color: #4b5563; }
     .jc-desc-preview { font-size: 0.8rem; color: #374151; font-style: italic; line-height: 1.35; margin-top: -2px; }
 
-    /* Notes-pad style description box: ruled lines + red margin, like a school jotter */
-    .notes-textarea {
+    /* Notes-pad style checklist: jotter-style box, red margin, tickable to-do rows */
+    .notes-checklist {
         background-color: #fffdf3;
-        background-image: repeating-linear-gradient(to bottom, transparent, transparent 27px, #cbd5e1 27px, #cbd5e1 28px);
-        background-position: 0 6px;
-        line-height: 28px;
-        padding-top: 6px;
-        padding-left: 22px;
         border-left: 4px solid #ef4444 !important;
+        min-height: 46px;
+        max-height: 180px;
+        overflow-y: auto;
+        padding: 4px 10px;
     }
+    .notes-checklist-empty { font-size: 0.8rem; color: #9ca3af; font-style: italic; padding: 8px 2px; }
+    .notes-checklist-item { display: flex; align-items: center; gap: 8px; padding: 6px 2px; border-bottom: 1px dashed #d1d5db; font-size: 0.875rem; }
+    .notes-checklist-item:last-child { border-bottom: none; }
+    .notes-checklist-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: #22c55e; cursor: pointer; flex-shrink: 0; }
+    .notes-checklist-item .item-text { flex: 1; }
+    .notes-checklist-item.done .item-text { text-decoration: line-through; color: #9ca3af; }
+    .notes-checklist-item .item-remove { cursor: pointer; color: #ef4444; font-weight: 700; padding: 0 4px; flex-shrink: 0; }
     .jc-mark { font-size: 0.875rem; color: #15803d; font-weight: 700; }
     .jc-badge {
       font-weight: 700; text-align: center; padding: 4px 0; border-radius: 9999px;
@@ -554,8 +560,16 @@
 <button id="uploadJobsheetBtn" onclick="uploadJobsheet()" class="px-6 py-3 bg-lego-yellow text-black font-anton text-lg lego-border-sm hover:bg-yellow-400 transition-colors">+ Upload Jobsheet</button>
 </div>
 <div class="w-full">
-<label class="font-anton text-xs uppercase tracking-wide text-gray-500 flex items-center gap-1 mb-1">📝 Notes</label>
-<textarea id="uploadDescriptionInput" placeholder="What needs to be done... what to submit..." class="w-full px-4 py-3 lego-border-sm text-sm font-medium resize-y notes-textarea" rows="3"></textarea>
+<label class="font-anton text-xs uppercase tracking-wide text-gray-500 mb-1 block">Description</label>
+<textarea id="uploadDescriptionInput" placeholder="Short description of this jobsheet..." class="w-full px-4 py-3 lego-border-sm text-sm font-medium resize-y" rows="2"></textarea>
+</div>
+<div class="w-full">
+<label class="font-anton text-xs uppercase tracking-wide text-gray-500 flex items-center gap-1 mb-1">📝 Checklist / Notes</label>
+<div id="checklistDraftList" class="notes-checklist lego-border-sm"></div>
+<div class="flex items-center gap-2 mt-2">
+<input id="checklistItemInput" type="text" placeholder="Add a to-do item..." class="flex-1 px-3 py-2 lego-border-sm text-sm" onkeydown="if(event.key==='Enter'){event.preventDefault(); addChecklistDraftItem();}"/>
+<button type="button" onclick="addChecklistDraftItem()" class="px-4 py-2 bg-lego-yellow lego-border-sm text-sm font-bold hover:bg-yellow-400 transition-colors">+ Add</button>
+</div>
 </div>
 </section>
 
@@ -602,6 +616,10 @@
 <h4 class="font-anton text-xs uppercase text-gray-500 mb-1">Description</h4>
 <p id="modalJobDescription" class="text-sm font-medium whitespace-pre-line"></p>
 <button id="modalDescriptionToggle" type="button" onclick="toggleDescriptionExpand()" class="hidden text-xs font-bold text-lego-blue hover:underline mt-1"></button>
+</div>
+<div id="modalChecklistBlock" class="hidden">
+<h4 class="font-anton text-xs uppercase text-gray-500 mb-1">📝 Checklist</h4>
+<div id="modalChecklistList" class="notes-checklist lego-border-sm"></div>
 </div>
 </div>
 <div id="modalFileBlock" class="hidden flex flex-col gap-2"></div>
@@ -652,7 +670,7 @@
             return [];
         }
 
-        function saveJobsheetRecord(title, filesArray, description) {
+        function saveJobsheetRecord(title, filesArray, description, notes) {
             var state = loadProgressState();
             if (state[currentUploader] >= PER_BUILDER_TOTAL) return;
             state[currentUploader] += 1;
@@ -668,6 +686,7 @@
                 mark: null,
                 comment: null,
                 description: description || '',
+                notes: notes || [],
                 files: filesArray || []
             });
             try {
@@ -708,10 +727,47 @@
             document.getElementById('uploadFileInput').value = '';
             var descInput = document.getElementById('uploadDescriptionInput');
             if (descInput) descInput.value = '';
+            checklistDraft = [];
+            renderChecklistDraft();
             if (typeof handleFileSelected === 'function') handleFileSelected(null);
             renderUploaderUI();
             renderJobsheets();
         }
+
+        /* Checklist / to-do items built up while composing an upload */
+        var checklistDraft = [];
+        function renderChecklistDraft() {
+            var container = document.getElementById('checklistDraftList');
+            if (!container) return;
+            if (!checklistDraft.length) {
+                container.innerHTML = '<p class="notes-checklist-empty">No items yet — add tasks below.</p>';
+                return;
+            }
+            container.innerHTML = checklistDraft.map(function (item, i) {
+                return '<div class="notes-checklist-item' + (item.done ? ' done' : '') + '">' +
+                    '<input type="checkbox" ' + (item.done ? 'checked' : '') + ' onchange="toggleChecklistDraftItem(' + i + ')"/>' +
+                    '<span class="item-text">' + escapeHtml(item.text) + '</span>' +
+                    '<span class="item-remove" onclick="removeChecklistDraftItem(' + i + ')" title="Remove">✕</span>' +
+                    '</div>';
+            }).join('');
+        }
+        function addChecklistDraftItem() {
+            var input = document.getElementById('checklistItemInput');
+            var text = input.value.trim();
+            if (!text) return;
+            checklistDraft.push({ text: text, done: false });
+            input.value = '';
+            renderChecklistDraft();
+        }
+        function removeChecklistDraftItem(i) {
+            checklistDraft.splice(i, 1);
+            renderChecklistDraft();
+        }
+        function toggleChecklistDraftItem(i) {
+            checklistDraft[i].done = !checklistDraft[i].done;
+            renderChecklistDraft();
+        }
+        renderChecklistDraft();
 
         // Cloudflare Worker that commits the uploaded file straight into the GitHub repo
         // (under site/uploads/) so it's downloadable from any device, not just this browser.
@@ -767,7 +823,7 @@
             var files = Array.prototype.slice.call(fileInput.files);
 
             if (!files.length) {
-                saveJobsheetRecord(title, [], description);
+                saveJobsheetRecord(title, [], description, checklistDraft.slice());
                 return;
             }
 
@@ -778,7 +834,7 @@
                 files = files.filter(function (f) { return f.size <= 10 * 1024 * 1024; });
             }
             if (!files.length) {
-                saveJobsheetRecord(title, [], description);
+                saveJobsheetRecord(title, [], description, checklistDraft.slice());
                 return;
             }
 
@@ -820,7 +876,7 @@
             if (anyFailed) {
                 alert('Jobsheet saved. Some files failed to sync to GitHub and are only visible on this device for now.');
             }
-            saveJobsheetRecord(title, filesArray, description);
+            saveJobsheetRecord(title, filesArray, description, checklistDraft.slice());
         }
 
         /* ===== Library grid: search + status filter + render ===== */
@@ -973,6 +1029,11 @@
                 descToggle.textContent = 'See more...';
             }
 
+            var notes = Array.isArray(job.notes) ? job.notes : [];
+            var checklistBlock = document.getElementById('modalChecklistBlock');
+            checklistBlock.classList.toggle('hidden', notes.length === 0);
+            renderModalChecklist(notes, index);
+
             var files = jobFiles(job);
             var hasFile = files.length > 0;
             var fileBlock = document.getElementById('modalFileBlock');
@@ -998,6 +1059,34 @@
 
         function closeJobsheetModal() {
             document.getElementById('jobsheetModal').classList.add('hidden');
+        }
+
+        function renderModalChecklist(notes, jobIndex) {
+            var list = document.getElementById('modalChecklistList');
+            if (!notes.length) {
+                list.innerHTML = '<p class="notes-checklist-empty">No checklist items.</p>';
+                return;
+            }
+            list.innerHTML = notes.map(function (item, i) {
+                return '<div class="notes-checklist-item' + (item.done ? ' done' : '') + '">' +
+                    '<input type="checkbox" ' + (item.done ? 'checked' : '') + ' onchange="toggleModalChecklistItem(' + jobIndex + ',' + i + ')"/>' +
+                    '<span class="item-text">' + escapeHtml(item.text) + '</span>' +
+                    '</div>';
+            }).join('');
+        }
+
+        // Persists a checklist tick from the modal straight to localStorage, then
+        // refreshes the modal in place (jobsheetsCache is kept in sync too).
+        function toggleModalChecklistItem(jobIndex, itemIndex) {
+            var job = jobsheetsCache[jobIndex];
+            if (!job) return;
+            var jobsheets = loadJobsheets();
+            var target = jobsheets.filter(function (j) { return j.id === job.id; })[0];
+            if (!target || !Array.isArray(target.notes) || !target.notes[itemIndex]) return;
+            target.notes[itemIndex].done = !target.notes[itemIndex].done;
+            localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(jobsheets));
+            jobsheetsCache = jobsheets;
+            renderModalChecklist(target.notes, jobIndex);
         }
 
         function toggleDescriptionExpand() {
