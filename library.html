@@ -842,47 +842,15 @@
                 .replace(/"/g, '&quot;');
         }
 
-        function jsEscape(str) {
-            return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        }
-
-        // Forces a real save-to-disk regardless of file type. A plain <a download> link
-        // only works for same-origin URLs — for a cross-origin one (fileUrl, hosted on
-        // raw.githubusercontent.com) browsers silently ignore the `download` attribute
-        // and just navigate to it instead, so what happens depends on content-type
-        // (a PDF happens to still prompt a save, anything else just opens/renders).
-        // Fetching it as a blob first sidesteps that restriction entirely.
-        function downloadFile(url, fileName) {
-            fetch(url).then(function (res) {
-                if (!res.ok) throw new Error('fetch failed: ' + res.status);
-                return res.blob();
-            }).then(function (blob) {
-                // Re-wrap as a generic binary blob so no browser tries to inline-preview
-                // it based on the original content-type.
-                var forcedBlob = new Blob([blob], { type: 'application/octet-stream' });
-                // Safari has a long-standing WebKit bug where the `download` attribute
-                // is simply ignored on blob: URLs — clicking just navigates to (and
-                // renders) the blob's raw content instead of saving it. A data: URI
-                // doesn't hit that bug; Safari honours `download` on those reliably.
-                // FileReader is what converts the blob into one.
-                var reader = new FileReader();
-                reader.onload = function () {
-                    var a = document.createElement('a');
-                    a.href = reader.result;
-                    a.download = fileName || 'jobsheet-file';
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                };
-                reader.onerror = function () {
-                    window.open(url, '_blank', 'noopener');
-                };
-                reader.readAsDataURL(forcedBlob);
-            }).catch(function () {
-                // Fetch/CORS hiccup — fall back to a plain navigation rather than
-                // leaving the click with no effect at all.
-                window.open(url, '_blank', 'noopener');
-            });
+        // Builds a download URL that goes through the Worker instead of linking
+        // straight to raw.githubusercontent.com. The Worker proxies the file back
+        // with a Content-Disposition: attachment header, which every browser
+        // (including Safari) honours as a real forced save — unlike the HTML
+        // `download` attribute (ignored cross-origin) or blob:/data: URL tricks
+        // (Safari has bugs with both), Content-Disposition is enforced by the HTTP
+        // response itself, not something the browser can choose to ignore.
+        function downloadUrlFor(filePath, fileName) {
+            return UPLOAD_WORKER_URL + '?path=' + encodeURIComponent(filePath) + '&name=' + encodeURIComponent(fileName || 'jobsheet-file');
         }
 
         // Normalizes a jobsheet record to a files array — new records store `files`
@@ -1138,15 +1106,12 @@
                 var liveViewBtn = resolvedPath
                     ? '<button type="button" onclick="event.stopPropagation(); openLiveView(\'' + resolvedPath + '\')" class="px-3 py-2 bg-white lego-border-sm text-xs font-bold hover:bg-gray-50 transition-colors whitespace-nowrap">👁 Live View</button>'
                     : '';
-                // A cross-origin URL (fileUrl, on raw.githubusercontent.com) makes browsers
-                // ignore the `download` attribute entirely — they just navigate to it, and
-                // what happens next depends on content-type (PDFs happen to still save,
-                // everything else just renders/opens instead). downloadFile() fetches it as
-                // a blob first so the save always works regardless of file type. A local-only
-                // data: URL (fileData, when GitHub sync failed) doesn't have that restriction,
-                // so it keeps the plain <a download> link.
-                var downloadBtn = f.fileUrl
-                    ? '<button type="button" onclick="event.stopPropagation(); downloadFile(\'' + jsEscape(f.fileUrl) + '\', \'' + jsEscape(f.fileName || 'jobsheet-file') + '\')" class="px-3 py-2 bg-lego-yellow lego-border-sm text-xs font-bold hover:bg-yellow-400 transition-colors">⬇</button>'
+                // A GitHub-hosted file downloads through the Worker (forces a real save
+                // via Content-Disposition, works for every file type in every browser).
+                // A local-only data: URL (fileData, when GitHub sync failed) doesn't need
+                // that — data: URLs already work fine with a plain <a download>.
+                var downloadBtn = resolvedPath
+                    ? '<a href="' + downloadUrlFor(resolvedPath, f.fileName) + '" class="px-3 py-2 bg-lego-yellow lego-border-sm text-xs font-bold hover:bg-yellow-400 transition-colors">⬇</a>'
                     : '<a href="' + f.fileData + '" download="' + escapeHtml(f.fileName || 'jobsheet-file') + '" class="px-3 py-2 bg-lego-yellow lego-border-sm text-xs font-bold hover:bg-yellow-400 transition-colors">⬇</a>';
                 return '<div class="flex items-center gap-2 lego-border-sm bg-white px-3 py-2">' +
                     '<span class="flex-1 text-sm font-medium truncate">' + escapeHtml(f.fileName || 'attachment') + '</span>' +
