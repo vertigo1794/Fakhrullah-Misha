@@ -723,15 +723,25 @@
             document.getElementById('uploadFileInput').value = '';
             var descInput = document.getElementById('uploadDescriptionInput');
             if (descInput) descInput.value = '';
-            checklistDraft = [];
-            renderChecklistDraft();
             if (typeof handleFileSelected === 'function') handleFileSelected(null);
             renderUploaderUI();
             renderJobsheets();
         }
 
-        /* Checklist / to-do items built up while composing an upload */
-        var checklistDraft = [];
+        /* Checklist / to-do scratchpad — persists in its own localStorage slot so it
+           survives both uploads and page reloads; only cleared when the user removes
+           items themselves. */
+        var CHECKLIST_DRAFT_KEY = 'jobsheet-checklist-draft-v1';
+        var checklistDraft = (function () {
+            try {
+                var saved = JSON.parse(localStorage.getItem(CHECKLIST_DRAFT_KEY));
+                if (Array.isArray(saved)) return saved;
+            } catch (e) {}
+            return [];
+        })();
+        function persistChecklistDraft() {
+            try { localStorage.setItem(CHECKLIST_DRAFT_KEY, JSON.stringify(checklistDraft)); } catch (e) {}
+        }
         function renderChecklistDraft() {
             var container = document.getElementById('checklistDraftList');
             if (!container) return;
@@ -753,14 +763,17 @@
             if (!text) return;
             checklistDraft.push({ text: text, done: false });
             input.value = '';
+            persistChecklistDraft();
             renderChecklistDraft();
         }
         function removeChecklistDraftItem(i) {
             checklistDraft.splice(i, 1);
+            persistChecklistDraft();
             renderChecklistDraft();
         }
         function toggleChecklistDraftItem(i) {
             checklistDraft[i].done = !checklistDraft[i].done;
+            persistChecklistDraft();
             renderChecklistDraft();
         }
         renderChecklistDraft();
@@ -772,6 +785,39 @@
 
         function pagesUrlFor(filePath) {
             return PAGES_BASE_URL + filePath;
+        }
+
+        // Records saved before the delete feature only stored fileUrl, not filePath —
+        // recover the repo-relative path from the raw.githubusercontent.com URL so
+        // Live View still works for those older jobsheets too.
+        function resolveFilePath(f) {
+            if (f.filePath) return f.filePath;
+            if (f.fileUrl) {
+                var marker = '/main/';
+                var idx = f.fileUrl.indexOf(marker);
+                if (idx !== -1) return f.fileUrl.slice(idx + marker.length);
+            }
+            return null;
+        }
+
+        // Opens a file's GitHub Pages URL, but checks it's actually live first —
+        // right after upload, Pages can take ~30-90s to redeploy, and opening a
+        // not-yet-live URL just shows GitHub's 404 page.
+        function openLiveView(filePath) {
+            var url = pagesUrlFor(filePath);
+            var win = window.open('about:blank', '_blank');
+            fetch(url, { method: 'HEAD', cache: 'no-store' }).then(function (res) {
+                if (res.ok) {
+                    if (win) win.location = url;
+                } else {
+                    if (win) win.close();
+                    alert('This file is still deploying on GitHub Pages (usually ready within ~1 minute of upload). Try again shortly.');
+                }
+            }).catch(function () {
+                // Network hiccup on the check itself — still try opening directly
+                // rather than blocking the user.
+                if (win) win.location = url;
+            });
         }
 
         function escapeHtml(str) {
@@ -1035,8 +1081,9 @@
                 // A GitHub-hosted file works from any device; a plain data: URL
                 // (upload sync failed) only works on the browser that made it.
                 var target = f.fileUrl ? '_blank' : '_self';
-                var liveViewBtn = f.filePath
-                    ? '<button type="button" onclick="event.stopPropagation(); window.open(\'' + pagesUrlFor(f.filePath) + '\', \'_blank\')" class="px-3 py-2 bg-white lego-border-sm text-xs font-bold hover:bg-gray-50 transition-colors whitespace-nowrap">👁 Live View</button>'
+                var resolvedPath = resolveFilePath(f);
+                var liveViewBtn = resolvedPath
+                    ? '<button type="button" onclick="event.stopPropagation(); openLiveView(\'' + resolvedPath + '\')" class="px-3 py-2 bg-white lego-border-sm text-xs font-bold hover:bg-gray-50 transition-colors whitespace-nowrap">👁 Live View</button>'
                     : '';
                 return '<div class="flex items-center gap-2 lego-border-sm bg-white px-3 py-2">' +
                     '<span class="flex-1 text-sm font-medium truncate">' + escapeHtml(f.fileName || 'attachment') + '</span>' +
