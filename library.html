@@ -177,6 +177,18 @@
     .jc-body { padding: 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
     .jc-title { font-weight: 700; line-height: 1.2; font-size: 1.15rem; }
     .jc-date { font-size: 0.875rem; color: #4b5563; }
+    .jc-desc-preview { font-size: 0.8rem; color: #374151; font-style: italic; line-height: 1.35; margin-top: -2px; }
+
+    /* Notes-pad style description box: ruled lines + red margin, like a school jotter */
+    .notes-textarea {
+        background-color: #fffdf3;
+        background-image: repeating-linear-gradient(to bottom, transparent, transparent 27px, #cbd5e1 27px, #cbd5e1 28px);
+        background-position: 0 6px;
+        line-height: 28px;
+        padding-top: 6px;
+        padding-left: 22px;
+        border-left: 4px solid #ef4444 !important;
+    }
     .jc-mark { font-size: 0.875rem; color: #15803d; font-weight: 700; }
     .jc-badge {
       font-weight: 700; text-align: center; padding: 4px 0; border-radius: 9999px;
@@ -542,7 +554,8 @@
 <button id="uploadJobsheetBtn" onclick="uploadJobsheet()" class="px-6 py-3 bg-lego-yellow text-black font-anton text-lg lego-border-sm hover:bg-yellow-400 transition-colors">+ Upload Jobsheet</button>
 </div>
 <div class="w-full">
-<textarea id="uploadDescriptionInput" placeholder="Description (optional) — write details about this jobsheet..." class="w-full px-4 py-3 lego-border-sm text-sm font-medium resize-y" rows="2"></textarea>
+<label class="font-anton text-xs uppercase tracking-wide text-gray-500 flex items-center gap-1 mb-1">📝 Notes</label>
+<textarea id="uploadDescriptionInput" placeholder="What needs to be done... what to submit..." class="w-full px-4 py-3 lego-border-sm text-sm font-medium resize-y notes-textarea" rows="3"></textarea>
 </div>
 </section>
 
@@ -895,6 +908,9 @@
                 var popDelay = shuffleDisplayOnce ? ' style="animation-delay:' + (displayPos * 40) + 'ms"' : '';
                 var backComment = job.comment ? (job.comment.length > 90 ? job.comment.slice(0, 90) + '…' : job.comment) : 'No comment yet.';
                 var backMark = (job.status === 'Reviewed' && job.mark !== null) ? job.mark : '—';
+                var descPreview = job.description
+                    ? '<p class="jc-desc-preview">' + escapeHtml(job.description.length > 70 ? job.description.slice(0, 70) + '…' : job.description) + '</p>'
+                    : '';
                 return '<div class="jc-flip-outer' + popClass + (isFeatured ? ' jc-featured' : '') + '" draggable="true" data-index="' + realIndex + '"' + popDelay + '>' +
                     rarityHtml + featuredHtml +
                     '<div class="jc-flip-inner">' +
@@ -904,6 +920,7 @@
                     '<div class="jc-body">' +
                     '<h5 class="jc-title">' + job.title + '</h5>' +
                     '<p class="jc-date">Uploaded: ' + job.date + '</p>' +
+                    descPreview +
                     markHtml +
                     '<span class="jc-badge ' + badgeClass + '">' + job.status + '</span>' +
                     '<button onclick="viewJobsheet(' + realIndex + ')" class="jc-view-btn">View</button>' +
