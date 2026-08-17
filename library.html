@@ -842,6 +842,36 @@
                 .replace(/"/g, '&quot;');
         }
 
+        function jsEscape(str) {
+            return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        }
+
+        // Forces a real save-to-disk regardless of file type. A plain <a download> link
+        // only works for same-origin URLs — for a cross-origin one (fileUrl, hosted on
+        // raw.githubusercontent.com) browsers silently ignore the `download` attribute
+        // and just navigate to it instead, so what happens depends on content-type
+        // (a PDF happens to still prompt a save, anything else just opens/renders).
+        // Fetching it as a blob first sidesteps that restriction entirely.
+        function downloadFile(url, fileName) {
+            fetch(url).then(function (res) {
+                if (!res.ok) throw new Error('fetch failed: ' + res.status);
+                return res.blob();
+            }).then(function (blob) {
+                var blobUrl = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = fileName || 'jobsheet-file';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(function () { URL.revokeObjectURL(blobUrl); }, 1000);
+            }).catch(function () {
+                // Fetch/CORS hiccup — fall back to a plain navigation rather than
+                // leaving the click with no effect at all.
+                window.open(url, '_blank', 'noopener');
+            });
+        }
+
         // Normalizes a jobsheet record to a files array — new records store `files`
         // directly; a record saved before multi-file support only has singular
         // fileName/fileData/fileUrl/filePath fields, so wrap those into a 1-item list.
@@ -1091,17 +1121,23 @@
             fileBlock.classList.toggle('hidden', !hasFile);
             document.getElementById('modalNoFile').classList.toggle('hidden', hasFile);
             fileBlock.innerHTML = files.map(function (f) {
-                var href = f.fileUrl || f.fileData;
-                // A GitHub-hosted file works from any device; a plain data: URL
-                // (upload sync failed) only works on the browser that made it.
-                var target = f.fileUrl ? '_blank' : '_self';
                 var resolvedPath = resolveFilePath(f);
                 var liveViewBtn = resolvedPath
                     ? '<button type="button" onclick="event.stopPropagation(); openLiveView(\'' + resolvedPath + '\')" class="px-3 py-2 bg-white lego-border-sm text-xs font-bold hover:bg-gray-50 transition-colors whitespace-nowrap">👁 Live View</button>'
                     : '';
+                // A cross-origin URL (fileUrl, on raw.githubusercontent.com) makes browsers
+                // ignore the `download` attribute entirely — they just navigate to it, and
+                // what happens next depends on content-type (PDFs happen to still save,
+                // everything else just renders/opens instead). downloadFile() fetches it as
+                // a blob first so the save always works regardless of file type. A local-only
+                // data: URL (fileData, when GitHub sync failed) doesn't have that restriction,
+                // so it keeps the plain <a download> link.
+                var downloadBtn = f.fileUrl
+                    ? '<button type="button" onclick="event.stopPropagation(); downloadFile(\'' + jsEscape(f.fileUrl) + '\', \'' + jsEscape(f.fileName || 'jobsheet-file') + '\')" class="px-3 py-2 bg-lego-yellow lego-border-sm text-xs font-bold hover:bg-yellow-400 transition-colors">⬇</button>'
+                    : '<a href="' + f.fileData + '" download="' + escapeHtml(f.fileName || 'jobsheet-file') + '" class="px-3 py-2 bg-lego-yellow lego-border-sm text-xs font-bold hover:bg-yellow-400 transition-colors">⬇</a>';
                 return '<div class="flex items-center gap-2 lego-border-sm bg-white px-3 py-2">' +
                     '<span class="flex-1 text-sm font-medium truncate">' + escapeHtml(f.fileName || 'attachment') + '</span>' +
-                    '<a href="' + href + '" target="' + target + '" download="' + escapeHtml(f.fileName || 'jobsheet-file') + '" class="px-3 py-2 bg-lego-yellow lego-border-sm text-xs font-bold hover:bg-yellow-400 transition-colors">⬇</a>' +
+                    downloadBtn +
                     liveViewBtn +
                     '</div>';
             }).join('');
