@@ -617,10 +617,6 @@
 <p id="modalJobDescription" class="text-sm font-medium whitespace-pre-line"></p>
 <button id="modalDescriptionToggle" type="button" onclick="toggleDescriptionExpand()" class="hidden text-xs font-bold text-lego-blue hover:underline mt-1"></button>
 </div>
-<div id="modalChecklistBlock" class="hidden">
-<h4 class="font-anton text-xs uppercase text-gray-500 mb-1">📝 Checklist</h4>
-<div id="modalChecklistList" class="notes-checklist lego-border-sm"></div>
-</div>
 </div>
 <div id="modalFileBlock" class="hidden flex flex-col gap-2"></div>
 <p id="modalNoFile" class="hidden text-sm text-gray-400 italic text-center">No file attached to this jobsheet.</p>
@@ -1029,11 +1025,6 @@
                 descToggle.textContent = 'See more...';
             }
 
-            var notes = Array.isArray(job.notes) ? job.notes : [];
-            var checklistBlock = document.getElementById('modalChecklistBlock');
-            checklistBlock.classList.toggle('hidden', notes.length === 0);
-            renderModalChecklist(notes, index);
-
             var files = jobFiles(job);
             var hasFile = files.length > 0;
             var fileBlock = document.getElementById('modalFileBlock');
@@ -1061,33 +1052,6 @@
             document.getElementById('jobsheetModal').classList.add('hidden');
         }
 
-        function renderModalChecklist(notes, jobIndex) {
-            var list = document.getElementById('modalChecklistList');
-            if (!notes.length) {
-                list.innerHTML = '<p class="notes-checklist-empty">No checklist items.</p>';
-                return;
-            }
-            list.innerHTML = notes.map(function (item, i) {
-                return '<div class="notes-checklist-item' + (item.done ? ' done' : '') + '">' +
-                    '<input type="checkbox" ' + (item.done ? 'checked' : '') + ' onchange="toggleModalChecklistItem(' + jobIndex + ',' + i + ')"/>' +
-                    '<span class="item-text">' + escapeHtml(item.text) + '</span>' +
-                    '</div>';
-            }).join('');
-        }
-
-        // Persists a checklist tick from the modal straight to localStorage, then
-        // refreshes the modal in place (jobsheetsCache is kept in sync too).
-        function toggleModalChecklistItem(jobIndex, itemIndex) {
-            var job = jobsheetsCache[jobIndex];
-            if (!job) return;
-            var jobsheets = loadJobsheets();
-            var target = jobsheets.filter(function (j) { return j.id === job.id; })[0];
-            if (!target || !Array.isArray(target.notes) || !target.notes[itemIndex]) return;
-            target.notes[itemIndex].done = !target.notes[itemIndex].done;
-            localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(jobsheets));
-            jobsheetsCache = jobsheets;
-            renderModalChecklist(target.notes, jobIndex);
-        }
 
         function toggleDescriptionExpand() {
             var descText = document.getElementById('modalJobDescription');
