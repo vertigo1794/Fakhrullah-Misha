@@ -1505,7 +1505,6 @@ EXPLORE JOBSHEETS
                 message: 'Instructor marked: ' + job.mark + '/100 — "' + comment + '"'
             });
             if (!wasReviewed) launchConfetti();
-            if (typeof logActivity === 'function') logActivity(); // New Idea 4: streak heatmap
 
             renderJobsheetList();
             viewJobsheet(currentJobIndex);
@@ -1574,44 +1573,14 @@ EXPLORE JOBSHEETS
         // seedDemoJobsheetOnce(); — demo entry disabled for now; function kept for later testing.
         // seedTwelveDemoJobsheetsOnce(); — 12-demo scroll test done; function kept for later testing.
 
-        /* TEMP: seeds demo build-streak activity so the heatmap shows all 3 intensity levels
-           plus per-builder avatars on upload days. Guarded — only runs once. Function kept for later testing. */
-        function seedDemoStreakOnce() {
-            var FLAG = 'streak-demo-seeded-avatars';
-            if (localStorage.getItem(FLAG)) return;
-            localStorage.setItem(FLAG, '1');
-            var log = {};
-            var uploadLog = {};
-            // [days ago, activity count, uploader-or-null] — mixes light/medium/heavy days,
-            // and marks a few days as a specific builder's upload so their avatar shows.
-            var entries = [
-                [13, 1, 'misha'], [11, 2, null], [10, 2, 'fakhrullah'], [8, 1, null],
-                [6, 4, 'misha'], [5, 3, 'fakhrullah'], [3, 1, null], [1, 2, 'misha'], [0, 3, 'both']
-            ];
-            entries.forEach(function (e) {
-                var d = new Date();
-                d.setDate(d.getDate() - e[0]);
-                var key = d.toISOString().slice(0, 10);
-                log[key] = e[1];
-                if (e[2] === 'misha') uploadLog[key] = { misha: e[1], fakhrullah: 0 };
-                else if (e[2] === 'fakhrullah') uploadLog[key] = { misha: 0, fakhrullah: e[1] };
-                else if (e[2] === 'both') uploadLog[key] = { misha: 1, fakhrullah: e[1] - 1 };
-            });
-            localStorage.setItem('activity-log', JSON.stringify(log));
-            localStorage.setItem('upload-log', JSON.stringify(uploadLog));
-            renderExtras();
-        }
-        // seedDemoStreakOnce(); — demo done, disabled. Real streak starts empty until jobsheets are uploaded.
-
-        /* ONE-TIME cleanup: wipes the demo data that was already written to localStorage by the
-           seeder above, so the dashboard goes back to a real, empty 0-progress state. Runs once.
-           Progress itself is derived from jobsheets now, so there's nothing to reset there. */
+        /* ONE-TIME cleanup: wipes demo data that was written to localStorage by an old seeder,
+           so the dashboard goes back to a real, empty 0-progress state. Runs once. Progress
+           and the streak heatmap are both derived from jobsheets now, so there's nothing of
+           theirs left to reset here. */
         (function clearDemoDataOnce() {
             var FLAG = 'demo-data-cleared';
             if (localStorage.getItem(FLAG)) return;
             localStorage.setItem(FLAG, '1');
-            localStorage.setItem('activity-log', '{}');
-            localStorage.setItem('upload-log', '{}');
             localStorage.removeItem('milestone-misha');
             localStorage.removeItem('milestone-fakhrullah');
             localStorage.removeItem('achievements-unlocked');
@@ -1627,6 +1596,7 @@ EXPLORE JOBSHEETS
             renderNotifications();
             renderProgress(loadProgressState());
             renderExtras();
+            if (window.updateHeroLogoRing) window.updateHeroLogoRing();
         });
 
         /* Pixel-locks the sidebar box to the main column's actual rendered height, instead of
@@ -1932,11 +1902,9 @@ EXPLORE JOBSHEETS
                 return jobs.some(function (j) { return j.uploader === 'Misha'; }) && jobs.some(function (j) { return j.uploader === 'Fakhrullah'; });
             } },
             { id: 'reviewer_3', icon: '🕵️', label: '3 Reviews', check: function (jobs) { return jobs.filter(function (j) { return j.status === 'Reviewed'; }).length >= 3; } },
-            { id: 'three_day_streak', icon: '📅', label: '3-Day Streak', check: function () {
-                try {
-                    var log = JSON.parse(localStorage.getItem('activity-log') || '{}');
-                    return Object.keys(log).filter(function (k) { return log[k] > 0; }).length >= 3;
-                } catch (e) { return false; }
+            { id: 'three_day_streak', icon: '📅', label: '3-Day Streak', check: function (jobs) {
+                var log = computeActivityLogs(jobs).log;
+                return Object.keys(log).filter(function (k) { return log[k] > 0; }).length >= 3;
             } },
             { id: 'fifteen_uploads', icon: '📚', label: '15 Uploads', check: function (jobs) { return jobs.length >= 15; } },
             { id: 'twenty_uploads', icon: '🏗️', label: '20 Uploads', check: function (jobs) { return jobs.length >= 20; } },
@@ -1946,11 +1914,9 @@ EXPLORE JOBSHEETS
             { id: 'egg_hunter', icon: '🥚', label: 'Easter Egg Hunter', check: function () {
                 return ['egg-found-vault', 'egg-found-brickrain', 'egg-found-graffiti', 'egg-found-ghost'].every(function (k) { return localStorage.getItem(k) === '1'; });
             } },
-            { id: 'week_streak', icon: '🗓️', label: '7-Day Streak', check: function () {
-                try {
-                    var log = JSON.parse(localStorage.getItem('activity-log') || '{}');
-                    return Object.keys(log).filter(function (k) { return log[k] > 0; }).length >= 7;
-                } catch (e) { return false; }
+            { id: 'week_streak', icon: '🗓️', label: '7-Day Streak', check: function (jobs) {
+                var log = computeActivityLogs(jobs).log;
+                return Object.keys(log).filter(function (k) { return log[k] > 0; }).length >= 7;
             } },
             { id: 'balanced_team', icon: '⚖️', label: 'Balanced Team', check: function (jobs) {
                 var m = jobs.filter(function (j) { return j.uploader === 'Misha'; }).length;
@@ -1982,21 +1948,33 @@ EXPLORE JOBSHEETS
         }
 
         /* New Idea 4: build-streak heatmap, last 14 days */
-        function logActivity() {
-            try {
-                var today = new Date().toISOString().slice(0, 10);
-                var log = JSON.parse(localStorage.getItem('activity-log') || '{}');
-                log[today] = (log[today] || 0) + 1;
-                localStorage.setItem('activity-log', JSON.stringify(log));
-            } catch (e) {}
+        // Build-streak heatmap data — derived from the synced jobsheet list (upload date +
+        // uploader per jobsheet) instead of separately-tracked activity-log/upload-log
+        // counters. Those counters lived only in localStorage and were hand-incremented/
+        // decremented on upload/delete, so they never synced across devices AND could drift
+        // from the real jobsheet list (e.g. an avatar staying on the heatmap after its
+        // jobsheet was deleted on another device). Deriving straight from jobsheets.json
+        // makes the heatmap always match what's actually there.
+        function computeActivityLogs(jobsheets) {
+            var log = {};
+            var uploadLog = {};
+            jobsheets.forEach(function (job) {
+                var dateKey = new Date(job.id).toISOString().slice(0, 10);
+                log[dateKey] = (log[dateKey] || 0) + 1;
+                var key = job.uploader === 'Misha' ? 'misha' : (job.uploader === 'Fakhrullah' ? 'fakhrullah' : null);
+                if (key) {
+                    if (!uploadLog[dateKey]) uploadLog[dateKey] = { misha: 0, fakhrullah: 0 };
+                    uploadLog[dateKey][key] += 1;
+                }
+            });
+            return { log: log, uploadLog: uploadLog };
         }
         function renderStreak() {
             var grid = document.getElementById('streakGrid');
             if (!grid) return;
-            var log = {};
-            var uploadLog = {};
-            try { log = JSON.parse(localStorage.getItem('activity-log') || '{}'); } catch (e) {}
-            try { uploadLog = JSON.parse(localStorage.getItem('upload-log') || '{}'); } catch (e) {}
+            var logs = computeActivityLogs(loadJobsheets());
+            var log = logs.log;
+            var uploadLog = logs.uploadLog;
             var mishaSrc = (document.getElementById('avatar-misha') || {}).src;
             var fakhSrc = (document.getElementById('avatar-fakhrullah') || {}).src;
 
@@ -2084,23 +2062,26 @@ EXPLORE JOBSHEETS
 
         renderExtras();
 
-        /* ===== Hero logo progress ring (isolated, reads jobsheet-progress-v3 directly) ===== */
+        /* ===== Hero logo progress ring — derived from the same jobsheet-based progress as
+           everything else (used to read a separate 'jobsheet-progress-v3' key directly,
+           which never synced across devices and is now gone entirely, so this always read
+           nothing). ===== */
         (function setupHeroLogoRing() {
             var fill = document.getElementById('heroRingFill');
             var label = document.getElementById('heroRingLabel');
             if (!fill || !label) return;
             var CIRCUMFERENCE = 282.7;
-            var TOTAL = 48;
+            var TOTAL = MAIN_TOTAL;
             function update() {
-                var state;
-                try { state = JSON.parse(localStorage.getItem('jobsheet-progress-v3')); } catch (e) { state = null; }
-                var done = state ? Math.min((state.misha || 0) + (state.fakhrullah || 0), TOTAL) : 0;
+                var state = loadProgressState();
+                var done = Math.min(state.misha + state.fakhrullah, TOTAL);
                 var pct = TOTAL > 0 ? Math.round((done / TOTAL) * 100) : 0;
                 fill.style.strokeDashoffset = String(CIRCUMFERENCE - (CIRCUMFERENCE * pct / 100));
                 label.textContent = pct + '% BUILT';
             }
+            window.updateHeroLogoRing = update;
             update();
-            window.addEventListener('storage', update);
+            window.addEventListener('storage', function (ev) { if (ev.key === JOBSHEETS_KEY) update(); });
             setInterval(update, 4000);
         })();
     </script>

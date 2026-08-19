@@ -709,23 +709,6 @@
                 }
             }
 
-            // Streak heatmap on the dashboard reads this same key — additive, doesn't affect anything here.
-            try {
-                var today = new Date().toISOString().slice(0, 10);
-                var log = JSON.parse(localStorage.getItem('activity-log') || '{}');
-                log[today] = (log[today] || 0) + 1;
-                localStorage.setItem('activity-log', JSON.stringify(log));
-            } catch (e) {}
-
-            // Per-uploader daily log — lets the dashboard streak heatmap show whose avatar uploaded that day.
-            try {
-                var today2 = new Date().toISOString().slice(0, 10);
-                var uploadLog = JSON.parse(localStorage.getItem('upload-log') || '{}');
-                if (!uploadLog[today2]) uploadLog[today2] = { misha: 0, fakhrullah: 0 };
-                uploadLog[today2][currentUploader] = (uploadLog[today2][currentUploader] || 0) + 1;
-                localStorage.setItem('upload-log', JSON.stringify(uploadLog));
-            } catch (e) {}
-
             document.getElementById('uploadTitleInput').value = '';
             document.getElementById('uploadFileInput').value = '';
             var descInput = document.getElementById('uploadDescriptionInput');
@@ -1184,25 +1167,8 @@
             if (!confirm('Delete "' + job.title + '"? This cannot be undone.')) return;
 
             function finishDelete() {
-                var uploaderKey = job.uploader === 'Misha' ? 'misha' : 'fakhrullah';
-
                 var jobsheets = loadJobsheets().filter(function (j) { return j.id !== job.id; });
                 localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(jobsheets));
-
-                try {
-                    var dateKey = new Date(job.id).toISOString().slice(0, 10);
-                    var log = JSON.parse(localStorage.getItem('activity-log') || '{}');
-                    if (log[dateKey]) {
-                        log[dateKey] = Math.max(0, log[dateKey] - 1);
-                        if (log[dateKey] === 0) delete log[dateKey];
-                        localStorage.setItem('activity-log', JSON.stringify(log));
-                    }
-                    var uploadLog = JSON.parse(localStorage.getItem('upload-log') || '{}');
-                    if (uploadLog[dateKey] && uploadLog[dateKey][uploaderKey]) {
-                        uploadLog[dateKey][uploaderKey] = Math.max(0, uploadLog[dateKey][uploaderKey] - 1);
-                        localStorage.setItem('upload-log', JSON.stringify(uploadLog));
-                    }
-                } catch (e) {}
 
                 currentModalIndex = null;
                 closeJobsheetModal();
