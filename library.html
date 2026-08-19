@@ -721,7 +721,9 @@
 
         /* Checklist / to-do scratchpad — persists in its own localStorage slot so it
            survives both uploads and page reloads; only cleared when the user removes
-           items themselves. */
+           items themselves. Also pushed to checklist.json via the Worker so items added
+           on one device show up on other devices/phone/iPad too — this used to be
+           localStorage-only and never crossed devices. */
         var CHECKLIST_DRAFT_KEY = 'jobsheet-checklist-draft-v1';
         var checklistDraft = (function () {
             try {
@@ -732,6 +734,31 @@
         })();
         function persistChecklistDraft() {
             try { localStorage.setItem(CHECKLIST_DRAFT_KEY, JSON.stringify(checklistDraft)); } catch (e) {}
+            pushChecklistToCloud(checklistDraft);
+        }
+        function pushChecklistToCloud(checklist) {
+            fetch(UPLOAD_WORKER_URL + '?sync=checklist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ checklist: checklist })
+            }).catch(function () { /* best-effort — still saved locally */ });
+        }
+        function pullChecklistFromCloud(callback) {
+            fetch(UPLOAD_WORKER_URL + '?checklist=1', { cache: 'no-store' }).then(function (res) {
+                if (!res.ok) throw new Error('sync fetch failed');
+                return res.json();
+            }).then(function (data) {
+                var remote = Array.isArray(data.checklist) ? data.checklist : [];
+                if (remote.length > 0) {
+                    checklistDraft = remote;
+                    try { localStorage.setItem(CHECKLIST_DRAFT_KEY, JSON.stringify(checklistDraft)); } catch (e) {}
+                } else if (checklistDraft.length > 0) {
+                    pushChecklistToCloud(checklistDraft);
+                }
+                if (callback) callback();
+            }).catch(function () {
+                if (callback) callback();
+            });
         }
         function renderChecklistDraft() {
             var container = document.getElementById('checklistDraftList');
@@ -1197,6 +1224,7 @@
             renderUploaderUI();
             renderJobsheets();
         });
+        pullChecklistFromCloud(renderChecklistDraft);
 
         /* LEGO click sound (synthesized, no audio file needed) — same as dashboard.html */
         var audioCtx = null;
