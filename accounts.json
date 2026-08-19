@@ -1,0 +1,8 @@
+[
+  {
+    "email": "test@x.com",
+    "passwordHash": "abc123hash",
+    "name": "Test",
+    "faculty": "F"
+  }
+]
