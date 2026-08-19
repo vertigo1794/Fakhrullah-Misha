@@ -634,19 +634,21 @@
 </div>
 
 <script>
-        /* Shares tally with dashboard.html via localStorage.
+        /* Progress tally — derived from the jobsheet list itself (shared with dashboard.html
+           via jobsheets.json cloud sync) rather than a separate counter, so it can't drift
+           out of sync with what's actually been uploaded across devices.
            Shared pool of 24 jobsheets total -> dashboard reads combined uploads capped at 24. */
         var PER_BUILDER_TOTAL = 24;
-        var PROGRESS_KEY = 'jobsheet-progress-v3';
         var UPLOADER_KEY = 'jobsheet-current-uploader';
         var currentUploader = localStorage.getItem(UPLOADER_KEY) || 'misha';
 
         function loadProgressState() {
-            try {
-                var saved = JSON.parse(localStorage.getItem(PROGRESS_KEY));
-                if (saved && typeof saved.misha === 'number' && typeof saved.fakhrullah === 'number') return saved;
-            } catch (e) {}
-            return { misha: 0, fakhrullah: 0 };
+            var counts = { misha: 0, fakhrullah: 0 };
+            loadJobsheets().forEach(function (job) {
+                var key = job.uploader === 'Misha' ? 'misha' : (job.uploader === 'Fakhrullah' ? 'fakhrullah' : null);
+                if (key && counts[key] < PER_BUILDER_TOTAL) counts[key] += 1;
+            });
+            return counts;
         }
 
         function renderUploaderUI() {
@@ -678,8 +680,6 @@
         function saveJobsheetRecord(title, filesArray, description, notes) {
             var state = loadProgressState();
             if (state[currentUploader] >= PER_BUILDER_TOTAL) return;
-            state[currentUploader] += 1;
-            localStorage.setItem(PROGRESS_KEY, JSON.stringify(state));
 
             var jobsheets = loadJobsheets();
             jobsheets.push({
@@ -705,8 +705,6 @@
                     alert('Storage is full — jobsheet saved. Files already synced to GitHub still work; others may not.');
                 } catch (e2) {
                     alert('Could not save this jobsheet — browser storage is full.');
-                    state[currentUploader] -= 1;
-                    localStorage.setItem(PROGRESS_KEY, JSON.stringify(state));
                     return;
                 }
             }
@@ -1177,8 +1175,9 @@
 
         /* Deletes a jobsheet and keeps every other localStorage-derived view (this page,
            dashboard.html's list/progress/streak) in sync — dashboard.html already listens
-           for 'storage' events on PROGRESS_KEY and JOBSHEETS_KEY, so writing here is enough
-           to update it live in another tab; same-tab views are re-rendered explicitly below. */
+           for 'storage' events on JOBSHEETS_KEY, so writing here is enough to update it live
+           in another tab; same-tab views are re-rendered explicitly below. Progress is derived
+           from the jobsheet list, so removing the record here already updates it too. */
         function deleteJobsheet(index) {
             var job = jobsheetsCache[index];
             if (!job) return;
@@ -1186,10 +1185,6 @@
 
             function finishDelete() {
                 var uploaderKey = job.uploader === 'Misha' ? 'misha' : 'fakhrullah';
-
-                var state = loadProgressState();
-                state[uploaderKey] = Math.max(0, (state[uploaderKey] || 0) - 1);
-                localStorage.setItem(PROGRESS_KEY, JSON.stringify(state));
 
                 var jobsheets = loadJobsheets().filter(function (j) { return j.id !== job.id; });
                 localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(jobsheets));

@@ -1077,18 +1077,22 @@ EXPLORE JOBSHEETS
             }
         });
 
-        /* Reads jobsheet upload counts set from library.html and renders the tally.
+        /* Progress tally — derived from the synced jobsheet list itself rather than a
+           separate counter. The counter used to live only in localStorage (PROGRESS_KEY),
+           so an upload made on one device never moved the progress bar on any other
+           device/phone/iPad — jobsheets.json is already the reliable synced source of
+           truth, so counting straight from it can't drift out of sync the same way.
            Shared pool of 24 jobsheets total — Misha and Fakhrullah's uploads both count toward it. */
         var PER_BUILDER_TOTAL = 24;
         var MAIN_TOTAL = 48; // Misha's 24 + Fakhrullah's 24 — each maxes out at 50% overall on their own
-        var PROGRESS_KEY = 'jobsheet-progress-v3';
 
         function loadProgressState() {
-            try {
-                var saved = JSON.parse(localStorage.getItem(PROGRESS_KEY));
-                if (saved && typeof saved.misha === 'number' && typeof saved.fakhrullah === 'number') return saved;
-            } catch (e) {}
-            return { misha: 0, fakhrullah: 0 };
+            var counts = { misha: 0, fakhrullah: 0 };
+            loadJobsheets().forEach(function (job) {
+                var key = job.uploader === 'Misha' ? 'misha' : (job.uploader === 'Fakhrullah' ? 'fakhrullah' : null);
+                if (key && counts[key] < PER_BUILDER_TOTAL) counts[key] += 1;
+            });
+            return counts;
         }
 
         var XP_TIERS = [
@@ -1141,8 +1145,11 @@ EXPLORE JOBSHEETS
         renderProgress(loadProgressState());
         renderExtras(); // additive: tower / race bar / achievements / streak (safe no-op before defined? no — defined below, hoisted)
         window.addEventListener('storage', function (ev) {
-            if (ev.key === PROGRESS_KEY) { renderProgress(loadProgressState()); renderExtras(); }
-            if (ev.key === JOBSHEETS_KEY) renderJobsheetList(); // also re-syncs notifications
+            if (ev.key === JOBSHEETS_KEY) {
+                renderProgress(loadProgressState());
+                renderExtras();
+                renderJobsheetList(); // also re-syncs notifications
+            }
             if (ev.key === NOTIF_KEY) renderNotifications();
         });
 
@@ -1567,18 +1574,6 @@ EXPLORE JOBSHEETS
         // seedDemoJobsheetOnce(); — demo entry disabled for now; function kept for later testing.
         // seedTwelveDemoJobsheetsOnce(); — 12-demo scroll test done; function kept for later testing.
 
-        /* TEMP: seeds demo progress at 100% so the full puzzle-reveal tower is visible right away.
-           Guarded — only runs once. Function kept for later testing; call is disabled below. */
-        function seedDemoRaceProgressOnce() {
-            var FLAG = 'race-demo-seeded-100';
-            if (localStorage.getItem(FLAG)) return;
-            localStorage.setItem(FLAG, '1');
-            localStorage.setItem(PROGRESS_KEY, JSON.stringify({ misha: 24, fakhrullah: 24 }));
-            renderProgress(loadProgressState()); // re-render — this seed runs after the first render pass
-            renderExtras();
-        }
-        // seedDemoRaceProgressOnce(); — demo done, disabled. Real progress starts at 0 until jobsheets are uploaded.
-
         /* TEMP: seeds demo build-streak activity so the heatmap shows all 3 intensity levels
            plus per-builder avatars on upload days. Guarded — only runs once. Function kept for later testing. */
         function seedDemoStreakOnce() {
@@ -1608,13 +1603,13 @@ EXPLORE JOBSHEETS
         }
         // seedDemoStreakOnce(); — demo done, disabled. Real streak starts empty until jobsheets are uploaded.
 
-        /* ONE-TIME cleanup: wipes the demo data that was already written to localStorage by the two
-           seeders above, so the dashboard goes back to a real, empty 0-progress state. Runs once. */
+        /* ONE-TIME cleanup: wipes the demo data that was already written to localStorage by the
+           seeder above, so the dashboard goes back to a real, empty 0-progress state. Runs once.
+           Progress itself is derived from jobsheets now, so there's nothing to reset there. */
         (function clearDemoDataOnce() {
             var FLAG = 'demo-data-cleared';
             if (localStorage.getItem(FLAG)) return;
             localStorage.setItem(FLAG, '1');
-            localStorage.setItem(PROGRESS_KEY, JSON.stringify({ misha: 0, fakhrullah: 0 }));
             localStorage.setItem('activity-log', '{}');
             localStorage.setItem('upload-log', '{}');
             localStorage.removeItem('milestone-misha');
@@ -1630,6 +1625,8 @@ EXPLORE JOBSHEETS
         pullJobsheetsFromCloud(function () {
             renderJobsheetList();
             renderNotifications();
+            renderProgress(loadProgressState());
+            renderExtras();
         });
 
         /* Pixel-locks the sidebar box to the main column's actual rendered height, instead of
