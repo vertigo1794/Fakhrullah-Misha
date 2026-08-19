@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "email": "test.instructor@example.com",
+    "passwordHash": "a910c0aa3d3ff41b2c644b6208638662b2afcdf0815752b1d8f12cdc3f653263",
+    "name": "Test Instructor",
+    "faculty": "Computing"
+  }
+]
