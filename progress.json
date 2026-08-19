@@ -1,15 +1,8 @@
 {
   "progress": {
-    "misha": 3,
-    "fakhrullah": 2
+    "misha": 0,
+    "fakhrullah": 0
   },
-  "activityLog": {
-    "2026-08-19": 2
-  },
-  "uploadLog": {
-    "2026-08-19": {
-      "misha": 2,
-      "fakhrullah": 0
-    }
-  }
+  "activityLog": {},
+  "uploadLog": {}
 }
