@@ -1189,6 +1189,39 @@ EXPLORE JOBSHEETS
             return PAGES_BASE_URL + filePath;
         }
 
+        var UPLOAD_WORKER_URL = 'https://jobsheet-upload-worker.vertigo1794.workers.dev';
+
+        // The jobsheet list itself (title/status/mark/notes/files) lives in
+        // jobsheets.json in the repo, not just in this browser's localStorage —
+        // otherwise a review/mark done here would never show up on the student's
+        // own device, and jobsheets uploaded elsewhere would never show up here.
+        // localStorage stays as a fast local mirror and offline fallback.
+        function pushJobsheetsToCloud(jobsheets) {
+            fetch(UPLOAD_WORKER_URL + '?sync=jobsheets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jobsheets: jobsheets })
+            }).catch(function () { /* best-effort — the change is still saved locally */ });
+        }
+
+        function pullJobsheetsFromCloud(callback) {
+            fetch(UPLOAD_WORKER_URL + '?jobsheets=1', { cache: 'no-store' }).then(function (res) {
+                if (!res.ok) throw new Error('sync fetch failed');
+                return res.json();
+            }).then(function (data) {
+                var remote = Array.isArray(data.jobsheets) ? data.jobsheets : [];
+                if (remote.length > 0) {
+                    localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(remote));
+                } else {
+                    var local = loadJobsheets();
+                    if (local.length > 0) pushJobsheetsToCloud(local);
+                }
+                callback();
+            }).catch(function () {
+                callback();
+            });
+        }
+
         // Records saved before the delete feature only stored fileUrl, not filePath —
         // recover the repo-relative path from the raw.githubusercontent.com URL so
         // Live View still works for those older jobsheets too.
@@ -1220,6 +1253,7 @@ EXPLORE JOBSHEETS
 
         function saveJobsheets(jobsheets) {
             localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(jobsheets));
+            pushJobsheetsToCloud(jobsheets);
         }
 
         function seedDemoJobsheetOnce() {
@@ -1579,6 +1613,10 @@ EXPLORE JOBSHEETS
         renderJobsheetList();
         renderNotifications();
         renderRoleBadge();
+        pullJobsheetsFromCloud(function () {
+            renderJobsheetList();
+            renderNotifications();
+        });
 
         /* Pixel-locks the sidebar box to the main column's actual rendered height, instead of
            relying on flexbox stretch (which several nested flex-col ancestors kept fighting).

@@ -735,6 +735,7 @@
             if (typeof handleFileSelected === 'function') handleFileSelected(null);
             renderUploaderUI();
             renderJobsheets();
+            pushJobsheetsToCloud(jobsheets);
         }
 
         /* Checklist / to-do scratchpad — persists in its own localStorage slot so it
@@ -794,6 +795,41 @@
 
         function pagesUrlFor(filePath) {
             return PAGES_BASE_URL + filePath;
+        }
+
+        // The jobsheet list itself (title/status/mark/notes/files) now lives in
+        // jobsheets.json in the same repo, not just in this browser's localStorage —
+        // otherwise a jobsheet uploaded on one device would never show up on any
+        // other device or in dashboard.html opened elsewhere. localStorage stays as
+        // a fast local mirror and offline fallback.
+        function pushJobsheetsToCloud(jobsheets) {
+            fetch(UPLOAD_WORKER_URL + '?sync=jobsheets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jobsheets: jobsheets })
+            }).catch(function () { /* best-effort — the change is still saved locally */ });
+        }
+
+        function pullJobsheetsFromCloud(callback) {
+            fetch(UPLOAD_WORKER_URL + '?jobsheets=1', { cache: 'no-store' }).then(function (res) {
+                if (!res.ok) throw new Error('sync fetch failed');
+                return res.json();
+            }).then(function (data) {
+                var remote = Array.isArray(data.jobsheets) ? data.jobsheets : [];
+                if (remote.length > 0) {
+                    localStorage.setItem(JOBSHEETS_KEY, JSON.stringify(remote));
+                } else {
+                    // Cloud is empty — if this device already has jobsheets locally
+                    // (from before cloud sync existed), seed the cloud copy with them.
+                    var local = loadJobsheets();
+                    if (local.length > 0) pushJobsheetsToCloud(local);
+                }
+                callback();
+            }).catch(function () {
+                // Offline, or the worker/jobsheets.json isn't reachable — fall back to
+                // whatever's cached locally rather than blocking the page.
+                callback();
+            });
         }
 
         // Records saved before the delete feature only stored fileUrl, not filePath —
@@ -1163,6 +1199,7 @@
                 closeJobsheetModal();
                 renderUploaderUI();
                 renderJobsheets();
+                pushJobsheetsToCloud(jobsheets);
             }
 
             var paths = jobFiles(job).map(function (f) { return f.filePath; }).filter(Boolean);
@@ -1181,6 +1218,10 @@
 
         renderUploaderUI();
         renderJobsheets();
+        pullJobsheetsFromCloud(function () {
+            renderUploaderUI();
+            renderJobsheets();
+        });
 
         /* LEGO click sound (synthesized, no audio file needed) — same as dashboard.html */
         var audioCtx = null;
