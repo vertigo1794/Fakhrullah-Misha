@@ -950,8 +950,19 @@
 
         var BUILDERS_WORKER_URL = 'https://jobsheet-upload-worker.vertigo1794.workers.dev';
 
+        var LEGACY_VIEWER_IDS = ['builder-misha-viewer', 'builder-fakhrullah-viewer'];
         function loadBuilderPicks() {
-            try { return JSON.parse(localStorage.getItem('builder-picks') || '{}'); } catch (e) { return {}; }
+            var picks;
+            try { picks = JSON.parse(localStorage.getItem('builder-picks') || '{}'); } catch (e) { picks = {}; }
+            // Merge in the old per-key format (from before builder-picks existed) so
+            // a pick made before this sync feature shipped still gets found and pushed.
+            LEGACY_VIEWER_IDS.forEach(function (viewerId) {
+                if (!picks[viewerId]) {
+                    var legacy = localStorage.getItem(viewerId);
+                    if (legacy) picks[viewerId] = legacy;
+                }
+            });
+            return picks;
         }
         function saveBuilderPicksLocal(picks) {
             localStorage.setItem('builder-picks', JSON.stringify(picks));
