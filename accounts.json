@@ -4,5 +4,11 @@
     "passwordHash": "2360c59d50afa12f0ac734690f6bc2617729a9527ab10248eba49147f3e7dd74",
     "name": "Browser Test Instructor",
     "faculty": "Testing"
+  },
+  {
+    "email": "fakhrulrassul1794@gmail.com",
+    "passwordHash": "439087482d21d57584b6d1a26cc9e3844ed75c36f33c0f7952042ab0412b2405",
+    "name": "Fakhrul",
+    "faculty": "DFD"
   }
 ]
