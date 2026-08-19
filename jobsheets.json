@@ -1,125 +1,14 @@
 [
   {
-    "id": 1786999823017,
-    "title": "JOBSHEET 01: HTML5",
-    "uploader": "Fakhrullah",
-    "date": "18 Aug 2026",
+    "id": 1755600000000,
+    "title": "Test Progress Sync",
+    "uploader": "Misha",
+    "date": "19 Aug 2026",
     "status": "Submitted",
     "mark": null,
     "comment": null,
-    "description": "This Jobsheet cover basic HTML5 elements — headings, text formatting (bold, italic, underline), lists (ordered/unordered), meter and progress elements, figure/figcaption, and hyperlinks. Task: build \"My Dream Holiday\" webpage applying these elements to show a holiday destination, planning progress, activities, travel steps, gallery, and links. Purpose: practice structuring content with semantic HTML5 tags and styling with basic CSS.",
-    "notes": [
-      {
-        "text": "JOBSHEET 01: HTML5",
-        "done": false
-      },
-      {
-        "text": "JOBSHEET 02: HTML5",
-        "done": false
-      },
-      {
-        "text": "JOBSHEET 03: HTML5",
-        "done": false
-      }
-    ],
-    "files": [
-      {
-        "fileName": "Fakhrullah_Lab_1.html",
-        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1786999816639-fakhrullah-Fakhrullah_Lab_1.html",
-        "filePath": "uploads/1786999816639-fakhrullah-Fakhrullah_Lab_1.html"
-      },
-      {
-        "fileName": "HTML5 Lab 1 Submission.pdf",
-        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1786999818306-fakhrullah-HTML5_Lab_1_Submission.pdf",
-        "filePath": "uploads/1786999818306-fakhrullah-HTML5_Lab_1_Submission.pdf"
-      },
-      {
-        "fileName": "index.html",
-        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1786999821759-fakhrullah-index.html",
-        "filePath": "uploads/1786999821759-fakhrullah-index.html"
-      }
-    ]
-  },
-  {
-    "id": 1786999860525,
-    "title": "JOBSHEET 02: HTML5",
-    "uploader": "Fakhrullah",
-    "date": "18 Aug 2026",
-    "status": "Submitted",
-    "mark": null,
-    "comment": null,
-    "description": "This HTML5 page displays a comparison table of the latest Dell and HP laptops, using rowspan and colspan to organize the Video, Specification, and Information columns. Each row includes an embedded YouTube video, key specs (processor, RAM, storage, display), and a link to the brand's official website.",
-    "notes": [
-      {
-        "text": "JOBSHEET 01: HTML5",
-        "done": false
-      },
-      {
-        "text": "JOBSHEET 02: HTML5",
-        "done": false
-      },
-      {
-        "text": "JOBSHEET 03: HTML5",
-        "done": false
-      }
-    ],
-    "files": [
-      {
-        "fileName": "Fakhrullah_Lab_2.html",
-        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1786999855824-fakhrullah-Fakhrullah_Lab_2.html",
-        "filePath": "uploads/1786999855824-fakhrullah-Fakhrullah_Lab_2.html"
-      },
-      {
-        "fileName": "HTML5 Lab 2 Submission.pdf",
-        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1786999857222-fakhrullah-HTML5_Lab_2_Submission.pdf",
-        "filePath": "uploads/1786999857222-fakhrullah-HTML5_Lab_2_Submission.pdf"
-      },
-      {
-        "fileName": "index.html",
-        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1786999859502-fakhrullah-index.html",
-        "filePath": "uploads/1786999859502-fakhrullah-index.html"
-      }
-    ]
-  },
-  {
-    "id": 1786999888325,
-    "title": "JOBSHEET 03: HTML5",
-    "uploader": "Fakhrullah",
-    "date": "18 Aug 2026",
-    "status": "Submitted",
-    "mark": null,
-    "comment": null,
-    "description": "This job sheet focuses on practicing HTML5 by building a basic web page layout. It covers using semantic tags like <header>, <nav>, <main>, <section>, <aside>, and <footer> to organize content such as a page title, navigation menu, profile image, and short description, based on given task requirements.",
-    "notes": [
-      {
-        "text": "JOBSHEET 01: HTML5",
-        "done": false
-      },
-      {
-        "text": "JOBSHEET 02: HTML5",
-        "done": false
-      },
-      {
-        "text": "JOBSHEET 03: HTML5",
-        "done": false
-      }
-    ],
-    "files": [
-      {
-        "fileName": "Fakhrullah_Lab_3.html",
-        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1786999883812-fakhrullah-Fakhrullah_Lab_3.html",
-        "filePath": "uploads/1786999883812-fakhrullah-Fakhrullah_Lab_3.html"
-      },
-      {
-        "fileName": "HTML5 Lab 3 Submission.pdf",
-        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1786999885012-fakhrullah-HTML5_Lab_3_Submission.pdf",
-        "filePath": "uploads/1786999885012-fakhrullah-HTML5_Lab_3_Submission.pdf"
-      },
-      {
-        "fileName": "index.html",
-        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1786999887496-fakhrullah-index.html",
-        "filePath": "uploads/1786999887496-fakhrullah-index.html"
-      }
-    ]
+    "description": "",
+    "notes": [],
+    "files": []
   }
 ]
