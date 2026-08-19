@@ -624,6 +624,45 @@
         }
     }
     var REGISTERED_INSTRUCTORS_KEY = 'registered-instructors-v1';
+    var UPLOAD_WORKER_URL = 'https://jobsheet-upload-worker.vertigo1794.workers.dev';
+
+    // Instructor accounts used to live only in localStorage — an account registered
+    // on one device was invisible to login.html on any other device, phone, or iPad.
+    // Now synced via accounts.json through the Worker. The account list is a public
+    // GitHub file, so only a SHA-256 hash of the password is ever stored or sent —
+    // never the raw password.
+    function sha256Hex(str) {
+        return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function (buf) {
+            return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+        });
+    }
+    function pushAccountsToCloud(accounts) {
+        fetch(UPLOAD_WORKER_URL + '?sync=accounts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ accounts: accounts })
+        }).catch(function () { /* best-effort — still saved locally */ });
+    }
+    // Pulls the current cloud account list and merges it with whatever's local, so
+    // registering here doesn't clobber an instructor who registered on another
+    // device that this browser hasn't seen yet.
+    function pullAccountsMerged() {
+        return fetch(UPLOAD_WORKER_URL + '?accounts=1', { cache: 'no-store' }).then(function (res) {
+            if (!res.ok) throw new Error('sync fetch failed');
+            return res.json();
+        }).then(function (data) {
+            var remote = Array.isArray(data.accounts) ? data.accounts : [];
+            var local = JSON.parse(localStorage.getItem(REGISTERED_INSTRUCTORS_KEY) || '[]');
+            var merged = remote.slice();
+            local.forEach(function (a) {
+                if (!merged.some(function (r) { return r.email === a.email; })) merged.push(a);
+            });
+            return merged;
+        }).catch(function () {
+            return JSON.parse(localStorage.getItem(REGISTERED_INSTRUCTORS_KEY) || '[]');
+        });
+    }
+
     function registerInstructor() {
         var card = document.getElementById('registerCard');
         var name = document.getElementById('regName').value.trim();
@@ -637,12 +676,16 @@
             setTimeout(function () { card.classList.remove('flash-red'); }, 500);
             return;
         }
-        var accounts = JSON.parse(localStorage.getItem(REGISTERED_INSTRUCTORS_KEY) || '[]');
         var emailLower = email.toLowerCase();
-        var existingIdx = accounts.findIndex(function (a) { return a.email === emailLower; });
-        var record = { email: emailLower, password: password, name: name, faculty: faculty };
-        if (existingIdx >= 0) accounts[existingIdx] = record; else accounts.push(record);
-        localStorage.setItem(REGISTERED_INSTRUCTORS_KEY, JSON.stringify(accounts));
+        Promise.all([pullAccountsMerged(), sha256Hex(password)]).then(function (results) {
+            var accounts = results[0];
+            var passwordHash = results[1];
+            var existingIdx = accounts.findIndex(function (a) { return a.email === emailLower; });
+            var record = { email: emailLower, passwordHash: passwordHash, name: name, faculty: faculty };
+            if (existingIdx >= 0) accounts[existingIdx] = record; else accounts.push(record);
+            localStorage.setItem(REGISTERED_INSTRUCTORS_KEY, JSON.stringify(accounts));
+            pushAccountsToCloud(accounts);
+        });
         card.classList.add('flash-green');
         playSnapSoundReg();
         launchRegConfetti();

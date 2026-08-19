@@ -497,6 +497,52 @@
         }
     }
     var REGISTERED_INSTRUCTORS_KEY = 'registered-instructors-v1';
+    var UPLOAD_WORKER_URL = 'https://jobsheet-upload-worker.vertigo1794.workers.dev';
+
+    // Instructor accounts used to live only in localStorage — an account registered
+    // on one device was invisible here on any other device, phone, or iPad. Now
+    // pulled fresh from accounts.json via the Worker on every login attempt, so a
+    // brand-new browser that never touched register.html can still find the account.
+    function sha256Hex(str) {
+        return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function (buf) {
+            return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+        });
+    }
+    function pushAccountsToCloud(accounts) {
+        fetch(UPLOAD_WORKER_URL + '?sync=accounts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ accounts: accounts })
+        }).catch(function () { /* best-effort */ });
+    }
+    function pullAccountsMerged() {
+        return fetch(UPLOAD_WORKER_URL + '?accounts=1', { cache: 'no-store' }).then(function (res) {
+            if (!res.ok) throw new Error('sync fetch failed');
+            return res.json();
+        }).then(function (data) {
+            var remote = Array.isArray(data.accounts) ? data.accounts : [];
+            var local = JSON.parse(localStorage.getItem(REGISTERED_INSTRUCTORS_KEY) || '[]');
+            var merged = remote.slice();
+            local.forEach(function (a) {
+                if (!merged.some(function (r) { return r.email === a.email; })) merged.push(a);
+            });
+            return merged;
+        }).catch(function () {
+            return JSON.parse(localStorage.getItem(REGISTERED_INSTRUCTORS_KEY) || '[]');
+        });
+    }
+    // Any account still carrying the old plaintext `password` field (from before this
+    // sync/hashing fix) gets upgraded to a passwordHash in place — never sent to the
+    // cloud as plaintext.
+    function upgradeLegacyAccount(accounts, account) {
+        return sha256Hex(account.password).then(function (hash) {
+            account.passwordHash = hash;
+            delete account.password;
+            localStorage.setItem(REGISTERED_INSTRUCTORS_KEY, JSON.stringify(accounts));
+            pushAccountsToCloud(accounts);
+        });
+    }
+
     function signInAsInstructor() {
         var card = document.getElementById('loginCard');
         var staffId = document.getElementById('staffIdField').value.trim();
@@ -510,25 +556,41 @@
             setTimeout(function () { card.classList.remove('flash-red'); }, 500);
             return;
         }
-        var accounts = JSON.parse(localStorage.getItem(REGISTERED_INSTRUCTORS_KEY) || '[]');
         var emailLower = staffId.toLowerCase();
-        var match = accounts.filter(function (a) { return a.email === emailLower && a.password === password; })[0];
-        if (!match) {
+
+        function fail() {
             card.classList.remove('shake', 'flash-red');
             void card.offsetWidth;
             card.classList.add('shake', 'flash-red');
             setTimeout(function () { card.classList.remove('flash-red'); }, 500);
             if (errorMsg) errorMsg.classList.remove('hidden');
-            return;
         }
-        card.classList.add('flash-green');
-        playSnapSound();
-        launchLoginConfetti();
-        localStorage.setItem('user-role', 'instructor');
-        localStorage.setItem('current-instructor-name', match.name);
-        setTimeout(function () {
-            window.location.href = 'dashboard.html';
-        }, 650);
+        function succeed(match) {
+            card.classList.add('flash-green');
+            playSnapSound();
+            launchLoginConfetti();
+            localStorage.setItem('user-role', 'instructor');
+            localStorage.setItem('current-instructor-name', match.name);
+            setTimeout(function () {
+                window.location.href = 'dashboard.html';
+            }, 650);
+        }
+
+        Promise.all([pullAccountsMerged(), sha256Hex(password)]).then(function (results) {
+            var accounts = results[0];
+            var passwordHash = results[1];
+            localStorage.setItem(REGISTERED_INSTRUCTORS_KEY, JSON.stringify(accounts));
+
+            var match = accounts.filter(function (a) { return a.email === emailLower && a.passwordHash === passwordHash; })[0];
+            if (match) return succeed(match);
+
+            var legacyMatch = accounts.filter(function (a) { return a.email === emailLower && a.password === password; })[0];
+            if (legacyMatch) {
+                upgradeLegacyAccount(accounts, legacyMatch).then(function () { succeed(legacyMatch); });
+                return;
+            }
+            fail();
+        }).catch(fail);
     }
 
     /* Batcave secret terminal (type "batcave") */
