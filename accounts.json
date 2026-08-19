@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "email": "browsertest@example.com",
+    "passwordHash": "2360c59d50afa12f0ac734690f6bc2617729a9527ab10248eba49147f3e7dd74",
+    "name": "Browser Test Instructor",
+    "faculty": "Testing"
+  }
+]
