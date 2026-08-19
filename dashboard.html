@@ -1924,27 +1924,38 @@ EXPLORE JOBSHEETS
                 return m > 0 && f > 0 && Math.abs(m - f) <= 1;
             } }
         ];
+        // Achievement badges are re-evaluated fresh from the synced jobsheet list on
+        // every render (def.check(jobs, ...)) instead of being latched permanently once
+        // earned. That used to be a one-way ratchet stored in ACHIEVEMENTS_KEY — once
+        // lit, always lit, even after deleting the jobsheet that earned it, and never
+        // synced across devices either. Deriving straight from jobsheets fixes both:
+        // a badge un-lights the moment its condition is no longer true (e.g. the
+        // qualifying jobsheet gets deleted), on every device, since jobsheets.json is
+        // already the shared source of truth. ACHIEVEMENTS_KEY now only remembers which
+        // badges have already had their one-time unlock flash shown, so re-earning a
+        // badge later (upload again after a delete) can celebrate again.
         function renderAchievements(overallPct) {
             var wall = document.getElementById('achievementWall');
             if (!wall) return;
             var jobs = jobsheetsCache || [];
-            var unlocked = {};
-            try { unlocked = JSON.parse(localStorage.getItem(ACHIEVEMENTS_KEY)) || {}; } catch (e) {}
-            var changed = false;
+            var flashed = {};
+            try { flashed = JSON.parse(localStorage.getItem(ACHIEVEMENTS_KEY)) || {}; } catch (e) {}
+            var flashChanged = false;
             wall.innerHTML = ACHIEVEMENT_DEFS.map(function (def) {
-                var isUnlocked = !!unlocked[def.id];
-                var justUnlocked = false;
-                if (!isUnlocked && def.check(jobs, overallPct)) {
-                    isUnlocked = true;
-                    justUnlocked = true;
-                    unlocked[def.id] = true;
-                    changed = true;
+                var isUnlocked = !!def.check(jobs, overallPct);
+                var justUnlocked = isUnlocked && !flashed[def.id];
+                if (isUnlocked && !flashed[def.id]) {
+                    flashed[def.id] = true;
+                    flashChanged = true;
+                } else if (!isUnlocked && flashed[def.id]) {
+                    delete flashed[def.id];
+                    flashChanged = true;
                 }
                 return '<div class="achievement-badge' + (isUnlocked ? ' unlocked' : '') + (justUnlocked ? ' just-unlocked' : '') + '">' +
                     '<div class="achievement-icon">' + def.icon + '</div>' +
                     '<div class="achievement-label">' + def.label + '</div></div>';
             }).join('');
-            if (changed) localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(unlocked));
+            if (flashChanged) localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(flashed));
         }
 
         /* New Idea 4: build-streak heatmap, last 14 days */
