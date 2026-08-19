@@ -1449,7 +1449,10 @@
             }, { passive: true });
         })();
 
-        /* Uploader avatars mirror landing.html's "Meet the Builders" model pick, live-synced */
+        /* Uploader avatars mirror landing.html's "Meet the Builders" model pick.
+           Was localStorage-only (same-device tabs via the `storage` event) — never
+           crossed devices, so a pick made on one laptop never showed on another
+           laptop, phone, or iPad. Now pulled from builders.json via the Worker too. */
         (function setupUploaderAvatars() {
             var VIEWER_IDS = {
                 'builder-misha-viewer': ['uploaderAvatarMisha', 'heroAvatarMisha'],
@@ -1468,6 +1471,17 @@
             window.addEventListener('storage', function (e) {
                 if (e.key && VIEWER_IDS[e.key]) applySaved(e.key);
             });
+
+            fetch(UPLOAD_WORKER_URL + '?builders=1', { cache: 'no-store' }).then(function (res) {
+                if (!res.ok) throw new Error('sync fetch failed');
+                return res.json();
+            }).then(function (data) {
+                var remote = data.builders && typeof data.builders === 'object' ? data.builders : {};
+                Object.keys(remote).forEach(function (storageKey) {
+                    localStorage.setItem(storageKey, remote[storageKey]);
+                    applySaved(storageKey);
+                });
+            }).catch(function () { /* offline — local values already applied above */ });
         })();
 
         /* Hero background: brick falls then shatters into fragments, on loop */

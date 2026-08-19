@@ -947,17 +947,65 @@
             var track = document.getElementById('islandCarousel');
             track.scrollBy({ left: direction * 300, behavior: 'smooth' });
         }
+
+        var BUILDERS_WORKER_URL = 'https://jobsheet-upload-worker.vertigo1794.workers.dev';
+
+        function loadBuilderPicks() {
+            try { return JSON.parse(localStorage.getItem('builder-picks') || '{}'); } catch (e) { return {}; }
+        }
+        function saveBuilderPicksLocal(picks) {
+            localStorage.setItem('builder-picks', JSON.stringify(picks));
+        }
+        // Builder picks (which LEGO model each person chose) used to live only in
+        // localStorage — worked within one browser but never crossed devices, so a
+        // pick made on one laptop never showed up on another laptop, phone, or iPad.
+        // Now pushed to builders.json in the repo via the same Worker jobsheets use.
+        function pushBuildersToCloud(picks) {
+            fetch(BUILDERS_WORKER_URL + '?sync=builders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ builders: picks })
+            }).catch(function () { /* best-effort — still saved locally */ });
+        }
+        function pullBuildersFromCloud(callback) {
+            fetch(BUILDERS_WORKER_URL + '?builders=1', { cache: 'no-store' }).then(function (res) {
+                if (!res.ok) throw new Error('sync fetch failed');
+                return res.json();
+            }).then(function (data) {
+                var remote = data.builders && typeof data.builders === 'object' ? data.builders : {};
+                if (Object.keys(remote).length > 0) {
+                    saveBuilderPicksLocal(remote);
+                } else {
+                    var local = loadBuilderPicks();
+                    if (Object.keys(local).length > 0) pushBuildersToCloud(local);
+                }
+                if (callback) callback();
+            }).catch(function () {
+                if (callback) callback();
+            });
+        }
+
         function assignBuilder(glbSrc, viewerId) {
             var viewer = document.getElementById(viewerId);
             if (viewer) viewer.setAttribute('src', glbSrc);
+            var picks = loadBuilderPicks();
+            picks[viewerId] = glbSrc;
+            saveBuilderPicksLocal(picks);
             localStorage.setItem(viewerId, glbSrc);
+            pushBuildersToCloud(picks);
         }
-        document.addEventListener('DOMContentLoaded', function () {
+        function applyBuilderPicks() {
+            var picks = loadBuilderPicks();
             ['builder-misha-viewer', 'builder-fakhrullah-viewer'].forEach(function (viewerId) {
-                var saved = localStorage.getItem(viewerId);
+                var saved = picks[viewerId] || localStorage.getItem(viewerId);
                 var viewer = document.getElementById(viewerId);
                 if (saved && viewer) viewer.setAttribute('src', saved);
+                if (saved) localStorage.setItem(viewerId, saved);
             });
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            applyBuilderPicks();
+            pullBuildersFromCloud(applyBuilderPicks);
         });
     </script>
 <!-- Meet The Builders Section -->
