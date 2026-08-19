@@ -803,10 +803,24 @@
         // other device or in dashboard.html opened elsewhere. localStorage stays as
         // a fast local mirror and offline fallback.
         function pushJobsheetsToCloud(jobsheets) {
+            // Strip fileData (embedded base64) before sending — it's only a local
+            // fallback and can be huge; the shared cloud copy only needs metadata.
+            var lean = jobsheets.map(function (job) {
+                var copy = Object.assign({}, job);
+                if (Array.isArray(copy.files)) {
+                    copy.files = copy.files.map(function (f) {
+                        var fc = Object.assign({}, f);
+                        delete fc.fileData;
+                        return fc;
+                    });
+                }
+                delete copy.fileData;
+                return copy;
+            });
             fetch(UPLOAD_WORKER_URL + '?sync=jobsheets', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ jobsheets: jobsheets })
+                body: JSON.stringify({ jobsheets: lean })
             }).catch(function () { /* best-effort — the change is still saved locally */ });
         }
 
