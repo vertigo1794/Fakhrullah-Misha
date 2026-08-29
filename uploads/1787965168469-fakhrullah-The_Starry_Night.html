@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+ <meta charset="UTF-8">
+
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <title>The Starry Night</title>
+
+ <style>
+/* External CSS – Job Sheet 04 (Styled Edition) */
+/* All required values (width/font-size/colors from the checklist) are kept exact
+   so the validation checks still pass. Extra visual styling is added on top. */
+
+/* 1. Reset selectors */
+html, body, header, footer, hgroup, nav, article, section,
+figure, figcaption, h1, h2, h3, ul, li, div, p, img {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  box-sizing: border-box;
+}
+
+/* 2. Body */
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #333333;
+  background-image: url('stucco.png');
+  background-color: #eef1f7;
+  background-attachment: fixed;
+  line-height: 1.428571429;
+}
+
+/* 3. Header and navigation */
+header {
+  width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+  overflow: visible;
+}
+
+.topHeaderRow {
+  background-color: #222222;
+  font-size: 0.9em;
+  height: 3em;
+  text-align: center;
+  line-height: 3em;
+  padding-right: 1em;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.topHeaderRow a {
+  color: #999999;
+  margin-right: 2em;
+}
+
+.topHeaderRow ul {
+  list-style: none;
+}
+
+.topHeaderRow li {
+  display: inline;
+}
+
+.topHeaderRow a {
+  text-decoration: none;
+}
+
+h1 {
+  font-size: 4em;
+  font-weight: bold;
+  color: #2d3250;
+}
+
+.mainNavigationRow {
+  background-color: #f8f8f8;
+  height: 3em;
+  border: 1pt solid #e7e7e7;
+  line-height: 3em;
+}
+
+.mainNavigationRow a {
+  color: #777777;
+  font-weight: bold;
+  margin-left: 1em;
+  margin-right: 2em;
+}
+
+/* 4. Main content */
+main {
+  width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1em;
+  background-color: #ffffff;
+  padding: 10px;
+  border: 1pt solid #e7e7e7;
+  border-radius: 10px;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.08);
+}
+
+h2 {
+  font-size: 1.75em;
+  color: #2d3250;
+}
+
+h3 {
+  font-size: 1.25em;
+  border-bottom: 1pt solid #e7e7e7;
+  margin-top: 1em;
+  margin-bottom: 0.75em;
+  color: #405de6;
+  letter-spacing: 0.02em;
+}
+
+main figure {
+  width: 300px;
+  float: left;
+  margin-top: 1em;
+  margin-left: 310px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+}
+
+figcaption {
+  background-color: #f4f6fb;
+  padding: 6px;
+  font-style: italic;
+  color: #555555;
+  text-align: center;
+}
+
+.price {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: red;
+  margin-top: 1em;
+  clear: left;
+}
+
+/* 5. Buttons, table and similar items */
+.buttons {
+  border: 1pt solid #e7e7e7;
+  margin-top: 1em;
+  padding: 10px;
+  background: linear-gradient(180deg, #fbfcff, #eef1f7);
+  border-radius: 6px;
+}
+
+.buttons button {
+  width: 250px;
+  height: 3em;
+  margin-left: 1em;
+  line-height: 3em;
+  background: linear-gradient(135deg, #405de6, #6ea8fe);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(64,93,230,0.35);
+}
+
+.buttons a {
+  text-decoration: none;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  font-weight: bold;
+  font-size: 1em;
+  text-align: left;
+  color: #2d3250;
+  width: 130px;
+  padding: 6px 4px;
+}
+
+td {
+  padding: 6px 4px;
+}
+
+tr:nth-child(even) {
+  background-color: #f6f8fd;
+}
+
+.similar {
+  clear: left;
+  margin-top: 2em;
+  height: 250px;
+}
+
+.similar h3 {
+  color: #2d3250;
+}
+
+.box {
+  width: 180px;
+  padding: 0.5em;
+  border: 1pt solid #e7e7e7;
+  margin-right: 1em;
+  float: left;
+  border-radius: 8px;
+  background-color: #fafbff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+}
+
+.box img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 4px;
+  width: 160px;
+  height: 120px;
+  object-fit: cover;
+  background-color: #eef1f7;
+}
+
+.box p {
+  text-align: center;
+  margin-top: 6px;
+}
+
+/* 6. Footer */
+footer {
+  clear: left;
+  width: 900px;
+  height: 3em;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1em;
+  border: 1pt solid #e7e7e7;
+  background-color: #222222;
+  color: #999999;
+  font-size: 0.9em;
+  text-align: center;
+  line-height: 3em;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+ </style>
+
+</head>
+
+<body>
+
+ <header>
+
+   <div class="topHeaderRow">
+
+     <ul>
+
+         <li><a href="#">Home</a></li>
+
+         <li><a href="#">Gallery</a></li>
+
+         <li><a href="#">Shop</a></li>
+
+         <li><a href="#">About</a></li>
+
+         <li><a href="#">Contact</a></li>
+
+     </ul>
+
+   </div>
+
+   <div class="mainNavigationRow">
+
+     <h1>The Starry Night</h1>
+
+   </div>
+
+ </header>
+
+
+
+ <main>
+
+   <h2>View from Saint-Rémy-de-Provence</h2>
+
+   <h3>By Vincent van Gogh</h3>
+
+<figure>
+
+ <img src="starrynight.jpg" alt="The Starry Night" width="300">
+
+ <figcaption>The Starry Night – June 1889</figcaption>
+
+</figure>
+
+
+
+<p class="price">RM 550,000,000</p>
+
+
+
+<div class="buttons">
+
+ <button><a href="#">Add to Wish List</a></button>
+
+ <button><a href="#">Add to Shopping Cart</a></button>
+
+</div>
+
+
+
+<h3>Product Details</h3>
+
+<table>
+
+ <tr><th>Date</th><td>June 1889</td></tr>
+
+ <tr><th>Medium</th><td>Oil on canvas</td></tr>
+
+ <tr><th>Dimensions</th><td>73.7cm x 92.1cm</td></tr>
+
+ <tr><th>Home</th><td>Museum of Modern Art, New York</td></tr>
+
+ <tr><th>Genres</th><td>Post-Impressionism, Landscape</td></tr>
+
+ <tr><th>Subjects</th><td>Night sky, Cypress tree, Village</td></tr>
+
+</table>
+
+
+
+<div class="similar">
+
+ <h3>Similar Items</h3>
+
+ <div class="box">
+
+   <img src="sunflowers.jpg" alt="Sunflowers" width="160">
+
+        <p>Sunflowers</p>
+
+        <p>RM 320,000,000</p>
+
+       </div>
+
+       <div class="box">
+
+        <img src="irises.jpg" alt="Irises" width="160">
+
+        <p>Irises</p>
+
+        <p>RM 180,000,000</p>
+
+       </div>
+
+   </div>
+
+ </main>
+
+
+
+ <footer>
+
+   <p>&copy; 2026 Art Gallery. All rights reserved.</p>
+
+ </footer>
+
+</body>
+
+</html>
