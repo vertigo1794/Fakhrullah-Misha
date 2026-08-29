@@ -174,5 +174,58 @@
         "filePath": "uploads/1787965168469-fakhrullah-The_Starry_Night.html"
       }
     ]
+  },
+  {
+    "id": 1787965252224,
+    "title": "JOBSHEET 05: CSS3",
+    "uploader": "Fakhrullah",
+    "date": "29 Aug 2026",
+    "status": "Submitted",
+    "mark": null,
+    "comment": null,
+    "description": "This job sheet focuses on styling a registration form for an art-related website (such as an art store or gallery). The provided HTML contains a multi-section form with various types of input fields, including text, email, password, phone, date, color, and range inputs, as well as a dropdown list, radio buttons, and a checkbox. Students are required to write CSS3 rules that make all field labels bold, set the range slider width to 60%, style the submit button (\"fancyBtn\") with the required background color, and give the layout a clean, usable appearance. Each of the 20 question sets uses the same form structure but applies to a different type of registration (member, artist, buyer, etc.).",
+    "notes": [
+      {
+        "text": "JOBSHEET 01: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 02: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 03: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 04: CSS3",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 05: CSS3",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 06: CSS3",
+        "done": false
+      }
+    ],
+    "files": [
+      {
+        "fileName": "CSS3 Job Sheet 05 Submission.pdf",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1787965246978-fakhrullah-CSS3_Job_Sheet_05_Submission.pdf",
+        "filePath": "uploads/1787965246978-fakhrullah-CSS3_Job_Sheet_05_Submission.pdf"
+      },
+      {
+        "fileName": "Member_Registration.css",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1787965249871-fakhrullah-Member_Registration.css",
+        "filePath": "uploads/1787965249871-fakhrullah-Member_Registration.css"
+      },
+      {
+        "fileName": "Member_Registration.html",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1787965251360-fakhrullah-Member_Registration.html",
+        "filePath": "uploads/1787965251360-fakhrullah-Member_Registration.html"
+      }
+    ]
   }
 ]
