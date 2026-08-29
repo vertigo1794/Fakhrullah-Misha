@@ -121,5 +121,58 @@
         "filePath": "uploads/1786999887496-fakhrullah-index.html"
       }
     ]
+  },
+  {
+    "id": 1787965169811,
+    "title": "JOBSHEET 04: CSS3",
+    "uploader": "Fakhrullah",
+    "date": "29 Aug 2026",
+    "status": "Submitted",
+    "mark": null,
+    "comment": null,
+    "description": "This job sheet focuses on styling an art gallery product page using external CSS. The provided HTML shows details of a single artwork, including its title, image, price, and product information table. Students are required to write CSS3 rules to style the page header and navigation menu, the main content area, the product image and caption, the price text, the \"Add to Wish List\" and \"Add to Shopping Cart\" buttons, the product details table, a list of similar items, and the page footer. Each of the 20 question sets uses the same page layout but features a different famous painting, so the CSS code must correctly style all the required elements according to the exact values given (colors, sizes, spacing, and borders).",
+    "notes": [
+      {
+        "text": "JOBSHEET 01: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 02: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 03: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 04: CSS3",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 05: CSS3",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 06: CSS3",
+        "done": false
+      }
+    ],
+    "files": [
+      {
+        "fileName": "CSS3 Job Sheet 04 Submission.pdf",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1787965165724-fakhrullah-CSS3_Job_Sheet_04_Submission.pdf",
+        "filePath": "uploads/1787965165724-fakhrullah-CSS3_Job_Sheet_04_Submission.pdf"
+      },
+      {
+        "fileName": "The_Starry_Night.css",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1787965167433-fakhrullah-The_Starry_Night.css",
+        "filePath": "uploads/1787965167433-fakhrullah-The_Starry_Night.css"
+      },
+      {
+        "fileName": "The_Starry_Night.html",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1787965168469-fakhrullah-The_Starry_Night.html",
+        "filePath": "uploads/1787965168469-fakhrullah-The_Starry_Night.html"
+      }
+    ]
   }
 ]
