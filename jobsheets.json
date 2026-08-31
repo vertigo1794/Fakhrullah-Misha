@@ -495,5 +495,48 @@
         "filePath": "uploads/1788092618930-misha-JOBSHEET_05_CSS__6_.pdf"
       }
     ]
+  },
+  {
+    "id": 1788161769187,
+    "title": "JOBSHEET 06 : CSS3",
+    "uploader": "Misha",
+    "date": "31 Aug 2026",
+    "status": "Submitted",
+    "mark": null,
+    "comment": null,
+    "description": "",
+    "notes": [
+      {
+        "text": "JOBSHEET 01: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 02: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 03: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 04: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 05: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 06: CSS3",
+        "done": true
+      }
+    ],
+    "files": [
+      {
+        "fileName": "JOBSHEET 06 CSS (6).pdf",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1788161767111-misha-JOBSHEET_06_CSS__6_.pdf",
+        "filePath": "uploads/1788161767111-misha-JOBSHEET_06_CSS__6_.pdf"
+      }
+    ]
   }
 ]
