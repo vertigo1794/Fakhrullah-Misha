@@ -123,59 +123,6 @@
     ]
   },
   {
-    "id": 1787965458815,
-    "title": "JOBSHEET 06: CSS3",
-    "uploader": "Fakhrullah",
-    "date": "29 Aug 2026",
-    "status": "Submitted",
-    "mark": null,
-    "comment": null,
-    "description": "This job sheet focuses on styling a simple profile or landing page using external CSS. The provided HTML includes a page title link inside the header, two navigation menus made of list items, an \"About\" section, and an \"Aside\" section containing an image and caption. Students are required to write CSS3 rules for the heading link (including background color, gradient, border, text shadow, and font size), the navigation list links (including background color, border, spacing, and rounded corners on the first and last items), the section and aside padding, and hiding the footer. Each of the 20 question sets uses the same page structure but applies a different color scheme and font, so the CSS code must match the exact values given for that specific set.",
-    "notes": [
-      {
-        "text": "JOBSHEET 01: HTML5",
-        "done": true
-      },
-      {
-        "text": "JOBSHEET 02: HTML5",
-        "done": true
-      },
-      {
-        "text": "JOBSHEET 03: HTML5",
-        "done": true
-      },
-      {
-        "text": "JOBSHEET 04: CSS3",
-        "done": false
-      },
-      {
-        "text": "JOBSHEET 05: CSS3",
-        "done": false
-      },
-      {
-        "text": "JOBSHEET 06: CSS3",
-        "done": false
-      }
-    ],
-    "files": [
-      {
-        "fileName": "CSS3 Job Sheet 06 Submission.pdf",
-        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1787965454635-fakhrullah-CSS3_Job_Sheet_06_Submission.pdf",
-        "filePath": "uploads/1787965454635-fakhrullah-CSS3_Job_Sheet_06_Submission.pdf"
-      },
-      {
-        "fileName": "Tech_Student_Portal.css",
-        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1787965456783-fakhrullah-Tech_Student_Portal.css",
-        "filePath": "uploads/1787965456783-fakhrullah-Tech_Student_Portal.css"
-      },
-      {
-        "fileName": "Tech_Student_Portal.html",
-        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1787965457845-fakhrullah-Tech_Student_Portal.html",
-        "filePath": "uploads/1787965457845-fakhrullah-Tech_Student_Portal.html"
-      }
-    ]
-  },
-  {
     "id": 1788015081828,
     "title": "JOBSHEET 01: HTML 5",
     "uploader": "Misha",
