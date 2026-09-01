@@ -1,0 +1,282 @@
+#labSubmissionHeader {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  border: 2px solid #405de6 !important;
+  border-radius: 10px !important;
+  padding: 16px !important;
+  margin: 0 0 25px 0 !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+  position: relative !important;
+  z-index: 9999 !important;
+}
+
+#labSubmissionHeader h3 {
+  color: #243b80 !important;
+  margin: 0 0 10px 0 !important;
+  font-size: 1.1em !important;
+  font-weight: bold !important;
+  border-bottom: none !important;
+}
+
+#labSubmissionHeader p, 
+#labSubmissionHeader strong {
+  color: #222222 !important;
+  margin: 4px 0 !important;
+  font-size: 14px !important;
+}
+
+html, body, header, footer, hgroup, nav, article, section,
+figure, figcaption, h1, h2, h3, ul, li, div, p, img {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #333333;
+  background-color: #eef1f7; /* Latar belakang lembut tanpa gambar */
+  line-height: 1.428571429;
+}
+
+header {
+  width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+  overflow: visible;
+}
+
+.topHeaderRow {
+  background-color: #222222;
+  font-size: 0.9em;
+  height: 3em;
+  text-align: center;
+  line-height: 3em;
+  padding-right: 1em;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.topHeaderRow a {
+  color: #999999;
+  margin-right: 2em;
+  text-decoration: none;
+}
+
+.topHeaderRow ul {
+  list-style: none;
+}
+
+.topHeaderRow li {
+  display: inline;
+}
+
+h1 {
+  font-size: 4em;
+  font-weight: bold;
+  color: #2d3250;
+}
+
+.mainNavigationRow {
+  background-color: #f8f8f8;
+  height: 3em;
+  border: 1pt solid #e7e7e7;
+  line-height: 3em;
+}
+
+.mainNavigationRow a {
+  color: #777777;
+  font-weight: bold;
+  margin-left: 1em;
+  margin-right: 2em;
+}
+
+main {
+  width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1em;
+  background-color: #ffffff;
+  padding: 10px;
+  border: 1pt solid #e7e7e7;
+  border-radius: 10px;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.08);
+}
+
+h2 {
+  font-size: 1.75em;
+  color: #2d3250;
+}
+
+main h3 {
+  font-size: 1.25em;
+  border-bottom: 1pt solid #e7e7e7;
+  margin-top: 1em;
+  margin-bottom: 0.75em;
+  color: #405de6;
+  letter-spacing: 0.02em;
+}
+
+main figure {
+  width: 300px;
+  float: left;
+  margin-top: 1em;
+  margin-left: 310px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+}
+
+main figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  content: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail');
+}
+
+figcaption {
+  background-color: #f4f6fb;
+  padding: 6px;
+  font-style: italic;
+  color: #555555;
+  text-align: center;
+}
+
+.price {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: red;
+  margin-top: 1em;
+  clear: left;
+}
+
+.buttons {
+  border: 1pt solid #e7e7e7;
+  margin-top: 1em;
+  padding: 10px;
+  background: linear-gradient(180deg, #fbfcff, #eef1f7);
+  border-radius: 6px;
+}
+
+.buttons button {
+  width: 250px;
+  height: 3em;
+  margin-left: 1em;
+  line-height: 3em;
+  background: linear-gradient(135deg, #405de6, #6ea8fe);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(64,93,230,0.35);
+}
+
+.buttons a {
+  text-decoration: none;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  font-weight: bold;
+  font-size: 1em;
+  text-align: left;
+  color: #2d3250;
+  width: 130px;
+  padding: 6px 4px;
+}
+
+td {
+  padding: 6px 4px;
+}
+
+tr:nth-child(even) {
+  background-color: #f6f8fd;
+}
+
+.similar {
+  clear: left;
+  margin-top: 2em;
+  height: 250px;
+}
+
+.similar h3 {
+  color: #2d3250;
+}
+
+.box {
+  width: 180px;
+  padding: 0.5em;
+  border: 1pt solid #e7e7e7;
+  margin-right: 1em;
+  float: left;
+  border-radius: 8px;
+  background-color: #fafbff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+}
+
+.box:nth-of-type(1) img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 4px;
+  width: 160px;
+  height: 120px;
+  object-fit: cover;
+  content: url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Vincent_Willem_van_Gogh_127.jpg/960px-Vincent_Willem_van_Gogh_127.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail');
+}
+
+.box:nth-of-type(2) img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 4px;
+  width: 160px;
+  height: 120px;
+  object-fit: cover;
+  content: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Irises-Vincent_van_Gogh.jpg/1280px-Irises-Vincent_van_Gogh.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail');
+}
+
+.box p {
+  text-align: center;
+  margin-top: 6px;
+}
+
+footer {
+  clear: left;
+  width: 900px;
+  height: 3em;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1em;
+  border: 1pt solid #e7e7e7;
+  background-color: #222222;
+  color: #999999;
+  font-size: 0.9em;
+  text-align: center;
+  line-height: 3em;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
