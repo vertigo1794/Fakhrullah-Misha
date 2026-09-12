@@ -612,5 +612,79 @@
         "filePath": "uploads/1789254126764-fakhrullah-Lab8.js"
       }
     ]
+  },
+  {
+    "id": 1789254282160,
+    "title": "JOBSHEET 08: JAVASCRIPT",
+    "uploader": "Fakhrullah",
+    "date": "13 Sep 2026",
+    "status": "Submitted",
+    "mark": null,
+    "comment": null,
+    "description": "This task adds JavaScript client-side validation to a pre-built Library Member Registration form, where a new file named Lab9.js is linked into the HTML head to highlight input fields on focus, check that all required fields (Member Name, Member ID, Email, Membership Type, Phone Number) are filled before allowing submission, and mark any empty required field with an error style.",
+    "notes": [
+      {
+        "text": "JOBSHEET 01: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 02: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 03: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 04: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 05: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 06: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 07: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 08: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 09: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 12: JQUERY",
+        "done": false
+      }
+    ],
+    "files": [
+      {
+        "fileName": "JavaScript Job Sheet 08 Submission.pdf",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789254276735-fakhrullah-JavaScript_Job_Sheet_08_Submission.pdf",
+        "filePath": "uploads/1789254276735-fakhrullah-JavaScript_Job_Sheet_08_Submission.pdf"
+      },
+      {
+        "fileName": "Lab8.css",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789254278785-fakhrullah-Lab8.css",
+        "filePath": "uploads/1789254278785-fakhrullah-Lab8.css"
+      },
+      {
+        "fileName": "Lab9.js",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789254279750-fakhrullah-Lab9.js",
+        "filePath": "uploads/1789254279750-fakhrullah-Lab9.js"
+      },
+      {
+        "fileName": "Library_Membership.html",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789254281362-fakhrullah-Library_Membership.html",
+        "filePath": "uploads/1789254281362-fakhrullah-Library_Membership.html"
+      }
+    ]
   }
 ]
