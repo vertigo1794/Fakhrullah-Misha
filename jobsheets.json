@@ -538,5 +538,79 @@
         "filePath": "uploads/1788275379195-fakhrullah-Tech_Student_Portal.html"
       }
     ]
+  },
+  {
+    "id": 1789254127548,
+    "title": "JOBSHEET 07: JAVASCRIPT",
+    "uploader": "Fakhrullah",
+    "date": "13 Sep 2026",
+    "status": "Submitted",
+    "mark": null,
+    "comment": null,
+    "description": "This page displays a beach photo gallery titled \"Beautiful Beaches\". It has one large featured image at the top with a caption, and 5 small thumbnails below (Coral Bay, Tropical Island, Blue Lagoon, Golden Beach, Palm Beach). When the user clicks any thumbnail, the featured image switches to that location's photo using JavaScript event delegation (addEventListener attached to the #thumbnails container, not each individual thumbnail). When the mouse hovers over the featured image, the caption fades in (opacity 0 → 0.8) smoothly, and fades back out (opacity → 0) on mouse-out — implemented with mouseover/mouseout events and a CSS transition.",
+    "notes": [
+      {
+        "text": "JOBSHEET 01: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 02: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 03: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 04: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 05: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 06: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 07: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 08: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 09: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 12: JQUERY",
+        "done": false
+      }
+    ],
+    "files": [
+      {
+        "fileName": "Beautiful_Beaches.html",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789254120713-fakhrullah-Beautiful_Beaches.html",
+        "filePath": "uploads/1789254120713-fakhrullah-Beautiful_Beaches.html"
+      },
+      {
+        "fileName": "JavaScript Job Sheet 07 Submission.pdf",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789254122489-fakhrullah-JavaScript_Job_Sheet_07_Submission.pdf",
+        "filePath": "uploads/1789254122489-fakhrullah-JavaScript_Job_Sheet_07_Submission.pdf"
+      },
+      {
+        "fileName": "Lab7.css",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789254125505-fakhrullah-Lab7.css",
+        "filePath": "uploads/1789254125505-fakhrullah-Lab7.css"
+      },
+      {
+        "fileName": "Lab8.js",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789254126764-fakhrullah-Lab8.js",
+        "filePath": "uploads/1789254126764-fakhrullah-Lab8.js"
+      }
+    ]
   }
 ]
