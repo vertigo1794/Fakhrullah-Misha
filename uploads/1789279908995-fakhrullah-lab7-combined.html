@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 30px;
+        }
+
+        main {
+            width: 850px;
+            margin: auto;
+            background: #fff;
+            padding: 15px;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin: 0 0 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff4df;
+        }
+
+        th {
+            background: #f47700;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        td img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+    </style>
+    <script>
+        var filenames = ["106020.jpg", "116010.jpg", "120010.jpg"];
+        var titles = ["Girl with a Pearl Earring", "Artist Holding a Thistle", "Portrait of Eleanor of Toledo"];
+        var quantities = [3, 1, 2];
+        var prices = [80.0, 125.0, 75.0];
+
+        function outputCartRow(file, title, quantity, price, total) {
+            document.write('<tr>');
+            document.write('<td><img src="images/' + file + '"></td>');
+            document.write('<td>' + title + '</td>');
+            document.write('<td class="center">' + quantity + '</td>');
+            document.write('<td class="right">RM' + price.toFixed(2) + '</td>');
+            document.write('<td class="right">RM' + total.toFixed(2) + '</td>');
+            document.write('</tr>');
+        }
+
+        function calculateTotal(quantity, price) {
+            return quantity * price;
+        }
+
+        function calculateTax(subtotal, rate) {
+            return subtotal * rate;
+        }
+
+        function calculateShipping(subtotal, threshold) {
+            if (subtotal > threshold) {
+                return 0;
+            }
+            else {
+                return 40;
+            }
+        }
+
+        function calculateGrandTotal(subtotal, tax, shipping) {
+            return subtotal + tax + shipping;
+        }
+
+        function outputCurrency(num) {
+            document.write(num.toFixed(2));
+        }
+    </script>
+</head>
+<body>
+
+<main>
+    <h1>SHOPPING CART</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th colspan="2">Product</th>
+                <th>#</th>
+                <th>Price</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <script>
+                const tax_rate = 0.10;
+                const shipping_threshold = 1000;
+                var subtotal = 0;
+
+                for (var i=0; i<titles.length; i++) {
+                    let total = calculateTotal(quantities[i], prices[i]);
+                    subtotal += total;
+                    outputCartRow(filenames[i], titles[i], quantities[i], prices[i], total);
+                }
+
+                var tax = calculateTax(subtotal, tax_rate);
+                var shipping = calculateShipping(subtotal, shipping_threshold);
+                var grand = calculateGrandTotal(subtotal, tax, shipping);
+            </script>
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <td colspan="4" class="right">Subtotal</td>
+                <td class="right">RM<script>outputCurrency(subtotal)</script></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="right">Tax</td>
+                <td class="right">RM<script>outputCurrency(tax)</script></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="right">Shipping</td>
+                <td class="right">RM<script>outputCurrency(shipping)</script></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="right"><strong>Grand Total</strong></td>
+                <td class="right"><strong>RM<script>outputCurrency(grand)</script></strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</main>
+
+</body>
+</html>
