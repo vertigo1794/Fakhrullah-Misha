@@ -538,5 +538,64 @@
         "filePath": "uploads/1788275379195-fakhrullah-Tech_Student_Portal.html"
       }
     ]
+  },
+  {
+    "id": 1789279513548,
+    "title": "egg",
+    "uploader": "Fakhrullah",
+    "date": "13 Sep 2026",
+    "status": "Submitted",
+    "mark": null,
+    "comment": null,
+    "description": "",
+    "notes": [
+      {
+        "text": "JOBSHEET 01: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 02: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 03: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 04: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 05: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 06: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 07: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 08: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 09: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 12: JQUERY",
+        "done": false
+      }
+    ],
+    "files": [
+      {
+        "fileName": "Beautiful_Beaches.html",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789279508247-fakhrullah-Beautiful_Beaches.html",
+        "filePath": "uploads/1789279508247-fakhrullah-Beautiful_Beaches.html"
+      }
+    ]
   }
 ]
