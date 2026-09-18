@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Membership</title>
+    <style>
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #eef1f7;
+    color: #222;
+}
+header {
+    background: #3046a8;
+    color: white;
+    padding: 16px 24px;
+    text-align: center;
+}
+header h1 {
+    margin: 0;
+    font-size: 26px;
+}
+main {
+    width: min(900px, 94%);
+    margin: 24px auto;
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.15);
+}
+.form-row {
+    margin-bottom: 14px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    font-size: 15px;
+}
+textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+button {
+    background: #f0a000;
+    border: 1px solid #9a6500;
+    padding: 10px 24px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.highlight {
+    outline: 3px solid #9ec5ff;
+    background: #f4f9ff;
+}
+.error {
+    background: #ffd9df !important;
+    border: 2px solid #e44 !important;
+}
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+    </style>
+    <script>
+function isBlank(inputField){
+    if (inputField.value=="") {
+        return true;
+    }
+    return false;
+}
+function makeClean(element){
+    element.classList.remove("error");
+}
+window.addEventListener("load", function() {
+    var hilightableInputs = document.querySelectorAll(".hilightable");
+    for (var i=0; i<hilightableInputs.length; i++) {
+        hilightableInputs[i].addEventListener("focus", function(e) {
+            e.target.classList.toggle("highlight");
+        });
+        hilightableInputs[i].addEventListener("blur", function(e) {
+            e.target.classList.toggle("highlight");
+        });
+    }
+    var requiredInputs = document.querySelectorAll(".required");
+    for (var i=0; i<requiredInputs.length; i++) {
+        requiredInputs[i].addEventListener("change", function(e) {
+            makeClean(e.target);
+        });
+    }
+    var mainForm = document.getElementById("mainForm");
+    mainForm.addEventListener("submit", function(e) {
+        var requiredInputs = document.querySelectorAll(".required");
+        for (var i=0; i<requiredInputs.length; i++){
+            if( isBlank(requiredInputs[i]) ){
+                e.preventDefault();
+                requiredInputs[i].classList.add("error");
+            }
+            else {
+                makeClean(requiredInputs[i]);
+            }
+        }
+    });
+});
+    </script>
+</head>
+<body>
+<header>
+    <h1>Library Member Registration</h1>
+</header>
+<main>
+<form id="mainForm" action="#" method="post">
+    <div class="form-row">
+        <label for="field1">Member Name</label>
+        <input type="text" id="field1" class="required hilightable">
+    </div>
+    <div class="form-row">
+        <label for="field2">Member ID</label>
+        <input type="text" id="field2" class="required hilightable">
+    </div>
+
+    <div class="form-row">
+        <label for="field3">Email</label>
+        <input type="text" id="field3" class="required hilightable">
+    </div>
+    <div class="form-row">
+        <label for="field4">Membership Type</label>
+        <select id="field4" class="required hilightable">
+            <option value="">Choose an option</option>
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+            <option value="option3">Option 3</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="field5">Phone Number</label>
+        <input type="text" id="field5" class="required hilightable">
+    </div>
+    <div class="form-actions">
+        <button type="submit">Submit</button>
+        <button type="reset">Clear Form</button>
+    </div>
+</form>
+</main>
+</body>
+</html>
