@@ -770,5 +770,84 @@
         "filePath": "uploads/1789754500784-fakhrullah-Shopping_Cart.pdf"
       }
     ]
+  },
+  {
+    "id": 1789754571684,
+    "title": "JOBSHEET 12: JQUERY",
+    "uploader": "Fakhrullah",
+    "date": "19 Sep 2026",
+    "status": "Submitted",
+    "mark": null,
+    "comment": null,
+    "description": "This exercise demonstrates how jQuery's $.ajax() method can load external content into a webpage without refreshing it. A welcome.txt file containing a short welcome message is created, and when the user clicks the \"Get External Content\" button, jQuery sends an AJAX request to fetch that file and, on success, inserts its text directly into the #div1 element on the page.",
+    "notes": [
+      {
+        "text": "JOBSHEET 01: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 02: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 03: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 04: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 05: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 06: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 07: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 08: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 09: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 12: JQUERY",
+        "done": false
+      }
+    ],
+    "files": [
+      {
+        "fileName": "jQuery AJAX Exercise 1.pdf",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789754563672-fakhrullah-jQuery_AJAX_Exercise_1.pdf",
+        "filePath": "uploads/1789754563672-fakhrullah-jQuery_AJAX_Exercise_1.pdf"
+      },
+      {
+        "fileName": "jQuery AJAX Exercise 2.pdf",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789754565064-fakhrullah-jQuery_AJAX_Exercise_2.pdf",
+        "filePath": "uploads/1789754565064-fakhrullah-jQuery_AJAX_Exercise_2.pdf"
+      },
+      {
+        "fileName": "jquery.js",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789754566371-fakhrullah-jquery.js",
+        "filePath": "uploads/1789754566371-fakhrullah-jquery.js"
+      },
+      {
+        "fileName": "set2_welcome_message.html",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789754568981-fakhrullah-set2_welcome_message.html",
+        "filePath": "uploads/1789754568981-fakhrullah-set2_welcome_message.html"
+      },
+      {
+        "fileName": "welcome.txt",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1789754570565-fakhrullah-welcome.txt",
+        "filePath": "uploads/1789754570565-fakhrullah-welcome.txt"
+      }
+    ]
   }
 ]
