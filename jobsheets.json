@@ -1126,5 +1126,81 @@
         "filePath": "uploads/1790782863660-fakhrullah-Session_Click_Counter.pdf"
       }
     ]
+  },
+  {
+    "id": 1790782895956,
+    "title": "JOBSHEET 15: WEB STORAGE",
+    "uploader": "Fakhrullah",
+    "date": "30 Sep 2026",
+    "status": "Submitted",
+    "mark": null,
+    "comment": null,
+    "description": "A guestbook where visitors can leave their name and a message. Entries are saved in localStorage as JSON, validated before saving, and shown newest first.",
+    "notes": [
+      {
+        "text": "JOBSHEET 01: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 02: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 03: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 04: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 05: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 06: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 07: JAVASCRIPT",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 08: JAVASCRIPT",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 09: JAVASCRIPT",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 12: JQUERY",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 13: WEB STORAGE",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 14: WEB STORAGE",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 15: WEB STORAGE",
+        "done": false
+      }
+    ],
+    "files": [
+      {
+        "fileName": "Guestbook.pdf",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1790782892183-fakhrullah-Guestbook.pdf",
+        "filePath": "uploads/1790782892183-fakhrullah-Guestbook.pdf"
+      },
+      {
+        "fileName": "JobSheet 15.html",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1790782894736-fakhrullah-JobSheet_15.html",
+        "filePath": "uploads/1790782894736-fakhrullah-JobSheet_15.html"
+      }
+    ]
   }
 ]
