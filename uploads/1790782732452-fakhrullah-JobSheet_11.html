@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greet with val()</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 30px;
+  background: #f4f4f4;
+}
+button {
+  padding: 10px 16px;
+  margin: 4px;
+  cursor: pointer;
+}
+input {
+  padding: 8px;
+}
+</style>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    var name = $("#name").val();
+    $("#greeting").text("Hello, " + name + "!");
+  });
+});
+</script>
+</head>
+<body>
+<h2>Greeting</h2>
+<input type="text" id="name" placeholder="Your name">
+<button>Greet</button>
+<h3 id="greeting"></h3>
+</body>
+</html>
