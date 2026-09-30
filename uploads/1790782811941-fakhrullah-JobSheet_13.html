@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome Back Message</title>
+<style>
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  max-width: 720px;
+  margin: 30px auto;
+  padding: 28px 32px;
+  background: #ffffff;
+  color: #2c3e50;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(44, 62, 80, 0.12);
+  border-top: 6px solid #5b7cfa;
+}
+html {
+  background: linear-gradient(135deg, #eef2ff, #f8f9fc);
+  min-height: 100%;
+}
+h2 {
+  margin-top: 0;
+  color: #34495e;
+  border-bottom: 2px solid #eef2ff;
+  padding-bottom: 8px;
+}
+button {
+  padding: 10px 18px;
+  margin: 4px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #5b7cfa, #7958e8);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(91, 124, 250, 0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(91, 124, 250, 0.4);
+}
+button:disabled {
+  background: #b0b8c9;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+input, textarea, select {
+  border: 1px solid #cfd8e3;
+  border-radius: 8px;
+  outline: none;
+  font: inherit;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: #5b7cfa;
+  box-shadow: 0 0 0 3px rgba(91, 124, 250, 0.2);
+}
+p, li {
+  line-height: 1.6;
+}
+@media print {
+  html { background: white; }
+  body { box-shadow: none; }
+}
+input {
+  padding: 8px;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  const welcome = document.getElementById("welcome");
+
+  function showWelcome(){
+    const name = localStorage.getItem("visitorName");
+    welcome.textContent = name ? "Welcome back, " + name + "!" : "Welcome, Guest!";
+  }
+
+  showWelcome();
+
+  document.getElementById("saveBtn").addEventListener("click", function(){
+    localStorage.setItem("visitorName", document.getElementById("name").value);
+    showWelcome();
+  });
+});
+</script>
+</head>
+<body>
+<h2 id="welcome"></h2>
+<input type="text" id="name" placeholder="Your name">
+<button id="saveBtn">Remember Me</button>
+</body>
+</html>
