@@ -918,5 +918,69 @@
         "filePath": "uploads/1790782688933-fakhrullah-Show_and_Hide_Box2.pdf"
       }
     ]
+  },
+  {
+    "id": 1790782733587,
+    "title": "JOBSHEET 11: JQUERY",
+    "uploader": "Fakhrullah",
+    "date": "30 Sep 2026",
+    "status": "Submitted",
+    "mark": null,
+    "comment": null,
+    "description": "A jQuery greeting page that reads the user's name from an input box with val() and displays a personalised \"Hello\" message using text().",
+    "notes": [
+      {
+        "text": "JOBSHEET 01: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 02: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 03: HTML5",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 04: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 05: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 06: CSS3",
+        "done": true
+      },
+      {
+        "text": "JOBSHEET 07: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 08: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 09: JAVASCRIPT",
+        "done": false
+      },
+      {
+        "text": "JOBSHEET 12: JQUERY",
+        "done": false
+      }
+    ],
+    "files": [
+      {
+        "fileName": "Greet with val().pdf",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1790782730944-fakhrullah-Greet_with_val__.pdf",
+        "filePath": "uploads/1790782730944-fakhrullah-Greet_with_val__.pdf"
+      },
+      {
+        "fileName": "JobSheet 11.html",
+        "fileUrl": "https://raw.githubusercontent.com/vertigo1794/Fakhrullah-Misha/main/uploads/1790782732452-fakhrullah-JobSheet_11.html",
+        "filePath": "uploads/1790782732452-fakhrullah-JobSheet_11.html"
+      }
+    ]
   }
 ]
