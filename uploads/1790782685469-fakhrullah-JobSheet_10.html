@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Show and Hide Box</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 30px;
+  background: #f4f4f4;
+}
+button {
+  padding: 10px 16px;
+  margin: 4px;
+  cursor: pointer;
+}
+#box {
+  background: #4a90e2;
+  color: white;
+  padding: 30px;
+  width: 200px;
+  margin-bottom: 10px;
+}
+</style>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("#hideBtn").click(function(){
+    $("#box").hide();
+  });
+  $("#showBtn").click(function(){
+    $("#box").show();
+  });
+});
+</script>
+</head>
+<body>
+<h2>Show / Hide</h2>
+<div id="box">I am a box.</div>
+<button id="hideBtn">Hide</button>
+<button id="showBtn">Show</button>
+</body>
+</html>
